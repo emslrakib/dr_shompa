@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dr. Arefin Zannat Sompa — Consultant Psychiatrist, Sylhet</title>
+<meta name="description" content="Dr. Arefin Zannat Sompa, MBBS, BCS (Health), MD-Psychiatry. Consultant Psychiatrist, Department of Psychiatry, Sylhet MAG Osmani Medical College.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Karla:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FBFAF6;
+  --paper-2: #F3EEE3;
+  --navy: #0E2452;
+  --navy-deep: #071730;
+  --gold: #B0832F;
+  --gold-soft: #E2C68A;
+  --rose: #C9A6A0;
+  --ink: #18202E;
+  --muted: #5B6678;
+  --line: rgba(14,36,82,.14);
+  --shadow: 0 16px 40px -20px rgba(7,23,48,.3);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Karla", system-ui, sans-serif;
+  --wrap: 1180px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+.wrap { width: min(var(--wrap), 92vw); margin-inline: auto; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; line-height: 1.1; margin: 0; letter-spacing: -.005em; }
+h2 { font-size: clamp(2rem, 3.8vw, 2.9rem); }
+h3 { font-size: 1.3rem; }
+p { margin: 0 0 .9em; }
+:focus-visible { outline: 2.5px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+/* ---------- header ---------- */
+header {
+  position: sticky; top: 0; z-index: 60;
+  background: rgba(251,250,246,.94); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 4px 20px rgba(0,0,0,.03);
+}
+.bar { display: flex; align-items: center; gap: 1.5rem; padding: .65rem 0; position: relative; }
+.logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; flex: none; margin-right: auto; }
+.logo img { width: 44px; height: 44px; border-radius: 8px; object-fit: contain; }
+.logo svg { width: 38px; height: 38px; flex: none; }
+.logo-text { display: block; line-height: 1; }
+.logo-text b { font-family: var(--serif); font-size: 1.22rem; font-weight: 700; color: var(--navy); display: block; line-height: 1.1; }
+.logo-text i { font-style: normal; display: block; font-size: .62rem; letter-spacing: .2em; color: var(--gold); font-weight: 600; margin-top: .2rem; }
+nav ul { display: flex; align-items: center; gap: 1.8rem; list-style: none; margin: 0; padding: 0; }
+nav li { display: flex; align-items: center; }
+nav a {
+  display: inline-block; text-decoration: none; font-size: .92rem; font-weight: 600; color: var(--muted);
+  line-height: 1.4; padding: .2rem 0; position: relative; transition: color .2s;
+}
+nav a::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--gold); transition: width .25s ease;
+}
+nav a:hover { color: var(--navy); }
+nav a:hover::after { width: 100%; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 0; cursor: pointer;
+  background: var(--navy); color: #fff; text-decoration: none;
+  padding: .7rem 1.4rem; border-radius: 999px; font-family: var(--sans);
+  font-size: .92rem; font-weight: 600; letter-spacing: .01em;
+  box-shadow: 0 8px 22px -12px rgba(14,36,82,.9);
+  transition: background .25s, transform .25s, box-shadow .25s;
+}
+.btn:hover { background: var(--navy-deep); transform: translateY(-2px); box-shadow: 0 14px 28px -12px rgba(14,36,82,.85); }
+.btn.ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); box-shadow: none; }
+.btn.ghost:hover { background: var(--navy); color: #fff; }
+.btn.gold { background: var(--gold); color: #fff; animation: btnGlow 3s infinite ease-in-out; }
+.btn.gold:hover { background: #966e24; transform: translateY(-2px); }
+
+@keyframes btnGlow {
+  0%, 100% { box-shadow: 0 8px 22px -12px rgba(176,131,47,.9); }
+  50% { box-shadow: 0 12px 28px -4px rgba(176,131,47,.7); }
+}
+
+.menu-toggle { display: none; background: none; border: 1px solid var(--line); border-radius: 10px; padding: .45rem .6rem; cursor: pointer; }
+.mobile-cta { display: none; }
+.menu-toggle span { display: block; width: 20px; height: 2px; background: var(--navy); margin: 4px 0; border-radius: 2px; }
+
+/* ---------- hero ---------- */
+.hero { position: relative; padding: 2.2rem 0 2.8rem; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -2;
+  background: radial-gradient(80rem 45rem at 78% 8%, #FFFFFF 0%, var(--paper) 45%, var(--paper-2) 100%);
+}
+.hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(1.8rem, 4vw, 3.8rem); align-items: center; }
+.kicker {
+  font-size: .78rem; font-weight: 700; letter-spacing: .2em; color: var(--gold);
+  display: flex; align-items: center; gap: .6rem; margin-bottom: .9rem; text-transform: uppercase;
+}
+.kicker::before { content: ""; width: 38px; height: 2px; background: var(--gold); }
+h1 { font-size: clamp(2.5rem, 5.2vw, 4.4rem); color: var(--navy); font-weight: 700; }
+.role {
+  font-family: var(--sans); font-size: clamp(.98rem, 1.6vw, 1.15rem); font-weight: 600;
+  color: var(--navy); margin-top: .8rem; padding-top: .8rem; border-top: 1px solid var(--line);
+  max-width: 32ch;
+}
+.role em { font-style: normal; color: var(--gold); }
+.lede { color: var(--muted); max-width: 50ch; margin-top: 1rem; font-size: 1.02rem; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.5rem; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 1.8rem; margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+.hero-meta div strong { display: block; font-family: var(--serif); font-size: 1.75rem; color: var(--navy); line-height: 1; }
+.hero-meta div span { font-size: .8rem; color: var(--muted); letter-spacing: .04em; }
+
+/* portrait frame with high definition focus */
+.portrait { position: relative; justify-self: center; width: min(390px, 85vw); }
+.portrait-frame {
+  position: relative; aspect-ratio: 3/4; border-radius: 200px 200px 24px 24px; overflow: hidden;
+  background: linear-gradient(180deg, #fff, var(--paper-2));
+  box-shadow: 0 25px 60px -20px rgba(7,23,48,.4); border: 5px solid #fff;
+  outline: 2px solid rgba(176,131,47,.3); outline-offset: 2px;
+}
+.portrait-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform .5s ease; }
+.portrait-frame:hover img { transform: scale(1.03); }
+.arc { position: absolute; inset: -5.5%; z-index: 2; pointer-events: none; }
+.arc circle {
+  fill: none; stroke: url(#goldgrad); stroke-width: 1.6; stroke-linecap: round;
+  stroke-dasharray: 180 800;
+  animation: orbit 14s linear infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes orbit { to { transform: rotate(360deg); } }
+.badge {
+  position: absolute; left: -1rem; bottom: 1.8rem; z-index: 3;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); border-left: 4px solid var(--gold);
+  border-radius: 14px; padding: .75rem 1.15rem; box-shadow: var(--shadow);
+  animation: floatBadge 4s ease-in-out infinite;
+}
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.badge b { display: block; font-family: var(--serif); font-size: 1.05rem; color: var(--navy); }
+.badge span { font-size: .76rem; color: var(--muted); font-weight: 600; }
+
+/* ---------- compact sections ---------- */
+section { padding: 2.3rem 0; }
+.sec-head { max-width: 60ch; margin-bottom: 1.8rem; }
+.sec-head h2 { color: var(--navy); }
+.sec-head p { color: var(--muted); margin-top: .6rem; font-size: 1.02rem; }
+.rule { width: 48px; height: 2px; background: var(--gold); margin-bottom: 1rem; }
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+.card {
+  background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.8rem 1.5rem;
+  position: relative; overflow: hidden;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.card::after {
+  content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+  transition: width .45s ease;
+}
+.card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.4); }
+.card:hover::after { width: 100%; }
+.ico {
+  width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--navy); color: var(--gold-soft); margin-bottom: 1.1rem;
+}
+.ico svg { width: 24px; height: 24px; }
+.card h3 { color: var(--navy); margin-bottom: .5rem; }
+.card p { color: var(--muted); font-size: .95rem; margin: 0; }
+.card .sub { font-size: .84rem; color: var(--gold); font-weight: 600; margin-top: .7rem; }
+.card .tick-row { display: flex; gap: .6rem; align-items: flex-start; }
+.card .tick-ico { width: 16px; height: 16px; flex: none; color: var(--gold); margin-top: .3rem; }
+
+/* Services Grid */
+.svc { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.1rem; }
+.svc article {
+  background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem 1.4rem;
+  transition: transform .3s, box-shadow .3s, border-color .3s;
+  position: relative; overflow: hidden;
+}
+.svc article::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold-soft); opacity: 0; transition: opacity .3s;
+}
+.svc article:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.3); }
+.svc article:hover::before { opacity: 1; }
+.svc h3 { font-size: 1.18rem; color: var(--navy); margin-bottom: .45rem; }
+.svc p { font-size: .93rem; color: var(--muted); margin: 0; }
+
+/* Showcase Grid */
+.showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+.showcase-img { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid #fff; position: relative; }
+.showcase-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.showcase-img:hover img { transform: scale(1.02); }
+.showcase-box { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 1.8rem; box-shadow: var(--shadow); }
+.showcase-box h3 { font-size: 1.5rem; color: var(--navy); margin-bottom: .8rem; }
+.feature-list { list-style: none; padding: 0; margin: 1rem 0; display: flex; flex-direction: column; gap: .8rem; }
+.feature-list li { display: flex; gap: .75rem; font-size: .94rem; color: var(--ink); align-items: flex-start; }
+.feature-list svg { width: 18px; height: 18px; flex: none; color: var(--gold); margin-top: .2rem; }
+
+/* quote slider */
+.quotes { background: var(--navy); color: #fff; position: relative; overflow: hidden; padding: 3.5rem 0; }
+.quotes::before {
+  content: ""; position: absolute; right: -12%; top: -40%; width: 60vw; height: 120%;
+  border-radius: 50%; border: 1px solid rgba(226,198,138,.18);
+}
+.quote-box { max-width: 46rem; margin-inline: auto; text-align: center; position: relative; z-index: 2; }
+.qmark { font-family: var(--serif); font-size: 4.5rem; color: var(--gold); line-height: .4; display: block; margin-bottom: 1rem; }
+.slide { display: none; }
+.slide.on { display: block; animation: soft .5s ease; }
+@keyframes soft { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.slide p { font-family: var(--serif); font-size: clamp(1.3rem, 2.5vw, 1.85rem); line-height: 1.45; color: #fff; }
+.slide cite { font-style: normal; font-size: .84rem; letter-spacing: .15em; color: var(--gold-soft); font-weight: 600; text-transform: uppercase; margin-top: .8rem; display: block; }
+.q-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.8rem; }
+.q-nav button {
+  width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+  background: transparent; border: 1px solid rgba(255,255,255,.3); color: #fff;
+  display: grid; place-items: center; transition: background .25s, border-color .25s;
+}
+.q-nav button:hover { background: rgba(226,198,138,.2); border-color: var(--gold-soft); }
+.dots { display: flex; gap: .5rem; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.3); transition: background .3s, width .3s; }
+.dots i.on { background: var(--gold); width: 22px; border-radius: 4px; }
+
+/* contact */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: stretch; }
+.contact-list { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.8rem; display: flex; flex-direction: column; gap: 1.2rem; box-shadow: var(--shadow); }
+.row { display: flex; gap: 1rem; align-items: flex-start; text-decoration: none; }
+.row .ico { width: 44px; height: 44px; margin: 0; border-radius: 12px; flex: none; }
+.row .ico svg { width: 20px; height: 20px; }
+.row b { display: block; font-size: .76rem; letter-spacing: .14em; color: var(--gold); font-weight: 700; text-transform: uppercase; }
+.row span { color: var(--navy); font-weight: 600; font-size: 1.02rem; word-break: break-word; }
+.row small { display: block; color: var(--muted); font-size: .86rem; font-weight: 400; margin-top: .1rem; }
+a.row:hover span { color: var(--gold); }
+.map {
+  border: 1px solid var(--line); border-radius: 18px; overflow: hidden; position: relative;
+  min-height: 320px; background: var(--paper-2); box-shadow: var(--shadow);
+}
+.map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map .pin-label {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-135%);
+  background: var(--navy); color: #fff; padding: .5rem .95rem; border-radius: 10px;
+  font-size: .82rem; font-weight: 600; white-space: nowrap; box-shadow: var(--shadow);
+}
+.map .open { position: absolute; left: 1rem; bottom: 1rem; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: .55rem 1.05rem; font-size: .85rem; font-weight: 600; text-decoration: none; color: var(--navy); box-shadow: 0 4px 15px rgba(0,0,0,.08); transition: .2s; }
+.map .open:hover { background: var(--navy); color: #fff; }
+
+/* ---------- RICH FOOTER DESIGN ---------- */
+footer { background: var(--navy-deep); color: rgba(255,255,255,.8); padding: 3.2rem 0 1.8rem; position: relative; }
+footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-soft), var(--navy)); }
+
+.footer-grid { display: grid; grid-template-columns: 1.2fr 0.8fr 1fr; gap: 2.5rem; padding-bottom: 2.2rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+
+.f-brand h3 { font-family: var(--serif); font-size: 1.6rem; color: #fff; margin-bottom: .6rem; }
+.f-brand p { font-size: .92rem; color: rgba(255,255,255,.68); max-width: 36ch; line-height: 1.55; }
+.f-badges { display: flex; gap: .6rem; margin-top: 1rem; }
+.f-badge { font-size: .75rem; font-weight: 700; color: var(--gold-soft); background: rgba(226,198,138,.12); border: 1px solid rgba(226,198,138,.25); padding: .3rem .75rem; border-radius: 999px; }
+
+.f-nav h4, .f-contact h4 { font-family: var(--serif); font-size: 1.25rem; color: var(--gold-soft); margin-bottom: 1rem; }
+.f-nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .6rem; font-size: .92rem; }
+.f-nav a { text-decoration: none; color: rgba(255,255,255,.75); transition: color .2s; }
+.f-nav a:hover { color: var(--gold-soft); }
+
+.f-contact-items { display: flex; flex-direction: column; gap: .8rem; font-size: .9rem; }
+.f-item { display: flex; gap: .65rem; color: rgba(255,255,255,.8); }
+.f-item svg { width: 18px; height: 18px; color: var(--gold-soft); flex: none; margin-top: .15rem; }
+.f-item a { color: #fff; text-decoration: none; font-weight: 600; }
+.f-item a:hover { color: var(--gold-soft); }
+
+.f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-top: 1.4rem; font-size: .82rem; color: rgba(255,255,255,.45); }
+
+/* ---------- booking modal ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 100; display: none;
+  background: rgba(7,23,48,.65); backdrop-filter: blur(5px);
+  padding: 1.2rem; overflow-y: auto;
+}
+.overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+.modal {
+  background: var(--paper); border-radius: 22px; width: min(880px, 100%);
+  margin: auto; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0,0,0,.7);
+  display: grid; grid-template-columns: .85fr 1.15fr;
+  animation: pop .35s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes pop { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+.modal-side { background: var(--navy); color: #fff; padding: 2.2rem 1.8rem; position: relative; overflow: hidden; }
+.modal-side::after {
+  content: ""; position: absolute; right: -45%; bottom: -30%; width: 90%; aspect-ratio: 1;
+  border-radius: 50%; border: 1px solid rgba(226,198,138,.22);
+}
+.modal-side h3 { font-size: 1.7rem; color: #fff; margin-bottom: .7rem; }
+.modal-side p { color: rgba(255,255,255,.75); font-size: .92rem; }
+.side-list { list-style: none; margin: 1.6rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .9rem; position: relative; }
+.side-list li { display: flex; gap: .7rem; font-size: .9rem; color: rgba(255,255,255,.88); line-height: 1.45; }
+.side-list svg { width: 17px; height: 17px; flex: none; margin-top: .2rem; color: var(--gold-soft); }
+.side-call { margin-top: 1.8rem; padding-top: 1.3rem; border-top: 1px solid rgba(255,255,255,.15); position: relative; }
+.side-call b { font-size: .7rem; letter-spacing: .16em; color: var(--gold-soft); display: block; margin-bottom: .2rem; text-transform: uppercase; }
+.side-call a { font-family: var(--serif); font-size: 1.5rem; color: #fff; text-decoration: none; }
+.side-call a:hover { color: var(--gold-soft); }
+
+.modal-body { padding: 2rem 1.8rem; position: relative; }
+.modal-close {
+  position: absolute; right: 1.1rem; top: 1.1rem; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); background: #fff; cursor: pointer; display: grid; place-items: center; color: var(--navy);
+  transition: background .2s, transform .2s;
+}
+.modal-close:hover { background: var(--navy); color: #fff; transform: rotate(90deg); }
+.modal-body h4 { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--navy); margin: 0 0 .3rem; }
+.modal-body .hint { color: var(--muted); font-size: .9rem; margin-bottom: 1.3rem; }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.field { display: flex; flex-direction: column; gap: .3rem; }
+.field.full { grid-column: 1/-1; }
+.field label { font-size: .76rem; font-weight: 700; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.field input, .field select, .field textarea {
+  font-family: var(--sans); font-size: .94rem; color: var(--ink);
+  padding: .65rem .85rem; border: 1px solid var(--line); border-radius: 11px; background: #fff;
+  transition: border-color .2s, box-shadow .2s; width: 100%;
+}
+.field textarea { resize: vertical; min-height: 75px; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,131,47,.16);
+}
+.slots { display: flex; flex-wrap: wrap; gap: .45rem; }
+.slot { position: relative; }
+.slot input { position: absolute; opacity: 0; width: 0; height: 0; }
+.slot span {
+  display: block; padding: .5rem .9rem; border: 1px solid var(--line); border-radius: 999px;
+  font-size: .86rem; font-weight: 600; color: var(--muted); background: #fff; cursor: pointer; transition: .2s;
+}
+.slot input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.slot span:hover { border-color: var(--gold); }
+.form-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.4rem; }
+.form-foot small { color: var(--muted); font-size: .8rem; max-width: 26ch; }
+.err { color: #B3402C; font-size: .86rem; font-weight: 600; margin-top: .8rem; display: none; }
+.err.show { display: block; }
+
+.done { display: none; text-align: center; padding: 2.2rem .5rem 1.2rem; }
+.done.show { display: block; }
+.done .tick { width: 62px; height: 62px; border-radius: 50%; background: rgba(176,131,47,.14); display: grid; place-items: center; margin: 0 auto 1.2rem; color: var(--gold); }
+.done h4 { font-size: 1.7rem; color: var(--navy); }
+.done p { color: var(--muted); font-size: .94rem; max-width: 36ch; margin-inline: auto; }
+.recap { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1rem 1.2rem; margin: 1.2rem auto 0; text-align: left; max-width: 24rem; font-size: .9rem; box-shadow: 0 6px 20px rgba(0,0,0,.04); }
+.recap div { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem 0; }
+.recap div + div { border-top: 1px solid var(--line); }
+.recap b { color: var(--navy); }
+.recap span { color: var(--muted); }
+
+/* reveal */
+.rv { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+.rv.in { opacity: 1; transform: none; }
+
+/* ---------- language switch ---------- */
+.lang-btn {
+  display: inline-flex; align-items: center; gap: .38rem;
+  font-family: var(--sans); font-size: .8rem; font-weight: 700;
+  color: var(--navy); background: rgba(255,255,255,.72); cursor: pointer;
+  border: 1px solid var(--line); border-radius: 999px; padding: .38rem .82rem;
+  transition: border-color .25s, color .25s, background .25s, transform .25s;
+}
+.lang-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(176,131,47,.08); transform: translateY(-1px); }
+.lang-btn b { font-weight: 800; font-family: "Noto Sans Bengali", var(--sans); }
+.lang-btn .lang-opt { color: var(--muted); font-weight: 600; line-height: 1.2; }
+.lang-btn .lang-opt[lang="bn"], .lang-btn .lang-opt:lang(bn) { font-family: "Noto Sans Bengali", var(--sans); }
+.lang-btn .lang-opt.on { color: var(--navy); font-weight: 800; }
+.lang-btn .lang-sep { color: var(--line); margin: 0 .1rem; }
+
+/* Bangla typography (each ruleset carries its own declarations) */
+html[data-lang="bn"] body { font-size: 16.5px; line-height: 1.85; font-family: "Noto Sans Bengali", var(--sans); }
+html[data-lang="bn"] h1, html[data-lang="bn"] h2, html[data-lang="bn"] h3, html[data-lang="bn"] h4 {
+  font-family: "Noto Serif Bengali", var(--serif); line-height: 1.4;
+}
+html[data-lang="bn"] .btn, html[data-lang="bn"] nav a, html[data-lang="bn"] .kicker, html[data-lang="bn"] .field label {
+  font-family: "Noto Sans Bengali", var(--sans); letter-spacing: 0; text-transform: none;
+}
+html[data-lang="bn"] .stat-item strong { font-size: 2.1rem; font-family: "Noto Serif Bengali", var(--serif); }
+html[data-lang="bn"] .logo-text b { font-size: 1.08rem; }
+html[data-lang="bn"] .qmark { font-family: "Noto Serif Bengali", var(--serif); }
+/* Bangla glyph coverage for the few rulesets that pin a Latin face */
+html[data-lang="bn"] .role, html[data-lang="bn"] .faq-header h3 { font-family: "Noto Sans Bengali", var(--sans); }
+html[data-lang="bn"] .badge b, html[data-lang="bn"] .hero-meta div strong, html[data-lang="bn"] .journey-step,
+html[data-lang="bn"] .slide p, html[data-lang="bn"] .side-call a { font-family: "Noto Serif Bengali", var(--serif); }
+html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
+@keyframes i18nIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- motion ---------- */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes heroGlow {
+  0%, 100% { opacity: .5; transform: scale(1) translateY(0); }
+  50% { opacity: .85; transform: scale(1.09) translateY(-12px); }
+}
+@keyframes tickDraw { to { stroke-dashoffset: 0; } }
+@keyframes popIn { 0% { transform: scale(.5); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
+
+/* hero entrance + soft breathing glow */
+.hero::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  right: -10%; top: 2%; width: 33rem; height: 33rem; border-radius: 50%;
+  background: radial-gradient(circle, rgba(226,198,138,.45) 0%, rgba(226,198,138,0) 62%);
+  animation: heroGlow 11s ease-in-out infinite;
+}
+.hero .kicker { animation: fadeUp .7s ease both; }
+.hero h1 { animation: fadeUp .7s .08s ease both; }
+.hero .role { animation: fadeUp .7s .16s ease both; }
+.hero .lede { animation: fadeUp .7s .24s ease both; }
+.hero-cta { animation: fadeUp .7s .32s ease both; }
+.hero-meta { animation: fadeUp .7s .4s ease both; }
+.portrait { animation: fadeUp .9s .2s ease both; }
+
+/* gold sweep across primary buttons */
+.btn.gold { position: relative; overflow: hidden; }
+.btn.gold::after {
+  content: ""; position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: skewX(-18deg); transition: left .6s ease;
+}
+.btn.gold:hover::after { left: 130%; }
+
+/* tick icons draw themselves in the about cards */
+.card .tick-ico path { stroke-dasharray: 26; stroke-dashoffset: 26; }
+.card.in .tick-ico path { animation: tickDraw .75s .2s ease forwards; }
+.journey-card:hover .journey-step { animation: popIn .5s ease; }
+.faq-item:hover { border-color: rgba(176,131,47,.45); }
+.q-nav button:hover { transform: scale(1.09); }
+.q-nav button { transition: transform .25s ease, color .25s ease; }
+.contact-list .row { transition: transform .3s ease, box-shadow .3s ease; }
+.contact-list .row:hover { transform: translateX(4px); }
+.f-copy::before { content: "© "; }
+
+/* staggered stat ribbon */
+.stats-ribbon.anim .stat-item { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.stats-ribbon.anim.in .stat-item { opacity: 1; transform: none; }
+.stats-ribbon.anim.in .stat-item:nth-child(2) { transition-delay: .1s; }
+.stats-ribbon.anim.in .stat-item:nth-child(3) { transition-delay: .2s; }
+.stats-ribbon.anim.in .stat-item:nth-child(4) { transition-delay: .3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+  .hero::after { animation: none; }
+  .card .tick-ico path { stroke-dashoffset: 0; }
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: left; }
+  .portrait { order: -1; width: min(320px, 80vw); }
+  .showcase-grid { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+  .modal { grid-template-columns: 1fr; }
+  .modal-side { display: none; }
+  .fields { grid-template-columns: 1fr; }
+  nav { position: absolute; left: 0; right: 0; top: 100%; background: var(--paper); border-bottom: 1px solid var(--line); display: none; padding: 1rem 4vw 1.4rem; box-shadow: 0 10px 25px rgba(0,0,0,.1); }
+  nav.open { display: block; }
+  nav ul { flex-direction: column; align-items: stretch; gap: .2rem; }
+  nav li { padding: .5rem 0; border-bottom: 1px solid var(--line); }
+  nav li:last-child { border: 0; padding-top: 1rem; }
+  .menu-toggle { display: block; }
+  .header-cta { display: none; }
+  .mobile-cta { display: block; }
+  .journey-grid { grid-template-columns: 1fr; }
+}
+
+/* Stats Ribbon */
+.stats-ribbon {
+  background: var(--navy);
+  color: #fff;
+  padding: 1.8rem 0;
+  border-top: 1px solid rgba(226,198,138,.2);
+  border-bottom: 1px solid rgba(226,198,138,.2);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  text-align: center;
+}
+.stat-item strong {
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  color: var(--gold-soft);
+  display: block;
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.stat-item span {
+  font-size: .88rem;
+  color: rgba(255,255,255,.8);
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+/* Consultation Journey Steps */
+.journey-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.journey-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.8rem 1.4rem;
+  position: relative;
+  box-shadow: 0 8px 24px -12px rgba(0,0,0,.06);
+  transition: transform .3s, border-color .3s;
+}
+.journey-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold);
+}
+.journey-step {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold-soft);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1rem;
+  border: 2px solid var(--gold);
+}
+.journey-card h3 { color: var(--navy); font-size: 1.25rem; margin-bottom: .5rem; }
+.journey-card p { color: var(--muted); font-size: .93rem; margin: 0; }
+
+/* FAQ Accordion */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.faq-item {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.faq-item.active {
+  border-color: var(--gold);
+  box-shadow: 0 8px 25px -10px rgba(176,131,47,.2);
+}
+.faq-header {
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.faq-header h3 {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.faq-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--paper-2); color: var(--navy);
+  display: grid; place-items: center; font-weight: 700;
+  transition: transform .3s;
+}
+.faq-item.active .faq-icon {
+  transform: rotate(180deg);
+  background: var(--gold); color: #fff;
+}
+.faq-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease, padding .35s ease;
+  padding: 0 1.4rem;
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.6;
+}
+.faq-item.active .faq-body {
+  padding: 0 1.4rem 1.2rem 1.4rem;
+  max-height: 250px;
+}
+
+/* Crisis Banner */
+.banner-crisis {
+  background: linear-gradient(135deg, var(--navy), var(--navy-deep));
+  color: #fff;
+  border-radius: 24px;
+  padding: 2.2rem;
+  box-shadow: 0 20px 50px -15px rgba(7,23,48,.4);
+  border: 2px solid var(--gold);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.banner-crisis h3 {
+  color: #fff; font-size: 1.8rem; margin-bottom: .4rem;
+}
+.banner-crisis p {
+  color: rgba(255,255,255,.8); font-size: 1rem; margin: 0; max-width: 50ch;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top">
+      <div id="cmsLogoContainer">
+        <img id="cmsLogo" src="drarefin-logo.png" alt="Mind | Care | Heal — Dr. Arefin Zannat Sompa">
+      </div>
+      <span class="logo-text">
+        <b>Dr. Sompa</b>
+        <i>MIND | CARE | HEAL</i>
+      </span>
+    </a>
+    <button class="menu-toggle" id="mt" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <nav id="nav">
+      <ul>
+        <li><a href="#top" data-i18n="nav.home">Home</a></li>
+        <li><a href="#about" data-i18n="nav.about">About</a></li>
+        <li><a href="#journey" data-i18n="nav.journey">Journey</a></li>
+        <li><a href="#services" data-i18n="nav.services">Services</a></li>
+        <li><a href="#chamber" data-i18n="nav.chamber">Chamber</a></li>
+        <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+        <li><a href="patient-voices.html" data-i18n="nav.voices">Patient voices</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+        <li class="mobile-cta"><button class="btn gold" data-book data-i18n="cta.book">Book appointment</button></li>
+      </ul>
+    </nav>
+    <button class="lang-btn header-lang" type="button" data-lang-toggle aria-label="Switch to Bangla" aria-pressed="false">🌐 <span class="lang-opt on">EN</span><span class="lang-sep" aria-hidden="true">|</span><span class="lang-opt" lang="bn">বাং</span></button>
+    <button class="btn gold header-cta" data-book data-i18n="cta.book">Book appointment</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker" id="cmsLocationKicker">SYLHET, BANGLADESH</div>
+        <h1 id="cmsDocName">Dr. Arefin<br>Zannat Sompa</h1>
+        <p class="role" id="cmsDocTitle">Consultant Psychiatrist — Department of Psychiatry, <em>Sylhet MAG Osmani Medical College</em></p>
+        <p class="lede" id="cmsLedeText">Assessment and treatment for depression, anxiety, sleep difficulty, and other mental health conditions — for adults and adolescents, in a calm and confidential setting.</p>
+        <div class="hero-cta">
+          <a class="btn" href="#about" data-i18n="hero.ctaMeet">Meet Dr. Sompa</a>
+          <a class="btn ghost" href="#contact" data-i18n="hero.ctaContact">Chamber &amp; contact</a>
+        </div>
+        <div class="hero-meta">
+          <div id="cmsDegree1"><strong>MD</strong><span>Psychiatry, BMU</span></div>
+          <div id="cmsDegree2"><strong>BCS</strong><span>Health cadre</span></div>
+          <div id="cmsDegree3"><strong>SOMC</strong><span>Teaching hospital</span></div>
+        </div>
+      </div>
+
+      <figure class="portrait" style="margin:0">
+        <svg class="arc" viewBox="0 0 200 200" aria-hidden="true">
+          <defs>
+            <linearGradient id="goldgrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E2C68A"/>
+              <stop offset="55%" stop-color="#B0832F"/>
+              <stop offset="100%" stop-color="rgba(176,131,47,0)"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="97"/>
+        </svg>
+        <div class="portrait-frame">
+          <img id="cmsDocPhoto" src="dr_sompa_hero.jpg" alt="Dr. Arefin Zannat Sompa">
+          <figcaption class="badge">
+            <b data-i18n="hero.badgeTitle">Compassionate care</b>
+            <span data-i18n="hero.badgeSub">Better mental health</span>
+          </figcaption>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- STATS & IMPACT RIBBON (Mentalist Inspired) -->
+  <section class="stats-ribbon">
+    <div class="wrap stats-grid">
+      <div class="stat-item">
+        <strong>12+</strong>
+        <span data-i18n="stats.years">Years Clinical Experience</span>
+      </div>
+      <div class="stat-item">
+        <strong>3,500+</strong>
+        <span data-i18n="stats.patients">Patient Consultations</span>
+      </div>
+      <div class="stat-item">
+        <strong>99%</strong>
+        <span data-i18n="stats.satisfaction">Satisfaction &amp; Trust</span>
+      </div>
+      <div class="stat-item">
+        <strong>100%</strong>
+        <span data-i18n="stats.confidential">Confidential &amp; Safe</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE & CARE PHILOSOPHY -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div class="rule"></div>
+        <h2 data-i18n="about.h2">At a glance &amp; Care Philosophy</h2>
+        <p data-i18n="about.p">Training, current post, and the empathetic approach Dr. Sompa brings to every consultation.</p>
+      </div>
+
+      <div class="showcase-grid rv" style="margin-bottom: 2rem;">
+        <div class="showcase-img">
+          <img id="cmsWellnessPhoto" src="mental_wellness_care.jpg" alt="Compassionate Mental Healthcare Environment">
+        </div>
+        <div class="showcase-box">
+          <h3 data-i18n="about.showcaseH3">Empathy. Expertise. Excellence.</h3>
+          <p style="color:var(--muted)" data-i18n="about.showcaseP">Every patient's journey to emotional recovery starts with being heard in a safe, non-judgmental environment.</p>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="about.f1"><b>Listening First:</b> Dedicated 30–40 minute diagnostic sessions.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="about.f2"><b>Clear Explanation:</b> Diagnoses explained in terms families understand.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="about.f3"><b>Stigma-Free Setting:</b> Complete medical confidentiality guaranteed.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cards" id="qualificationsGrid">
+        <article class="card rv">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 4 2 9l10 5 10-5Z"/><path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5"/><path d="M22 9v6"/></svg></div>
+          <h3>Qualifications</h3>
+          <p class="tick-row"><svg class="tick-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>MBBS, BCS (Health), MD in Psychiatry.</span></p>
+          <p class="sub">Bangladesh Medical University</p>
+        </article>
+        <article class="card rv">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v15"/><path d="M16 10h3a2 2 0 0 1 2 2v9"/><path d="M2 21h20"/><path d="M10 7v4M8 9h4"/><path d="M8 15h4"/></svg></div>
+          <h3>Current position</h3>
+          <p class="tick-row"><svg class="tick-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Department of Psychiatry, Sylhet MAG Osmani Medical College (SOMC).</span></p>
+          <p class="sub">Sylhet, Bangladesh</p>
+        </article>
+        <article class="card rv">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z"/><path d="M5.5 12h3l1.5-2.2L12 14l1.3-2h5.2"/></svg></div>
+          <h3>Care philosophy</h3>
+          <p class="tick-row"><svg class="tick-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Listening first, explaining clearly, and treating each person with dignity.</span></p>
+          <p class="sub">Empathy. Expertise. Excellence.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSULTATION JOURNEY (Mentalist Inspired Timeline) -->
+  <section id="journey">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div class="rule"></div>
+        <h2 data-i18n="journey.h2">How Consultation Works</h2>
+        <p data-i18n="journey.p">A structured, empathetic, and confidential 3-step approach to understanding your symptoms and guiding your mental recovery.</p>
+      </div>
+
+      <div class="journey-grid rv">
+        <article class="journey-card">
+          <div class="journey-step">01</div>
+          <h3 data-i18n="journey.s1h">Detailed Initial Evaluation</h3>
+          <p data-i18n="journey.s1p">Comprehensive 30 to 40 minute session discussing your symptoms, personal history, stress factors, and emotional challenges in a warm atmosphere.</p>
+        </article>
+
+        <article class="journey-card">
+          <div class="journey-step">02</div>
+          <h3 data-i18n="journey.s2h">Personalized Medical Plan</h3>
+          <p data-i18n="journey.s2p">Clear explanation of your medical diagnosis using plain, everyday terms along with a tailored medication or therapeutic care roadmap.</p>
+        </article>
+
+        <article class="journey-card">
+          <div class="journey-step">03</div>
+          <h3 data-i18n="journey.s3h">Follow-up &amp; Recovery Support</h3>
+          <p data-i18n="journey.s3p">Regular review consultations to evaluate progress, fine-tune dosage, and offer continuous family guidance for long-term emotional well-being.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div class="rule"></div>
+        <h2 data-i18n="services.h2">What she treats</h2>
+        <p data-i18n="services.p">Consultations cover diagnosis, medication management, and referral for talk therapy where it helps.</p>
+      </div>
+      <div class="svc rv" id="servicesGrid">
+        <article><h3>Depression &amp; mood</h3><p>Low mood, loss of interest, bipolar disorder, and postpartum depression.</p></article>
+        <article><h3>Anxiety &amp; panic</h3><p>Generalised anxiety, panic attacks, phobia, and obsessive-compulsive disorder.</p></article>
+        <article><h3>Sleep problems</h3><p>Insomnia, disturbed sleep cycles, and sleep difficulty linked to stress.</p></article>
+        <article><h3>Adolescent mental health</h3><p>Exam stress, behavioural change, and school or family difficulty in teenagers.</p></article>
+        <article><h3>Psychotic illness</h3><p>Schizophrenia and related conditions, with long-term follow-up and family guidance.</p></article>
+        <article><h3>Addiction support</h3><p>Substance use assessment, withdrawal management, and relapse prevention planning.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAMBER ENVIRONMENT & GALLERY -->
+  <section id="chamber">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div class="rule"></div>
+        <h2 data-i18n="chamber.h2">Chamber Environment &amp; Consultation</h2>
+        <p data-i18n="chamber.p">Designed to be a calm, quiet, and peaceful environment where patients and families feel comfortable.</p>
+      </div>
+      <div class="showcase-grid rv">
+        <div class="showcase-box">
+          <h3 data-i18n="chamber.boxH3">Your Consultation Experience</h3>
+          <p style="color:var(--muted)" data-i18n="chamber.boxP">Located near Sylhet MAG Osmani Medical College, our evening chamber provides dedicated individual time for every patient.</p>
+          <ul class="feature-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="chamber.f1"><b>First Consultation:</b> Thorough 30 to 40 minute comprehensive assessment.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="chamber.f2"><b>Family Support:</b> Family members are welcome to accompany the patient.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n-html="chamber.f3"><b>Follow-Up Plan:</b> Clear guidance on prescriptions and therapy.</span></li>
+          </ul>
+          <button class="btn gold" data-book style="margin-top:.8rem" data-i18n="chamber.btn">Book Chamber Appointment</button>
+        </div>
+        <div class="showcase-img">
+          <img id="cmsChamberPhoto" src="clinic_ambience.jpg" alt="Dr. Sompa Consultation Chamber Environment">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="voices" class="quotes">
+    <div class="wrap quote-box">
+      <span class="qmark" aria-hidden="true">&ldquo;</span>
+      <div id="slides" aria-live="polite">
+        <blockquote class="slide on"><p>She explained my diagnosis in words my family could follow. For the first time we understood what was happening.</p><cite>PATIENT'S DAUGHTER, SYLHET</cite></blockquote>
+        <blockquote class="slide"><p>No rush, no judgement. She asked questions nobody had asked me before, and the treatment plan actually made sense.</p><cite>PATIENT, 34</cite></blockquote>
+        <blockquote class="slide"><p>My son refused to see a doctor for months. After one session with her, he agreed to continue treatment.</p><cite>PARENT, MOULVIBAZAR</cite></blockquote>
+      </div>
+      <div class="q-nav">
+        <button id="prev" aria-label="Previous quote"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18 9 12l6-6"/></svg></button>
+        <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+        <button id="next" aria-label="Next quote"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <a class="btn ghost voices-all" href="patient-voices.html" data-i18n="voices.all" style="margin-top:1.6rem;color:#fff;border-color:rgba(255,255,255,.5)">Read all patient stories</a>
+    </div>
+  </section>
+
+  <!-- PATIENT FAQ (Mentalist Inspired Accordion) -->
+  <section id="faq" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head rv" style="text-align:center; margin-inline:auto;">
+        <div class="rule" style="margin-inline:auto;"></div>
+        <h2 data-i18n="faq.h2">Frequently Asked Questions</h2>
+        <p data-i18n="faq.p">Common questions about psychiatric consultations, chamber visits, and patient confidentiality.</p>
+      </div>
+
+      <div class="faq-list rv">
+        <div class="faq-item active">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <h3 data-i18n="faq.q1">প্রথমবার মনোরোগ বিশেষজ্ঞের কাছে এলে কীভাবে প্রস্তুতি নেব?</h3>
+            <div class="faq-icon">↓</div>
+          </div>
+          <div class="faq-body" data-i18n-html="faq.a1">
+            প্রথম ভিজিটের সময় পূর্বে নেওয়া কোনো ওষুধ বা প্রেসক্রিপশন থাকলে তা সাথে নিয়ে আসুন। ভিজিটের সময় ডাক্তার আপনার সমস্যা ও মানসিক স্বাস্থ্যের বিস্তারিত শুনবেন। কোনো ধরণের সংকোচের প্রয়োজন নেই।
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <h3 data-i18n="faq.q2">রোগীর মানসিক স্বাস্থ্য সংক্রান্ত তথ্য কি গোপন রাখা হয় (Confidentiality)?</h3>
+            <div class="faq-icon">↓</div>
+          </div>
+          <div class="faq-body" data-i18n-html="faq.a2">
+            হ্যাঁ, শতভাগ গোপনীয়তা বজায় রাখা হয়। চিকিৎসা নীতি অনুযায়ী রোগীর অনুমোতি ছাড়া কোনো তথ্য কারও সাথে শেয়ার করা হয় না।
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <h3 data-i18n="faq.q3">পরামর্শ কি শুধু ওষুধ নির্ভর নাকি থেরাপিরও দিকনির্দেশনা দেওয়া হয়?</h3>
+            <div class="faq-icon">↓</div>
+          </div>
+          <div class="faq-body" data-i18n-html="faq.a3">
+            রোগের তীব্রতা অনুযায়ী প্রয়োজনীয় সেফ মেডিসিন দেওয়া হয় এবং প্রয়োজনবোধে কাউন্সেলিং বা সাইকোথেরাপির পূর্ণাঙ্গ পরামর্শ দেওয়া হয়।
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-header" onclick="toggleFaq(this)">
+            <h3 data-i18n="faq.q4">চেম্বারে আসার আগে কীভাবে বুকিং বা সিরিয়াল নিতে হবে?</h3>
+            <div class="faq-icon">↓</div>
+          </div>
+          <div class="faq-body" data-i18n-html="faq.a4">
+            আপনি ওয়েবসাইট থেকে সরাসরি <b>Book Appointment</b> বাটনে ক্লিক করে ফর্মটি পূরণ করলে চেম্বার থেকে ফোন দিয়ে সিরিয়াল কনফার্ম করা হবে। অথবা সরাসরি <b>01339059043</b> নম্বরে কল করতে পারেন।
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- URGENT CRISIS / CARE CALLOUT BANNER -->
+  <section>
+    <div class="wrap">
+      <div class="banner-crisis rv">
+        <div>
+          <h3 data-i18n="banner.title">জরুরি বা নিয়মিত মানসিক স্বাস্থ্য পরামর্শ প্রয়োজন?</h3>
+          <p data-i18n="banner.p">হতাশা, দুশ্চিন্তা, ঘুমের সমস্যা বা মানসিক চাপে ভুগছেন? মানসিক স্বাস্থ্য চিকিৎসায় দেরী না করে আজই ডাক্তারের পরামর্শ নিন।</p>
+        </div>
+        <div style="display:flex; gap:.8rem; flex-wrap:wrap;">
+          <button class="btn gold" data-book data-i18n="banner.btn">Book Chamber Slot</button>
+          <a id="cmsCrisisPhone" href="tel:01339059043" class="btn ghost" style="color:#fff; border-color:rgba(255,255,255,.5);">📞 <span id="cmsCrisisPhoneSpan">01339059043</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <div class="rule"></div>
+        <h2 data-i18n="contact.h2">Contact &amp; location</h2>
+        <p data-i18n="contact.p">Call to book a chamber appointment, or send an email with your query.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-list rv">
+          <a class="row" id="cmsPhoneLink" href="tel:01339059043">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg></div>
+            <div><b data-i18n="contact.phoneLabel">PHONE</b><span id="cmsPhoneSpan">01339059043</span><small id="cmsChamberHours">Sat–Thu, evening chamber hours</small></div>
+          </a>
+          <a class="row" id="cmsEmailLink" href="mailto:sompa.szmc@gmail.com">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
+            <div><b data-i18n="contact.emailLabel">EMAIL</b><span id="cmsEmailSpan">sompa.szmc@gmail.com</span><small id="cmsEmailHint">Replies within two working days</small></div>
+          </a>
+          <div class="row">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><b data-i18n="contact.chamberLabel">CHAMBER</b><span id="cmsChamberAddress">Sylhet, Bangladesh</span><small data-i18n="contact.chamberSmall">Near Sylhet MAG Osmani Medical College</small></div>
+          </div>
+          <button class="btn gold" data-book style="align-self:flex-start;margin-top:.2rem" data-i18n="cta.book">Book appointment</button>
+        </div>
+
+        <div class="map rv" role="img" aria-label="Stylised map showing the chamber location in Sylhet, Bangladesh" data-i18n-aria="map.alt">
+          <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="600" height="400" fill="#EFEADF"/>
+            <path d="M-20 300 C120 260 200 320 340 280 C440 252 520 286 620 262 L620 420 L-20 420Z" fill="#DDE7E0"/>
+            <g stroke="#FFFFFF" stroke-width="9" fill="none" stroke-linecap="round">
+              <path d="M-10 150 H610"/><path d="M-10 262 H610"/>
+              <path d="M180 -10 V410"/><path d="M420 -10 V410"/>
+              <path d="M60 -10 L200 410"/>
+            </g>
+            <g stroke="#E4DCCB" stroke-width="3" fill="none">
+              <path d="M-10 90 H610"/><path d="M-10 340 H610"/><path d="M300 -10 V410"/><path d="M510 -10 V410"/>
+            </g>
+            <g fill="#D9D1C1">
+              <rect x="205" y="170" width="70" height="66" rx="4"/>
+              <rect x="330" y="176" width="58" height="60" rx="4"/>
+              <rect x="205" y="278" width="88" height="46" rx="4"/>
+              <rect x="440" y="170" width="60" height="64" rx="4"/>
+              <rect x="80" y="180" width="70" height="54" rx="4"/>
+            </g>
+            <path d="M330 176 h58 v60 h-58Z" fill="#CBD8CE"/>
+            <circle cx="300" cy="200" r="54" fill="rgba(176,131,47,.13)"/>
+            <circle cx="300" cy="200" r="30" fill="rgba(176,131,47,.2)"/>
+            <path d="M300 182a11 11 0 0 0-11 11c0 8 11 19 11 19s11-11 11-19a11 11 0 0 0-11-11Z" fill="#0E2452"/>
+            <circle cx="300" cy="193" r="4" fill="#E2C68A"/>
+          </svg>
+          <div class="pin-label" data-i18n="map.pin">Chamber · Sylhet</div>
+          <a id="cmsMapsLink" class="open" href="https://maps.google.com/?q=Sylhet+MAG+Osmani+Medical+College" target="_blank" rel="noopener" data-i18n="map.open">Open in Maps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- BOOKING MODAL -->
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
+  <div class="modal">
+    <aside class="modal-side">
+      <h3 data-i18n="bk.title">Book an appointment</h3>
+      <p data-i18n="bk.sideP">Chamber consultations with Dr. Arefin Zannat Sompa, Consultant Psychiatrist.</p>
+      <ul class="side-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="bk.s1">First consultation runs 30–40 minutes.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="bk.s2">Bring previous prescriptions and test reports.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="bk.s3">A family member may join if the patient prefers.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="bk.s4">Everything shared stays confidential.</span></li>
+      </ul>
+      <div class="side-call">
+        <b data-i18n="bk.callLabel">PREFER TO CALL?</b>
+        <a id="cmsSideCallLink" href="tel:01339059043"><span id="cmsSideCallSpan">01339059043</span></a>
+      </div>
+    </aside>
+
+    <div class="modal-body">
+      <button class="modal-close" id="bkClose" aria-label="Close booking form" data-i18n-aria="bk.close">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <form id="bkForm" novalidate>
+        <h4 id="bkTitle" data-i18n="bk.formTitle">Patient details</h4>
+        <p class="hint" data-i18n="bk.hint">Fill this in and the chamber will confirm your slot by phone.</p>
+        <div class="fields">
+          <div class="field full">
+            <label for="f-name" data-i18n="bk.fName">Patient name</label>
+            <input id="f-name" name="name" type="text" placeholder="Full name" data-i18n-ph="bk.fNamePh" required>
+          </div>
+          <div class="field">
+            <label for="f-age" data-i18n="bk.fAge">Age</label>
+            <input id="f-age" name="age" type="number" min="1" max="120" placeholder="e.g. 28" data-i18n-ph="bk.fAgePh" required>
+          </div>
+          <div class="field">
+            <label for="f-phone" data-i18n="bk.fPhone">Mobile number</label>
+            <input id="f-phone" name="phone" type="tel" pattern="[0-9+\- ]{6,}" placeholder="01XXXXXXXXX" required>
+          </div>
+          <div class="field">
+            <label for="f-visit" data-i18n="bk.fVisit">Visit type</label>
+            <select id="f-visit" name="visit">
+              <option value="First consultation" data-i18n="bk.opt1">First consultation</option>
+              <option value="Follow-up" data-i18n="bk.opt2">Follow-up</option>
+              <option value="Report review" data-i18n="bk.opt3">Report review</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-date" data-i18n="bk.fDate">Preferred date</label>
+            <input id="f-date" name="date" type="date" required>
+          </div>
+          <div class="field full">
+            <label data-i18n="bk.fTime">Preferred time</label>
+            <div class="slots">
+              <label class="slot"><input type="radio" name="slot" value="Morning (10:00–12:00)" checked><span data-i18n="bk.slot1">Morning 10–12</span></label>
+              <label class="slot"><input type="radio" name="slot" value="Afternoon (3:00–5:00)"><span data-i18n="bk.slot2">Afternoon 3–5</span></label>
+              <label class="slot"><input type="radio" name="slot" value="Evening (6:00–9:00)"><span data-i18n="bk.slot3">Evening 6–9</span></label>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="f-note"><span data-i18n-html="bk.fNote">What would you like to discuss? <span style="font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></span></label>
+            <textarea id="f-note" name="note" placeholder="A few words about the problem, how long it has lasted, and any medicine you are taking." data-i18n-ph="bk.fNotePh"></textarea>
+          </div>
+        </div>
+        <p class="err" id="bkErr" data-i18n="bk.errFill">Please fill in the patient name, age, mobile number, and a date.</p>
+        <div class="form-foot">
+          <button class="btn gold" type="submit" data-i18n="bk.submit">Request appointment</button>
+          <small data-i18n="bk.foot">No payment now. The chamber confirms the exact time by phone.</small>
+        </div>
+      </form>
+
+      <div class="done" id="bkDone">
+        <div class="tick"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h4 data-i18n="bk.doneH">Request received</h4>
+        <p data-i18n="bk.doneP">The chamber will call you to confirm the time. Please keep your phone available.</p>
+        <div class="recap" id="bkRecap"></div>
+        <button class="btn ghost" id="bkAgain" style="margin-top:1.4rem" data-i18n="bk.again">Book another appointment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REDESIGNED RICH FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <h3 data-i18n="brand.name">Dr. Arefin Zannat Sompa</h3>
+        <p data-i18n="footer.about">Consultant Psychiatrist providing compassionate, evidence-based mental health care for adults and adolescents in Sylhet, Bangladesh.</p>
+        <div class="f-badges">
+          <span class="f-badge" data-i18n="badge.1">MBBS</span>
+          <span class="f-badge" data-i18n="badge.2">BCS (Health)</span>
+          <span class="f-badge" data-i18n="badge.3">MD Psychiatry</span>
+        </div>
+      </div>
+      <div class="f-nav">
+        <h4 data-i18n="footer.navH">Navigation</h4>
+        <ul>
+          <li><a href="#top" data-i18n="footer.f1">Home Overview</a></li>
+          <li><a href="#about" data-i18n="footer.f2">About & Qualifications</a></li>
+          <li><a href="#services" data-i18n="footer.f3">Services Offered</a></li>
+          <li><a href="#chamber" data-i18n="footer.f4">Chamber Environment</a></li>
+          <li><a href="patient-voices.html" data-i18n="footer.f5">Patient Voices</a></li>
+          <li><a href="#contact" data-i18n="footer.f6">Contact & Map</a></li>
+        </ul>
+      </div>
+      <div class="f-contact">
+        <h4 data-i18n="footer.contactH">Chamber Hours &amp; Contact</h4>
+        <div class="f-contact-items">
+          <div class="f-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+            <div><span data-i18n="footer.phoneLabel">Phone</span>: <a id="cmsFooterPhone" href="tel:01339059043">01339059043</a> <span data-i18n="footer.hoursNote">(Sat–Thu)</span></div>
+          </div>
+          <div class="f-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+            <div><span data-i18n="footer.emailLabel">Email</span>: <a id="cmsFooterEmail" href="mailto:sompa.szmc@gmail.com">sompa.szmc@gmail.com</a></div>
+          </div>
+          <div class="f-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><span data-i18n="footer.chamberLabel">Chamber</span>: <span id="cmsFooterChamber">Near Sylhet MAG Osmani Medical College, Sylhet</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="f-bot">
+      <span class="f-copy"><span id="yr">2026</span> <span data-i18n="footer.copyTail">Dr. Arefin Zannat Sompa. All rights reserved.</span></span>
+      <span data-i18n="footer.disclaimer">This medical site is for information only and does not replace an in-person diagnostic consultation.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Bilingual engine (EN / বাংলা) — no libraries, key-based.
+   Add data-i18n="key" to translate text, data-i18n-html="key" for
+   rich text, data-i18n-ph="key" for placeholders, data-i18n-aria="key"
+   for aria-labels. CMS values are used for English and the built-in
+   Bangla copy (BN_SETTINGS) for Bangla, so nothing breaks if the DB
+   has no Bangla variant yet.
+   ============================================================ */
+var TRANSLATIONS = { en: {}, bn: {} };
+
+Object.assign(TRANSLATIONS.en, {
+  'nav.home': 'Home',
+  'nav.about': 'About',
+  'nav.journey': 'Journey',
+  'nav.services': 'Services',
+  'nav.chamber': 'Chamber',
+  'nav.faq': 'FAQ',
+  'nav.voices': 'Patient voices',
+  'nav.contact': 'Contact',
+  'cta.book': 'Book appointment',
+  'brand.name': 'Dr. Arefin Zannat Sompa',
+  'hero.badgeTitle': 'Compassionate care',
+  'hero.badgeSub': 'Better mental health',
+  'hero.ctaMeet': 'Meet Dr. Sompa',
+  'hero.ctaContact': 'Chamber & contact',
+  'stats.years': 'Years Clinical Experience',
+  'stats.patients': 'Patient Consultations',
+  'stats.satisfaction': 'Satisfaction & Trust',
+  'stats.confidential': 'Confidential & Safe',
+  'about.h2': 'At a glance & Care Philosophy',
+  'about.p': 'Training, current post, and the empathetic approach Dr. Sompa brings to every consultation.',
+  'about.showcaseH3': 'Empathy. Expertise. Excellence.',
+  'about.showcaseP': 'Every patient\u2019s journey to emotional recovery starts with being heard in a safe, non-judgmental environment.',
+  'about.f1': '<b>Listening First:</b> Dedicated 30\u201340 minute diagnostic sessions.',
+  'about.f2': '<b>Clear Explanation:</b> Diagnoses explained in terms families understand.',
+  'about.f3': '<b>Stigma-Free Setting:</b> Complete medical confidentiality guaranteed.',
+  'journey.h2': 'How Consultation Works',
+  'journey.p': 'A structured, empathetic, and confidential 3-step approach to understanding your symptoms and guiding your mental recovery.',
+  'journey.s1h': 'Detailed Initial Evaluation',
+  'journey.s1p': 'Comprehensive 30 to 40 minute session discussing your symptoms, personal history, stress factors, and emotional challenges in a warm atmosphere.',
+  'journey.s2h': 'Personalized Medical Plan',
+  'journey.s2p': 'Clear explanation of your medical diagnosis using plain, everyday terms along with a tailored medication or therapeutic care roadmap.',
+  'journey.s3h': 'Follow-up & Recovery Support',
+  'journey.s3p': 'Regular review consultations to evaluate progress, fine-tune dosage, and offer continuous family guidance for long-term emotional well-being.',
+  'services.h2': 'What she treats',
+  'services.p': 'Consultations cover diagnosis, medication management, and referral for talk therapy where it helps.',
+  'chamber.h2': 'Chamber Environment & Consultation',
+  'chamber.p': 'Designed to be a calm, quiet, and peaceful environment where patients and families feel comfortable.',
+  'chamber.boxH3': 'Your Consultation Experience',
+  'chamber.boxP': 'Located near Sylhet MAG Osmani Medical College, our evening chamber provides dedicated individual time for every patient.',
+  'chamber.f1': '<b>First Consultation:</b> Thorough 30 to 40 minute comprehensive assessment.',
+  'chamber.f2': '<b>Family Support:</b> Family members are welcome to accompany the patient.',
+  'chamber.f3': '<b>Follow-Up Plan:</b> Clear guidance on prescriptions and therapy.',
+  'chamber.btn': 'Book Chamber Appointment',
+  'faq.h2': 'Frequently Asked Questions',
+  'faq.p': 'Common questions about psychiatric consultations, chamber visits, and patient confidentiality.',
+  'faq.q1': 'How should I prepare for my first visit to a psychiatrist?',
+  'faq.a1': 'If you have any previous prescriptions or medicines, please bring them along. During the visit the doctor will listen to your problems and mental health history in detail. There is no need to feel embarrassed.',
+  'faq.q2': 'Is my mental health information kept confidential?',
+  'faq.a2': 'Yes, full confidentiality is maintained. As per medical ethics, no information is shared with anyone without the patient\u2019s consent.',
+  'faq.q3': 'Is treatment only medicine-based, or is therapy also advised?',
+  'faq.a3': 'Safe medicines are prescribed according to the severity of the condition, and where needed, complete counselling or psychotherapy guidance is provided.',
+  'faq.q4': 'How do I book an appointment before coming to the chamber?',
+  'faq.a4': 'Click the <b>Book Appointment</b> button on the website and fill in the form \u2014 the chamber will confirm your serial by phone. Or you can call <b>01339059043</b> directly.',
+  'banner.title': 'Need urgent or routine mental health advice?',
+  'banner.p': 'Struggling with depression, anxiety, sleep problems or mental stress? Do not delay mental health treatment \u2014 consult the doctor today.',
+  'banner.btn': 'Book Chamber Slot',
+  'contact.h2': 'Contact & location',
+  'contact.p': 'Call to book a chamber appointment, or send an email with your query.',
+  'contact.phoneLabel': 'PHONE',
+  'contact.emailLabel': 'EMAIL',
+  'contact.chamberLabel': 'CHAMBER',
+  'contact.chamberSmall': 'Near Sylhet MAG Osmani Medical College'
+});
+
+/* -------- keys only the script uses (validation text, booking recap, map) -------- */
+Object.assign(TRANSLATIONS.en, {
+  'badge.1': 'MBBS',
+  'badge.2': 'BCS (Health)',
+  'badge.3': 'MD Psychiatry',
+  'bk.title': 'Book an appointment',
+  'bk.sideP': 'Chamber consultations with Dr. Arefin Zannat Sompa, Consultant Psychiatrist.',
+  'bk.s1': 'First consultation runs 30\u201340 minutes.',
+  'bk.s2': 'Bring previous prescriptions and test reports.',
+  'bk.s3': 'A family member may join if the patient prefers.',
+  'bk.s4': 'Everything shared stays confidential.',
+  'bk.callLabel': 'PREFER TO CALL?',
+  'bk.close': 'Close booking form',
+  'bk.formTitle': 'Patient details',
+  'bk.hint': 'Fill this in and the chamber will confirm your slot by phone.',
+  'bk.fName': 'Patient name',
+  'bk.fNamePh': 'Full name',
+  'bk.fAge': 'Age',
+  'bk.fAgePh': 'e.g. 28',
+  'bk.fPhone': 'Mobile number',
+  'bk.fVisit': 'Visit type',
+  'bk.opt1': 'First consultation',
+  'bk.opt2': 'Follow-up',
+  'bk.opt3': 'Report review',
+  'bk.fDate': 'Preferred date',
+  'bk.fTime': 'Preferred time',
+  'bk.slot1': 'Morning 10\u201312',
+  'bk.slot2': 'Afternoon 3\u20135',
+  'bk.slot3': 'Evening 6\u20139',
+  'bk.fNote': 'What would you like to discuss? <span style="font-weight:400;letter-spacing:0;text-transform:none">(optional)</span>',
+  'bk.fNotePh': 'A few words about the problem, how long it has lasted, and any medicine you are taking.',
+  'bk.errFill': 'Please fill in the patient name, age, mobile number, and a date.',
+  'bk.submit': 'Request appointment',
+  'bk.foot': 'No payment now. The chamber confirms the exact time by phone.',
+  'bk.doneH': 'Request received',
+  'bk.doneP': 'The chamber will call you to confirm the time. Please keep your phone available.',
+  'bk.again': 'Book another appointment',
+  'bk.submitting': 'Submitting\u2026',
+  'bk.errSubmit': 'Failed to submit the appointment. Please try again.',
+  'bk.netErr': 'Network or connection error. Please check your connection.',
+  'bk.recId': 'Booking ID',
+  'bk.recPatient': 'Patient',
+  'bk.recDate': 'Date',
+  'bk.recTime': 'Time',
+  'bk.recVisit': 'Visit',
+  'bk.recContact': 'Contact',
+  'map.pin': 'Chamber \u00b7 Sylhet',
+  'map.open': 'Open in Maps',
+  'map.alt': 'Stylised map showing the chamber location in Sylhet, Bangladesh',
+  'footer.about': 'Consultant Psychiatrist providing compassionate, evidence-based mental health care for adults and adolescents in Sylhet, Bangladesh.',
+  'footer.navH': 'Navigation',
+  'footer.f1': 'Home Overview',
+  'footer.f2': 'About & Qualifications',
+  'footer.f3': 'Services Offered',
+  'footer.f4': 'Chamber Environment',
+  'footer.f5': 'Patient Voices',
+  'footer.f6': 'Contact & Map',
+  'footer.contactH': 'Chamber Hours & Contact',
+  'footer.phoneLabel': 'Phone',
+  'footer.hoursNote': '(Sat\u2013Thu)',
+  'footer.emailLabel': 'Email',
+  'footer.chamberLabel': 'Chamber',
+  'footer.copyTail': 'Dr. Arefin Zannat Sompa. All rights reserved.',
+  'footer.disclaimer': 'This medical site is for information only and does not replace an in-person diagnostic consultation.',
+  'voices.all': 'Read all patient stories'
+});
+/* -------- Bangla strings for every data-i18n value -------- */
+Object.assign(TRANSLATIONS.bn, {
+  'nav.home': 'হোম',
+  'nav.about': 'পরিচিতি',
+  'nav.journey': 'চিকিৎসা প্রক্রিয়া',
+  'nav.services': 'সেবা',
+  'nav.chamber': 'চেম্বার',
+  'nav.faq': 'সাধারণ প্রশ্ন',
+  'nav.voices': 'রোগীর অভিমত',
+  'nav.contact': 'যোগাযোগ',
+  'cta.book': 'অ্যাপয়েন্টমেন্ট বুক করুন',
+  'brand.name': 'ডা. আরেফিন জান্নাত সোম্পা',
+  'hero.badgeTitle': 'সহানুভূতিপূর্ণ সেবা',
+  'hero.badgeSub': 'সুস্থ মানসিকতা',
+  'hero.ctaMeet': 'ডা. সোম্পাকে জানুন',
+  'hero.ctaContact': 'চেম্বার ও যোগাযোগ',
+  'stats.years': 'বছরের ক্লিনিক্যাল অভিজ্ঞতা',
+  'stats.patients': 'রোগীর পরামর্শ',
+  'stats.satisfaction': 'সন্তুষ্টি ও আস্থা',
+  'stats.confidential': 'শতভাগ গোপনীয়',
+  'about.h2': 'এক নজরে ও চিকিৎসা দর্শন',
+  'about.p': 'প্রশিক্ষণ, বর্তমান কর্মস্থল এবং প্রতিটি পরামর্শে ডা. সোম্পার সহানুভূতিপূর্ণ দৃষ্টিভঙ্গি।',
+  'about.showcaseH3': 'সহানুভূতি। দক্ষতা। নিষ্ঠা।',
+  'about.showcaseP': 'মানসিক সুস্থতার পথ শুরু হয় নিরাপদ ও বিচারমুক্ত পরিবেশে নিজের কথা বলার সুযোগ থেকে।',
+  'about.f1': '<b>প্রথমে শোনা:</b> ৩০\u201340 মিনিটের পূর্ণাঙ্গ ডায়াগনস্টিক সেশন।',
+  'about.f2': '<b>স্পষ্ট ব্যাখ্যা:</b> রোগ নির্ণয় ব্যাখ্যা করা হয় পরিবারের বোঝার ভাষায়।',
+  'about.f3': '<b>কুসংস্কারমুক্ত পরিবেশ:</b> সম্পূর্ণ চিকিৎসা গোপনীয়তা নিশ্চিত।',
+  'journey.h2': 'চিকিৎসা কীভাবে হয়',
+  'journey.p': 'আপনার সমস্যা বোঝা ও মানসিক সুস্থতার পথে এগিয়ে নিতে ধাপে ধাপে সহানুভূতিপূর্ণ ও গোপনীয় ৩ ধাপের প্রক্রিয়া।',
+  'journey.s1h': 'বিস্তারিত প্রাথমিক মূল্যায়ন',
+  'journey.s1p': '৩০ থেকে ৪০ মিনিটের সেশন, যেখানে উষ্ণ পরিবেশে আপনার উপসর্গ, ব্যক্তিগত ইতিহাস, মানসিক চাপ ও আবেগঘন সমস্যা নিয়ে আলোচনা করা হয়।',
+  'journey.s2h': 'ব্যক্তিগত চিকিৎসা পরিকল্পনা',
+  'journey.s2p': 'সহজ ভাষায় রোগ নির্ণয়ের স্পষ্ট ব্যাখ্যা এবং আপনার জন্য নির্দিষ্ট ওষুধ বা থেরাপির পরিকল্পনা।',
+  'journey.s3h': 'ফলো-আপ ও সুস্থতা সহায়তা',
+  'journey.s3p': 'অগ্রগতি মূল্যায়ন, ডোজ সমন্বয় এবং দীর্ঘমেয়াদি মানসিক সুস্থতার জন্য পরিবারকে নিয়মিত দিকনির্দেশনা।',
+  'services.h2': 'যেসব সমস্যার চিকিৎসা হয়',
+  'services.p': 'পরামর্শে রোগ নির্ণয়, ওষুধ ব্যবস্থাপনা এবং প্রয়োজন হলে সাইকোথেরাপির রেফারেল অন্তর্ভুক্ত।',
+  'chamber.h2': 'চেম্বার পরিবেশ ও পরামর্শ',
+  'chamber.p': 'শান্ত, নিরিবিলি পরিবেশ, যেখানে রোগী ও পরিবার স্বাচ্ছন্দ্য বোধ করেন।',
+  'chamber.boxH3': 'আপনার পরামর্শের অভিজ্ঞতা',
+  'chamber.boxP': 'সিলেট এমএজি ওসমানী মেডিকেল কলেজের নিকটে সন্ধ্যার চেম্বারে প্রত্যেক রোগীর জন্য আলাদা সময় রাখা হয়।',
+  'chamber.f1': '<b>প্রথম পরামর্শ:</b> ৩০ থেকে ৪০ মিনিটের পূর্ণাঙ্গ মূল্যায়ন।',
+  'chamber.f2': '<b>পরিবারের সহায়তা:</b> রোগীর সাথে পরিবারের সদস্যরা আসতে পারেন।',
+  'chamber.f3': '<b>ফলো-আপ পরিকল্পনা:</b> প্রেসক্রিপশন ও থেরাপি নিয়ে স্পষ্ট দিকনির্দেশনা।',
+  'chamber.btn': 'চেম্বারের অ্যাপয়েন্টমেন্ট নিন',
+  'faq.h2': 'সাধারণ জিজ্ঞাসা',
+  'faq.p': 'সাইকিয়াট্রিক পরামর্শ, চেম্বার ভিজিট ও রোগীর গোপনীয়তা নিয়ে সাধারণ প্রশ্ন।',
+  'faq.q1': 'প্রথমবার মনোরোগ বিশেষজ্ঞের কাছে এলে কীভাবে প্রস্তুতি নেব?',
+  'faq.a1': 'প্রথম ভিজিটের সময় পূর্বে নেওয়া কোনো ওষুধ বা প্রেসক্রিপশন থাকলে তা সাথে নিয়ে আসুন। ভিজিটের সময় ডাক্তার আপনার সমস্যা ও মানসিক স্বাস্থ্যের বিস্তারিত শুনবেন। কোনো ধরণের সংকোচের প্রয়োজন নেই।',
+  'faq.q2': 'রোগীর মানসিক স্বাস্থ্য সংক্রান্ত তথ্য কি গোপন রাখা হয় (Confidentiality)?',
+  'faq.a2': 'হ্যাঁ, শতভাগ গোপনীয়তা বজায় রাখা হয়। চিকিৎসা নীতি অনুযায়ী রোগীর অনুমোতি ছাড়া কোনো তথ্য কারও সাথে শেয়ার করা হয় না।',
+  'faq.q3': 'পরামর্শ কি শুধু ওষুধ নির্ভর নাকি থেরাপিরও দিকনির্দেশনা দেওয়া হয়?',
+  'faq.a3': 'রোগের তীব্রতা অনুযায়ী প্রয়োজনীয় সেফ মেডিসিন দেওয়া হয় এবং প্রয়োজনবোধে কাউন্সেলিং বা সাইকোথেরাপির পূর্ণাঙ্গ পরামর্শ দেওয়া হয়।',
+  'faq.q4': 'চেম্বারে আসার আগে কীভাবে বুকিং বা সিরিয়াল নিতে হবে?',
+  'faq.a4': 'আপনি ওয়েবসাইট থেকে সরাসরি <b>Book Appointment</b> বাটনে ক্লিক করে ফর্মটি পূরণ করলে চেম্বার থেকে ফোন দিয়ে সিরিয়াল কনফার্ম করা হবে। অথবা সরাসরি <b>01339059043</b> নম্বরে কল করতে পারেন।',
+  'banner.title': 'জরুরি বা নিয়মিত মানসিক স্বাস্থ্য পরামর্শ প্রয়োজন?',
+  'banner.p': 'হতাশা, দুশ্চিন্তা, ঘুমের সমস্যা বা মানসিক চাপে ভুগছেন? মানসিক স্বাস্থ্য চিকিৎসায় দেরী না করে আজই ডাক্তারের পরামর্শ নিন।',
+  'banner.btn': 'চেম্বারের সিরিয়াল নিন',
+  'contact.h2': 'যোগাযোগ ও ঠিকানা',
+  'contact.p': 'চেম্বারের অ্যাপয়েন্টমেন্ট নিতে কল করুন, অথবা প্রশ্ন লিখে ইমেইল পাঠান।',
+  'contact.phoneLabel': 'ফোন',
+  'contact.emailLabel': 'ইমেইল',
+  'contact.chamberLabel': 'চেম্বার',
+  'contact.chamberSmall': 'সিলেট এমএজি ওসমানী মেডিকেল কলেজের নিকটে',
+  'badge.1': 'এমবিবিএস',
+  'badge.2': 'বিসিএস (হেলথ)',
+  'badge.3': 'এমডি সাইকিয়াট্রি',
+  'bk.title': 'অ্যাপয়েন্টমেন্ট বুক করুন',
+  'bk.sideP': 'কনসালট্যান্ট সাইকিয়াট্রিস্ট ডা. আরেফিন জান্নাত সোম্পার সাথে চেম্বার পরামর্শ।',
+  'bk.s1': 'প্রথম পরামর্শ ৩০\u201340 মিনিটের।',
+  'bk.s2': 'আগের প্রেসক্রিপশন ও টেস্ট রিপোর্ট সাথে আনুন।',
+  'bk.s3': 'রোগী চাইলে পরিবারের একজন সদস্য সাথে থাকতে পারেন।',
+  'bk.s4': 'আপনার সব তথ্য গোপন রাখা হয়।',
+  'bk.callLabel': 'সরাসরি কল করতে চান?',
+  'bk.close': 'বুকিং ফর্ম বন্ধ করুন',
+  'bk.formTitle': 'রোগীর তথ্য',
+  'bk.hint': 'ফর্মটি পূরণ করুন, চেম্বার থেকে ফোনে সময় নিশ্চিত করা হবে।',
+  'bk.fName': 'রোগীর নাম',
+  'bk.fNamePh': 'পূর্ণ নাম',
+  'bk.fAge': 'বয়স',
+  'bk.fAgePh': 'যেমন ২৮',
+  'bk.fPhone': 'মোবাইল নম্বর',
+  'bk.fVisit': 'ভিজিটের ধরন',
+  'bk.opt1': 'প্রথম পরামর্শ',
+  'bk.opt2': 'ফলো-আপ',
+  'bk.opt3': 'রিপোর্ট পর্যালোচনা',
+  'bk.fDate': 'পছন্দের তারিখ',
+  'bk.fTime': 'পছন্দের সময়',
+  'bk.slot1': 'সকাল ১০\u201312',
+  'bk.slot2': 'বিকাল ৩\u20135',
+  'bk.slot3': 'সন্ধ্যা ৬\u20139',
+  'bk.fNote': 'আপনি কী নিয়ে আলোচনা করতে চান? <span style="font-weight:400;letter-spacing:0;text-transform:none">(ঐচ্ছিক)</span>',
+  'bk.fNotePh': 'সমস্যা সম্পর্কে সংক্ষেপে লিখুন \u2014 কতদিন ধরে আছে এবং কী ওষুধ চলছে।',
+  'bk.errFill': 'রোগীর নাম, বয়স, মোবাইল নম্বর ও তারিখ পূরণ করুন।',
+  'bk.submit': 'অ্যাপয়েন্টমেন্টের অনুরোধ পাঠান',
+  'bk.foot': 'এখন কোনো পেমেন্ট নয়। চেম্বার ফোনে সঠিক সময় নিশ্চিত করবে।',
+  'bk.doneH': 'অনুরোধ পেয়েছি',
+  'bk.doneP': 'সময় নিশ্চিত করতে চেম্বার আপনাকে কল করবে। ফোন হাতের কাছে রাখুন।',
+  'bk.again': 'আরেকটি অ্যাপয়েন্টমেন্ট বুক করুন',
+  'bk.submitting': 'পাঠানো হচ্ছে\u2026',
+  'bk.errSubmit': 'অ্যাপয়েন্টমেন্ট পাঠানো যায়নি। আবার চেষ্টা করুন।',
+  'bk.netErr': 'নেটওয়ার্ক বা কানেকশন সমস্যা। ইন্টারনেট সংযোগ পরীক্ষা করুন।',
+  'bk.recId': 'বুকিং আইডি',
+  'bk.recPatient': 'রোগী',
+  'bk.recDate': 'তারিখ',
+  'bk.recTime': 'সময়',
+  'bk.recVisit': 'ভিজিট',
+  'bk.recContact': 'যোগাযোগ',
+  'map.pin': 'চেম্বার \u00b7 সিলেট',
+  'map.open': 'ম্যাপে দেখুন',
+  'map.alt': 'সিলেট, বাংলাদেশে চেম্বারের অবস্থান দেখানো স্টাইলাইজড ম্যাপ',
+  'footer.about': 'সিলেট, বাংলাদেশে প্রাপ্তবয়স্ক ও কিশোরদের জন্য সহানুভূতিপূর্ণ, প্রমাণভিত্তিক মানসিক স্বাস্থ্যসেবা।',
+  'footer.navH': 'নেভিগেশন',
+  'footer.f1': 'হোম',
+  'footer.f2': 'পরিচিতি ও যোগ্যতা',
+  'footer.f3': 'সেবাসমূহ',
+  'footer.f4': 'চেম্বার পরিবেশ',
+  'footer.f5': 'রোগীর অভিমত',
+  'footer.f6': 'যোগাযোগ ও ম্যাপ',
+  'footer.contactH': 'চেম্বারের সময় ও যোগাযোগ',
+  'footer.phoneLabel': 'ফোন',
+  'footer.hoursNote': '(শনি\u2013বৃহস্পতি)',
+  'footer.emailLabel': 'ইমেইল',
+  'footer.chamberLabel': 'চেম্বার',
+  'footer.copyTail': 'ডা. আরেফিন জান্নাত সোম্পা। সর্বস্বত্ব সংরক্ষিত।',
+  'footer.disclaimer': 'এই ওয়েবসাইটটি শুধু তথ্যের জন্য; সরাসরি ডাক্তারের পরামর্শের বিকল্প নয়।',
+  'voices.all': 'সব রোগীর অভিমত পড়ুন'
+});
+
+/* ---- built-in Bangla copy for CMS-driven text (keyed by the English text,
+   so an edited English value simply falls back to English instead of a stale Bangla) ---- */
+var BN_SETTINGS = {
+  'Dr. Arefin Zannat Sompa': 'ডা. আরেফিন জান্নাত সোম্পা',
+  'Consultant Psychiatrist — Department of Psychiatry, Sylhet MAG Osmani Medical College': 'কনসালট্যান্ট সাইকিয়াট্রিস্ট — সাইকিয়াট্রি বিভাগ, সিলেট এমএজি ওসমানী মেডিকেল কলেজ',
+  'SYLHET, BANGLADESH': 'সিলেট, বাংলাদেশ',
+  'Assessment and treatment for depression, anxiety, sleep difficulty, and other mental health conditions — for adults and adolescents, in a calm and confidential setting.': 'হতাশা, দুশ্চিন্তা, ঘুমের সমস্যা ও অন্যান্য মানসিক স্বাস্থ্য সমস্যার মূল্যায়ন ও চিকিৎসা — প্রাপ্তবয়স্ক ও কিশোরদের জন্য, শান্ত ও গোপনীয় পরিবেশে।',
+  'MD | Psychiatry, BMU': 'এমডি | সাইকিয়াট্রি, বিএমইউ',
+  'BCS | Health cadre': 'বিসিএস | হেলথ ক্যাডার',
+  'SOMC | Teaching hospital': 'এসওএমসি | টিচিং হাসপাতাল',
+  'Sylhet, Bangladesh (Near Sylhet MAG Osmani Medical College)': 'সিলেট, বাংলাদেশ (সিলেট এমএজি ওসমানী মেডিকেল কলেজের নিকটে)',
+  'Sat–Thu, evening chamber hours': 'শনি–বৃহস্পতি, সন্ধ্যার চেম্বার সময়',
+  'Replies within two working days': 'দুই কর্মদিবসের মধ্যে উত্তর দেওয়া হয়'
+};
+
+/* ---- built-in Bangla copy for CMS collections (keyed by the English title/quote) ---- */
+var BN_CONTENT = {
+  services: {
+    'Depression & mood': ['বিষণ্নতা ও মুড', 'মন খারাপ, আগ্রহ হারিয়ে ফেলা, বাইপোলার ডিসঅর্ডার এবং প্রসব-পরবর্তী বিষণ্নতা।'],
+    'Anxiety & panic': ['দুশ্চিন্তা ও প্যানিক', 'জেনারালাইজড দুশ্চিন্তা, প্যানিক অ্যাটাক, ফোবিয়া এবং অবসেসিভ-কমপালসিভ ডিসঅর্ডার।'],
+    'Sleep problems': ['ঘুমের সমস্যা', 'অনিদ্রা, ঘুমের ছন্দ ব্যাহত হওয়া এবং মানসিক চাপজনিত ঘুমের সমস্যা।'],
+    'Adolescent mental health': ['কিশোরদের মানসিক স্বাস্থ্য', 'পরীক্ষার চাপ, আচরণগত পরিবর্তন এবং স্কুল বা পারিবারিক সমস্যা।'],
+    'Psychotic illness': ['সাইকোটিক রোগ', 'সিজোফ্রেনিয়া ও সম্পর্কিত রোগ; দীর্ঘমেয়াদি ফলো-আপ ও পরিবারকে দিকনির্দেশনা।'],
+    'Addiction support': ['আসক্তি সহায়তা', 'নেশাদ্রব্য ব্যবহারের মূল্যায়ন, উইথড্রয়াল ব্যবস্থাপনা ও পুনরায় আসক্তি প্রতিরোধ পরিকল্পনা।']
+  },
+  qualifications: {
+    'Qualifications': ['শিক্ষাগত যোগ্যতা', 'এমবিবিএস, বিসিএস (হেলথ), এমডি (সাইকিয়াট্রি)।', 'বাংলাদেশ মেডিকেল বিশ্ববিদ্যালয়'],
+    'Current position': ['বর্তমান পদ', 'সাইকিয়াট্রি বিভাগ, সিলেট এমএজি ওসমানী মেডিকেল কলেজ (এসওএমসি)।', 'সিলেট, বাংলাদেশ'],
+    'Care philosophy': ['চিকিৎসা দর্শন', 'প্রথমে শোনা, স্পষ্টভাবে ব্যাখ্যা করা এবং প্রত্যেক মানুষকে মর্যাদার সাথে আচরণ করা।', 'সহানুভূতি। দক্ষতা। নিষ্ঠা।']
+  },
+  testimonials: {
+    'She explained my diagnosis in words my family could follow. For the first time we understood what was happening.': ['আমার রোগের ব্যাখ্যা এমনভাবে বুঝিয়েছেন, যা আমার পরিবার বুঝতে পেরেছে। প্রথমবার আমরা বুঝলাম কী হচ্ছে।', 'রোগীর মেয়ে, সিলেট'],
+    'No rush, no judgement. She asked questions nobody had asked me before, and the treatment plan actually made sense.': ['কোনো তাড়াহুড়া নেই, কোনো বিচার নেই। আমাকে এমন প্রশ্ন করেছেন, যা আগে কেউ করেনি; চিকিৎসা পরিকল্পনাটা আসলেই যুক্তিসম্মত মনে হয়েছে।', 'রোগী, ৩৪'],
+    'My son refused to see a doctor for months. After one session with her, he agreed to continue treatment.': ['আমার ছেলে মাসের পর মাস ডাক্তার দেখাতে রাজি ছিল না। তাঁর কাছে একটা সেশনের পর সে চিকিৎসা চালিয়ে যেতে রাজি হয়েছে।', 'অভিভাবক, মৌলভীবাজার']
+  }
+};
+
+/* ============================================================
+   Language state + switching (EN / বাংলা)
+   ============================================================ */
+var LANG_KEY = 'sompaLang';
+var currentLang = 'en';
+var i18nItems = [];
+var cmsData = null;
+
+try {
+  var savedLang = (window.localStorage ? localStorage.getItem(LANG_KEY) : null);
+  if (savedLang === 'bn' || savedLang === 'en') currentLang = savedLang;
+} catch (e) { /* storage unavailable: keep the <html> default */ }
+
+function captureI18n(){
+  i18nItems = [];
+  var kinds = [
+    ['data-i18n', 'textContent'],
+    ['data-i18n-html', 'innerHTML'],
+    ['data-i18n-ph', 'placeholder'],
+    ['data-i18n-aria', 'aria-label']
+  ];
+  kinds.forEach(function(pair){
+    Array.prototype.forEach.call(document.querySelectorAll('[' + pair[0] + ']'), function(el){
+      var key = el.getAttribute(pair[0]);
+      if (!key || key === 'key') return;
+      var orig = pair[1] === 'aria-label' ? el.getAttribute('aria-label') : el[pair[1]];
+      i18nItems.push({ el: el, key: key, prop: pair[1], orig: (orig === null ? '' : orig) });
+    });
+  });
+}
+
+/* translate() for the script itself (booking messages, recap labels) */
+function tr(key){
+  var dict = TRANSLATIONS[currentLang] || {};
+  if (dict[key] !== undefined) return dict[key];
+  var other = TRANSLATIONS[currentLang === 'en' ? 'bn' : 'en'] || {};
+  return other[key] !== undefined ? other[key] : '';
+}
+
+function applyTranslations(lang){
+  var dict = TRANSLATIONS[lang] || {};
+  var other = TRANSLATIONS[lang === 'en' ? 'bn' : 'en'] || {};
+  i18nItems.forEach(function(item){
+    var val = dict[item.key] !== undefined ? dict[item.key]
+            : (item.orig !== '' ? item.orig : other[item.key]);
+    if (val === undefined) return;
+    if (item.prop === 'innerHTML') item.el.innerHTML = val;
+    else if (item.prop === 'aria-label') item.el.setAttribute('aria-label', val);
+    else item.el[item.prop] = val;
+  });
+}
+
+/* pick a record column in the active language.
+   Order: "<base>_bn" column (DB Bangla variant) -> built-in map (keyed by the
+   English text) -> the English value itself. Nothing breaks if the DB has no
+   Bangla variant yet. */
+function colBn(row, base, builtin){
+  var en = row[base];
+  if (en === undefined || en === null) {
+    var lower = base.charAt(0).toLowerCase() + base.slice(1);
+    en = row[lower] !== undefined ? row[lower] : '';
+  }
+  if (currentLang !== 'bn') return en;
+  var dbBn = row[base + '_bn'] || row[(base.charAt(0).toLowerCase() + base.slice(1)) + '_bn'];
+  if (dbBn) return dbBn;
+  if (builtin && builtin[en] !== undefined) return builtin[en];
+  return en;
+}
+
+function bnSetting(settings, key){
+  var en = settings[key] !== undefined ? settings[key] : '';
+  if (currentLang !== 'bn') return en;
+  var dbBn = settings[key + '_bn'];
+  if (dbBn) return dbBn;
+  return BN_SETTINGS[en] !== undefined ? BN_SETTINGS[en] : en;
+}
+
+/* static grids (shown before the CMS fetch resolves, or if it fails) */
+function applyStaticContent(lang){
+  var services = document.getElementById('servicesGrid');
+  if (services && lang === 'bn') {
+    Array.prototype.forEach.call(services.querySelectorAll('article'), function(art){
+      var h = art.querySelector('h3'), p = art.querySelector('p');
+      if (!h || !p) return;
+      var bn = BN_CONTENT.services[h.textContent.trim()];
+      if (bn) { h.textContent = bn[0]; p.textContent = bn[1]; }
+    });
+  }
+  var quals = document.getElementById('qualificationsGrid');
+  if (quals && lang === 'bn') {
+    Array.prototype.forEach.call(quals.querySelectorAll('article'), function(art){
+      var h = art.querySelector('h3'), p = art.querySelector('p'), sub = art.querySelector('p.sub');
+      if (!h || !p) return;
+      var bn = BN_CONTENT.qualifications[h.textContent.trim()];
+      if (bn) { h.textContent = bn[0]; p.textContent = bn[1]; if (sub) sub.textContent = bn[2]; }
+    });
+  }
+  var slidesBox = document.getElementById('slides');
+  if (slidesBox && lang === 'bn') {
+    Array.prototype.forEach.call(slidesBox.querySelectorAll('blockquote'), function(bq){
+      var p = bq.querySelector('p'), c = bq.querySelector('cite');
+      if (!p || !c) return;
+      var bn = BN_CONTENT.testimonials[p.textContent.trim()];
+      if (bn) { p.textContent = bn[0]; c.textContent = bn[1]; }
+    });
+  }
+}
+
+function updateLangButtons(lang){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-lang-toggle]'), function(btn){
+    var opts = btn.querySelectorAll('.lang-opt');
+    if (opts.length >= 2) {
+      opts[0].classList.toggle('on', lang === 'en');
+      opts[1].classList.toggle('on', lang === 'bn');
+    }
+    btn.setAttribute('aria-label', lang === 'en' ? 'Switch to Bangla' : 'Switch to English');
+    btn.setAttribute('aria-pressed', lang === 'bn' ? 'true' : 'false');
+  });
+}
+
+function applyLang(lang){
+  currentLang = (lang === 'bn') ? 'bn' : 'en';
+  document.documentElement.setAttribute('data-lang', currentLang);
+  document.documentElement.setAttribute('lang', currentLang === 'bn' ? 'bn' : 'en');
+  applyTranslations(currentLang);
+  if (cmsData) hydrateCms(cmsData);
+  else applyStaticContent(currentLang);
+  updateLangButtons(currentLang);
+  try { if (window.localStorage) localStorage.setItem(LANG_KEY, currentLang); } catch (e) {}
+  var main = document.getElementById('top');
+  if (main) {
+    main.classList.remove('i18n-fade');
+    void main.offsetWidth; /* restart the animation */
+    main.classList.add('i18n-fade');
+  }
+}
+
+function wireLangToggles(){
+  document.querySelectorAll('[data-lang-toggle]').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(currentLang === 'en' ? 'bn' : 'en'); });
+  });
+}
+var mt = document.getElementById('mt'), nv = document.getElementById('nav');
+mt.addEventListener('click', function(){
+  var open = nv.classList.toggle('open');
+  mt.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+nv.addEventListener('click', function(e){ if(e.target.tagName === 'A') nv.classList.remove('open'); });
+
+// scroll reveal — re-usable, so CMS-injected elements animate too (fixes the
+// "invisible but still taking space" gap left by un-observed .rv elements)
+var io = null;
+if ('IntersectionObserver' in window){
+  io = new IntersectionObserver(function(en){
+    en.forEach(function(x, i){ if(x.isIntersecting){ setTimeout(function(){ x.target.classList.add('in'); }, i*90); io.unobserve(x.target);} });
+  }, {threshold:.18});
+}
+function revealInit(root){
+  var els = (root || document).querySelectorAll('.rv:not(.in)');
+  if (io) els.forEach(function(el){ io.observe(el); });
+  else els.forEach(function(el){ el.classList.add('in'); });
+}
+revealInit();
+
+// quote slider
+var slides = document.querySelectorAll('#slides .slide'),
+    dots = document.querySelectorAll('#dots i'), idx = 0, timer;
+function go(n){
+  idx = (n + slides.length) % slides.length;
+  slides.forEach(function(s,i){ s.classList.toggle('on', i===idx); });
+  dots.forEach(function(d,i){ d.classList.toggle('on', i===idx); });
+}
+function auto(){ clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 7000); }
+document.getElementById('next').addEventListener('click', function(){ go(idx+1); auto(); });
+document.getElementById('prev').addEventListener('click', function(){ go(idx-1); auto(); });
+function toggleFaq(headerEl) {
+  var item = headerEl.parentElement;
+  var wasActive = item.classList.contains('active');
+  document.querySelectorAll('.faq-item').forEach(function(el){ el.classList.remove('active'); });
+  if(!wasActive) item.classList.add('active');
+}
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ---------- Dynamic CMS Hydration (language-aware) ---------- */
+function hydrateCms(json){
+  if (!json || !json.data) { if (currentLang === 'bn') applyStaticContent(currentLang); return; }
+  try { hydrateCmsInner(json); }
+  catch(err) { console.error('CMS Hydration fallback to static HTML:', err); }
+  if (currentLang === 'bn') applyStaticContent(currentLang);
+}
+
+function hydrateCmsInner(json){
+  cmsData = json;
+  var s = json.data.settings || {};
+
+  if (bnSetting(s, 'doctor_name') && document.getElementById('cmsDocName')) {
+    document.getElementById('cmsDocName').innerHTML = bnSetting(s, 'doctor_name').replace(' ', '<br>');
+  }
+  if (bnSetting(s, 'location_kicker') && document.getElementById('cmsLocationKicker')) {
+    document.getElementById('cmsLocationKicker').textContent = bnSetting(s, 'location_kicker');
+  }
+  if (bnSetting(s, 'doctor_title') && document.getElementById('cmsDocTitle')) {
+    document.getElementById('cmsDocTitle').textContent = bnSetting(s, 'doctor_title');
+  }
+  if (bnSetting(s, 'lede_text') && document.getElementById('cmsLedeText')) {
+    document.getElementById('cmsLedeText').textContent = bnSetting(s, 'lede_text');
+  }
+
+    if (s.doctor_photo && document.getElementById('cmsDocPhoto')) {
+      document.getElementById('cmsDocPhoto').src = s.doctor_photo;
+    }
+    if (s.chamber_photo && document.getElementById('cmsChamberPhoto')) {
+      document.getElementById('cmsChamberPhoto').src = s.chamber_photo;
+    }
+    if (s.wellness_photo && document.getElementById('cmsWellnessPhoto')) {
+      document.getElementById('cmsWellnessPhoto').src = s.wellness_photo;
+    }
+    if (s.site_logo && document.getElementById('cmsLogoContainer')) {
+      document.getElementById('cmsLogoContainer').innerHTML = '<img id="cmsLogo" src="' + s.site_logo + '" alt="Logo">';
+    }
+
+    if (s.degree_1 && document.getElementById('cmsDegree1')) {
+      var parts = bnSetting(s, 'degree_1').split('|');
+      document.getElementById('cmsDegree1').innerHTML = '<strong>' + (parts[0]||'').trim() + '</strong><span>' + (parts[1]||'').trim() + '</span>';
+    }
+    if (s.degree_2 && document.getElementById('cmsDegree2')) {
+      var parts = bnSetting(s, 'degree_2').split('|');
+      document.getElementById('cmsDegree2').innerHTML = '<strong>' + (parts[0]||'').trim() + '</strong><span>' + (parts[1]||'').trim() + '</span>';
+    }
+    if (s.degree_3 && document.getElementById('cmsDegree3')) {
+      var parts = bnSetting(s, 'degree_3').split('|');
+      document.getElementById('cmsDegree3').innerHTML = '<strong>' + (parts[0]||'').trim() + '</strong><span>' + (parts[1]||'').trim() + '</span>';
+    }
+
+    if (s.phone) {
+      if (document.getElementById('cmsPhoneLink')) document.getElementById('cmsPhoneLink').href = 'tel:' + s.phone;
+      if (document.getElementById('cmsPhoneSpan')) document.getElementById('cmsPhoneSpan').textContent = s.phone;
+      if (document.getElementById('cmsFooterPhone')) {
+        document.getElementById('cmsFooterPhone').href = 'tel:' + s.phone;
+        document.getElementById('cmsFooterPhone').textContent = s.phone;
+      }
+      if (document.getElementById('cmsSideCallLink')) document.getElementById('cmsSideCallLink').href = 'tel:' + s.phone;
+      if (document.getElementById('cmsSideCallSpan')) document.getElementById('cmsSideCallSpan').textContent = s.phone;
+      if (document.getElementById('cmsCrisisPhone')) {
+        document.getElementById('cmsCrisisPhone').href = 'tel:' + s.phone;
+        document.getElementById('cmsCrisisPhoneSpan').textContent = s.phone;
+      }
+    }
+    if (s.email) {
+      if (document.getElementById('cmsEmailLink')) document.getElementById('cmsEmailLink').href = 'mailto:' + s.email;
+      if (document.getElementById('cmsEmailSpan')) document.getElementById('cmsEmailSpan').textContent = s.email;
+      if (document.getElementById('cmsFooterEmail')) {
+        document.getElementById('cmsFooterEmail').href = 'mailto:' + s.email;
+        document.getElementById('cmsFooterEmail').textContent = s.email;
+      }
+    }
+    if (s.chamber_address && document.getElementById('cmsChamberAddress')) {
+      document.getElementById('cmsChamberAddress').textContent = bnSetting(s, 'chamber_address');
+    }
+    if (s.chamber_address && document.getElementById('cmsFooterChamber')) {
+      document.getElementById('cmsFooterChamber').textContent = bnSetting(s, 'chamber_address');
+    }
+    if (s.chamber_hours && document.getElementById('cmsChamberHours')) {
+      document.getElementById('cmsChamberHours').textContent = bnSetting(s, 'chamber_hours');
+    }
+    if (s.email_hint && document.getElementById('cmsEmailHint')) {
+      document.getElementById('cmsEmailHint').textContent = bnSetting(s, 'email_hint');
+    }
+    if (s.maps_url && document.getElementById('cmsMapsLink')) {
+      document.getElementById('cmsMapsLink').href = s.maps_url;
+    }
+
+    // Render Services Grid
+    if (json.data.services && json.data.services.length > 0 && document.getElementById('servicesGrid')) {
+      var sHtml = '';
+      json.data.services.forEach(function(item) {
+        var svcTitle = colBn(item, 'Title', null);
+        var svcDesc = colBn(item, 'Description', null);
+        var svcBn = (currentLang === 'bn' && BN_CONTENT.services[item.Title]) ? BN_CONTENT.services[item.Title] : null;
+        sHtml += '<article><h3>' + (svcBn ? svcBn[0] : svcTitle) + '</h3><p>' + (svcBn ? svcBn[1] : svcDesc) + '</p></article>';
+      });
+      document.getElementById('servicesGrid').innerHTML = sHtml;
+    }
+
+    // Render Testimonials Slides
+    if (json.data.testimonials && json.data.testimonials.length > 0 && document.getElementById('slides')) {
+      var tHtml = '', dHtml = '';
+      json.data.testimonials.forEach(function(item, idx) {
+        var cls = idx === 0 ? 'slide on' : 'slide';
+        var dCls = idx === 0 ? 'on' : '';
+        var q = colBn(item, 'Quote', null), a = colBn(item, 'Author', null);
+        var tBn = (currentLang === 'bn' && BN_CONTENT.testimonials[item.Quote]) ? BN_CONTENT.testimonials[item.Quote] : null;
+        tHtml += '<blockquote class="' + cls + '"><p>' + (tBn ? tBn[0] : q) + '</p><cite>' + (tBn ? tBn[1] : a) + '</cite></blockquote>';
+        dHtml += '<i class="' + dCls + '"></i>';
+      });
+      document.getElementById('slides').innerHTML = tHtml;
+      document.getElementById('dots').innerHTML = dHtml;
+      slides = document.querySelectorAll('#slides .slide');
+      dots = document.querySelectorAll('#dots i');
+      go(0);
+    }
+
+    // Render Qualifications
+    if (json.data.qualifications && json.data.qualifications.length > 0 && document.getElementById('qualificationsGrid')) {
+      var qHtml = '';
+      var icons = [
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 4 2 9l10 5 10-5Z"/><path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5"/><path d="M22 9v6"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v15"/><path d="M16 10h3a2 2 0 0 1 2 2v9"/><path d="M2 21h20"/><path d="M10 7v4M8 9h4"/><path d="M8 15h4"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9Z"/><path d="M5.5 12h3l1.5-2.2L12 14l1.3-2h5.2"/></svg>'
+      ];
+      json.data.qualifications.forEach(function(item, idx) {
+        var ico = icons[idx % icons.length];
+        var qh = colBn(item, 'Title', null), qd = colBn(item, 'Description', null), qs = colBn(item, 'Subtext', null);
+        var qBn = (currentLang === 'bn' && BN_CONTENT.qualifications[item.Title]) ? BN_CONTENT.qualifications[item.Title] : null;
+        qHtml += '<article class="card rv"><div class="ico">' + ico + '</div><h3>' + (qBn ? qBn[0] : qh) + '</h3><p>' + (qBn ? qBn[1] : qd) + '</p><p class="sub">' + (qBn ? qBn[2] : qs) + '</p></article>';
+      });
+      document.getElementById('qualificationsGrid').innerHTML = qHtml;
+      revealInit();
+    }
+}
+
+/* fetch the CMS payload once, then render it for the active language */
+async function loadDynamicCMS() {
+  try {
+    var res = await fetch('/api/cms/content');
+    var json = await res.json();
+    if (!json.success || !json.data) return;
+    hydrateCms(json);
+  } catch(err) { console.error('CMS Hydration fallback to static HTML:', err); }
+}
+
+/* ---------- language boot (after every handler/render fn is defined) ---------- */
+captureI18n();
+wireLangToggles();
+applyLang(currentLang);
+
+loadDynamicCMS();
+
+/* ---------- booking modal ---------- */
+var ov = document.getElementById('ov'),
+    bkForm = document.getElementById('bkForm'),
+    bkDone = document.getElementById('bkDone'),
+    bkErr = document.getElementById('bkErr'),
+    lastFocus = null;
+
+// today's date as the minimum
+var t = new Date(), iso = new Date(t.getTime() - t.getTimezoneOffset()*60000).toISOString().slice(0,10);
+document.getElementById('f-date').min = iso;
+
+function openBk(){
+  lastFocus = document.activeElement;
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  nv.classList.remove('open');
+  setTimeout(function(){ document.getElementById('f-name').focus(); }, 60);
+}
+function closeBk(){
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+  if(lastFocus) lastFocus.focus();
+}
+document.querySelectorAll('[data-book]').forEach(function(b){ b.addEventListener('click', openBk); });
+
+/* arriving from another page with #book opens the booking form directly */
+if (location.hash === '#book') setTimeout(function(){ openBk(); }, 300);
+document.getElementById('bkClose').addEventListener('click', closeBk);
+ov.addEventListener('mousedown', function(e){ if(e.target === ov) closeBk(); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ov.classList.contains('open')) closeBk(); });
+
+// keep tab focus inside the dialog
+ov.addEventListener('keydown', function(e){
+  if(e.key !== 'Tab') return;
+  var f = ov.querySelectorAll('button, input, select, textarea, a[href]');
+  f = Array.prototype.filter.call(f, function(el){ return el.offsetParent !== null; });
+  if(!f.length) return;
+  var first = f[0], last = f[f.length-1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+});
+
+bkForm.addEventListener('submit', async function(e){
+  e.preventDefault();
+  var name = bkForm.name.value.trim(), age = bkForm.age.value.trim(),
+      phone = bkForm.phone.value.trim(), date = bkForm.date.value,
+      note = bkForm.note.value.trim();
+  if(!name || !age || phone.replace(/\D/g,'').length < 6 || !date){
+    bkErr.textContent = tr('bk.errFill');
+    bkErr.classList.add('show');
+    return;
+  }
+  bkErr.classList.remove('show');
+  var slot = bkForm.querySelector('input[name="slot"]:checked').value;
+  var visit = bkForm.visit.value;
+
+  var submitBtn = bkForm.querySelector('button[type="submit"]');
+  var originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = tr('bk.submitting');
+
+  try {
+    var response = await fetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, age: age, phone: phone, visit: visit, date: date, slot: slot, note: note, lang: currentLang })
+    });
+    var resData = await response.json();
+
+    if (resData.success) {
+      var d = new Date(date + 'T00:00:00');
+      var pretty = d.toLocaleDateString(currentLang === 'bn' ? 'bn-BD' : 'en-GB', {weekday:'short', day:'numeric', month:'long', year:'numeric'});
+      document.getElementById('bkRecap').innerHTML =
+        '<div><b>' + tr('bk.recId') + '</b><span>#' + resData.data.id + '</span></div>' +
+        '<div><b>' + tr('bk.recPatient') + '</b><span>' + name.replace(/</g,'&lt;') + ', ' + age + '</span></div>' +
+        '<div><b>' + tr('bk.recDate') + '</b><span>' + pretty + '</span></div>' +
+        '<div><b>' + tr('bk.recTime') + '</b><span>' + slot + '</span></div>' +
+        '<div><b>' + tr('bk.recVisit') + '</b><span>' + visit + '</span></div>' +
+        '<div><b>' + tr('bk.recContact') + '</b><span>' + phone.replace(/</g,'&lt;') + '</span></div>';
+      bkForm.style.display = 'none';
+      bkDone.classList.add('show');
+      bkDone.scrollIntoView({block:'nearest'});
+    } else {
+      bkErr.textContent = resData.message || tr('bk.errSubmit');
+      bkErr.classList.add('show');
+    }
+  } catch (err) {
+    console.error(err);
+    bkErr.textContent = tr('bk.netErr');
+    bkErr.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+  }
+});
+
+document.getElementById('bkAgain').addEventListener('click', function(){
+  bkForm.reset();
+  bkForm.style.display = '';
+  bkDone.classList.remove('show');
+  document.getElementById('f-name').focus();
+});
+</script>
+</body>
+</html>

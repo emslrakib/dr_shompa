@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient voices — Dr. Arefin Zannat Sompa, Consultant Psychiatrist, Sylhet</title>
+<meta name="description" content="Real stories from patients of Dr. Arefin Zannat Sompa — compassionate, confidential psychiatric care in Sylhet, Bangladesh.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Karla:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FBFAF6;
+  --paper-2: #F3EEE3;
+  --navy: #0E2452;
+  --navy-deep: #071730;
+  --gold: #B0832F;
+  --gold-soft: #E2C68A;
+  --ink: #18202E;
+  --muted: #5B6678;
+  --line: rgba(14,36,82,.14);
+  --shadow: 0 16px 40px -20px rgba(7,23,48,.3);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Karla", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+.wrap { width: min(1180px, 92vw); margin-inline: auto; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; margin: 0; letter-spacing: -.005em; }
+h2 { font-size: clamp(2rem, 3.8vw, 2.9rem); color: var(--navy); }
+p { margin: 0 0 .9em; }
+:focus-visible { outline: 2.5px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+/* header */
+header { position: sticky; top: 0; z-index: 60; background: rgba(251,250,246,.94); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); box-shadow: 0 4px 20px rgba(0,0,0,.03); }
+.bar { display: flex; align-items: center; gap: 1.2rem; padding: .65rem 0; }
+.logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; margin-right: auto; }
+.logo img { width: 44px; height: 44px; object-fit: contain; }
+.logo-text b { font-family: var(--serif); font-size: 1.22rem; font-weight: 700; color: var(--navy); display: block; line-height: 1.1; }
+.logo-text i { font-style: normal; display: block; font-size: .62rem; letter-spacing: .2em; color: var(--gold); font-weight: 600; margin-top: .2rem; }
+nav ul { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1.5rem; list-style: none; margin: 0; padding: 0; }
+nav a { display: inline-block; text-decoration: none; font-size: .92rem; font-weight: 600; color: var(--muted); position: relative; transition: color .2s; }
+nav a::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--gold); transition: width .25s ease; }
+nav a:hover { color: var(--navy); }
+nav a:hover::after { width: 100%; }
+nav a.here { color: var(--gold); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 0; cursor: pointer; background: var(--navy); color: #fff; text-decoration: none; padding: .7rem 1.4rem; border-radius: 999px; font-family: var(--sans); font-size: .92rem; font-weight: 600; box-shadow: 0 8px 22px -12px rgba(14,36,82,.9); transition: background .25s, transform .25s; }
+.btn:hover { background: var(--navy-deep); transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); box-shadow: none; }
+.btn.ghost:hover { background: var(--navy); color: #fff; }
+.btn.gold { background: var(--gold); color: #fff; }
+.btn.gold:hover { background: #966e24; }
+
+/* language switch */
+.lang-btn { display: inline-flex; align-items: center; gap: .3rem; font-family: var(--sans); font-size: .8rem; font-weight: 700; color: var(--navy); background: rgba(255,255,255,.72); cursor: pointer; border: 1px solid var(--line); border-radius: 999px; padding: .38rem .8rem; transition: border-color .25s, transform .25s; }
+.lang-btn:hover { border-color: var(--gold); transform: translateY(-1px); }
+.lang-btn .lang-opt { color: var(--muted); font-weight: 600; line-height: 1.2; }
+.lang-btn .lang-opt[lang="bn"] { font-family: "Noto Sans Bengali", var(--sans); }
+.lang-btn .lang-opt.on { color: var(--navy); font-weight: 800; }
+.lang-btn .lang-sep { color: var(--line); margin: 0 .1rem; }
+/* sections */
+section { padding: 2.6rem 0; }
+.page-head { padding: 3rem 0 1.2rem; }
+.rule { width: 48px; height: 2px; background: var(--gold); margin-bottom: 1rem; }
+.sec-head p { color: var(--muted); margin-top: .6rem; font-size: 1.02rem; max-width: 62ch; }
+.pv-stats { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.6rem 0 .4rem; }
+.chip { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: .85rem 1.2rem; display: flex; gap: .6rem; align-items: baseline; box-shadow: 0 8px 24px -14px rgba(7,23,48,.18); }
+.chip b { font-family: var(--serif); font-size: 1.5rem; color: var(--navy); line-height: 1; }
+.chip span { font-size: .85rem; color: var(--muted); }
+
+/* testimonial cards */
+.t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.4rem; }
+.t-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.9rem 1.6rem 1.5rem; position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s; }
+.t-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.4); }
+.t-card::before { content: "\201C"; position: absolute; top: .2rem; right: 1.1rem; font-family: var(--serif); font-size: 3.6rem; color: rgba(176,131,47,.2); line-height: 1; }
+.t-card::after { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold-soft)); transition: width .45s ease; }
+.t-card:hover::after { width: 100%; }
+.stars { color: var(--gold); letter-spacing: .18em; font-size: .9rem; }
+.t-card blockquote { margin: .7rem 0 1.1rem; font-family: var(--serif); font-size: 1.14rem; line-height: 1.5; color: var(--ink); }
+.t-card .who { display: flex; align-items: center; gap: .6rem; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+.t-card .who::before { content: ""; width: 26px; height: 2px; background: var(--gold); flex: none; }
+.pv-empty { border: 1.5px dashed var(--line); border-radius: 16px; padding: 2.6rem 1.6rem; text-align: center; color: var(--muted); }
+
+/* cta band */
+.pv-cta { background: linear-gradient(135deg, var(--navy), var(--navy-deep)); border-radius: 22px; padding: 2rem 2.2rem; color: #fff; display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; justify-content: space-between; border: 2px solid var(--gold); }
+.pv-cta h3 { color: #fff; font-size: 1.6rem; margin-bottom: .3rem; }
+.pv-cta p { color: rgba(255,255,255,.8); font-size: .95rem; margin: 0; max-width: 52ch; }
+.pv-cta .row { display: flex; gap: .8rem; flex-wrap: wrap; }
+.pv-cta .btn.ghost { color: #fff; border-color: rgba(255,255,255,.5); }
+
+/* footer */
+footer { background: var(--navy-deep); color: rgba(255,255,255,.75); padding: 2.4rem 0 1.6rem; position: relative; }
+footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-soft), var(--navy)); }
+.f-grid { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between; padding-bottom: 1.6rem; border-bottom: 1px solid rgba(255,255,255,.1); }
+.f-brand h3 { color: #fff; font-size: 1.45rem; margin-bottom: .4rem; }
+.f-brand p { font-size: .9rem; color: rgba(255,255,255,.66); max-width: 40ch; }
+.f-item { display: flex; gap: .6rem; align-items: baseline; font-size: .92rem; margin-bottom: .5rem; }
+.f-item b { color: var(--gold-soft); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; }
+.f-item a { color: #fff; text-decoration: none; font-weight: 600; }
+.f-item a:hover { color: var(--gold-soft); }
+.f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .8rem; padding-top: 1.3rem; font-size: .8rem; color: rgba(255,255,255,.45); }
+
+/* reveal + i18n */
+.rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.rv.in { opacity: 1; transform: none; }
+html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
+@keyframes i18nIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+
+/* Bangla typography */
+html[data-lang="bn"] body { font-size: 16.5px; line-height: 1.85; font-family: "Noto Sans Bengali", var(--sans); }
+html[data-lang="bn"] h1, html[data-lang="bn"] h2, html[data-lang="bn"] h3,
+html[data-lang="bn"] .t-card blockquote { font-family: "Noto Serif Bengali", var(--serif); line-height: 1.5; }
+html[data-lang="bn"] nav a, html[data-lang="bn"] .btn, html[data-lang="bn"] .lang-btn,
+html[data-lang="bn"] .chip span, html[data-lang="bn"] .t-card .who { font-family: "Noto Sans Bengali", var(--sans); letter-spacing: 0; text-transform: none; }
+html[data-lang="bn"] .t-card blockquote { font-size: 1.08rem; }
+html[data-lang="bn"] .chip b { font-size: 1.35rem; }
+
+@media (max-width: 720px) {
+  .bar { flex-wrap: wrap; }
+  .logo { margin-right: 0; }
+  nav { order: 3; width: 100%; }
+  section { padding: 2rem 0; }
+  .pv-cta { padding: 1.6rem 1.4rem; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="dr-arefin-zannat-sompa.html">
+      <img id="pvLogo" src="drarefin-logo.png" alt="Mind | Care | Heal — Dr. Arefin Zannat Sompa">
+      <span class="logo-text">
+        <b id="pvBrand" data-i18n="brand.name">Dr. Sompa</b>
+        <i>MIND | CARE | HEAL</i>
+      </span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="dr-arefin-zannat-sompa.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="dr-arefin-zannat-sompa.html#about" data-i18n="nav.about">About</a></li>
+        <li><a href="dr-arefin-zannat-sompa.html#services" data-i18n="nav.services">Services</a></li>
+        <li><a href="dr-arefin-zannat-sompa.html#chamber" data-i18n="nav.chamber">Chamber</a></li>
+        <li><a href="dr-arefin-zannat-sompa.html#faq" data-i18n="nav.faq">FAQ</a></li>
+        <li><a href="dr-arefin-zannat-sompa.html#contact" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="lang-btn" type="button" data-lang-toggle aria-label="Switch to Bangla" aria-pressed="false">🌐 <span class="lang-opt on">EN</span><span class="lang-sep" aria-hidden="true">|</span><span class="lang-opt" lang="bn">বাং</span></button>
+    <a class="btn gold" href="dr-arefin-zannat-sompa.html#book" data-i18n="cta.book">Book appointment</a>
+  </div>
+</header>
+
+<main>
+  <section class="page-head">
+    <div class="wrap">
+      <div class="rule"></div>
+      <h2 data-i18n="pv.title">Patient voices</h2>
+      <p class="sec-head" data-i18n="pv.sub" style="max-width:62ch">Real stories from people who found their way back to calm, sleep, and hope — told with their permission, kept anonymous and confidential.</p>
+      <div class="pv-stats">
+        <div class="chip"><b>12+</b><span data-i18n="pv.statYears">Years of practice</span></div>
+        <div class="chip"><b>3,500+</b><span data-i18n="pv.statPatients">Patient consultations</span></div>
+        <div class="chip"><b>99%</b><span data-i18n="pv.statTrust">Satisfaction &amp; trust</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:.4rem">
+    <div class="wrap">
+      <div id="tGrid" class="t-grid" aria-live="polite"></div>
+      <div id="pvEmpty" class="pv-empty" style="display:none" data-i18n="pv.empty">Patient stories are being collected. Please check back soon.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="pv-cta rv">
+        <div>
+          <h3 data-i18n="pv.ctaTitle">Ready to talk about it?</h3>
+          <p data-i18n="pv.ctaText">Book a chamber consultation — 30 to 40 minutes of dedicated time, in person or for your family, fully confidential.</p>
+        </div>
+        <div class="row">
+          <a class="btn gold" href="dr-arefin-zannat-sompa.html#book" data-i18n="pv.ctaBook">Book appointment</a>
+          <a class="btn ghost" href="dr-arefin-zannat-sompa.html" data-i18n="pv.ctaHome">Back to home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-brand">
+        <h3 id="pvFooterBrand" data-i18n="brand.name">Dr. Arefin Zannat Sompa</h3>
+        <p data-i18n="pv.footerAbout">Consultant Psychiatrist — Sylhet MAG Osmani Medical College. Compassionate, evidence-based mental health care.</p>
+      </div>
+      <div>
+        <div class="f-item"><b data-i18n="pv.phoneLabel">PHONE</b><a id="pvPhone" href="tel:01339059043">01339059043</a></div>
+        <div class="f-item"><b data-i18n="pv.emailLabel">EMAIL</b><a id="pvEmail" href="mailto:sompa.szmc@gmail.com">sompa.szmc@gmail.com</a></div>
+        <div class="f-item"><b data-i18n="pv.chamberLabel">CHAMBER</b><span id="pvAddress">Sylhet, Bangladesh</span></div>
+      </div>
+    </div>
+    <div class="f-bot">
+      <span>© <span id="yr">2026</span> <span data-i18n="pv.copyTail">Dr. Arefin Zannat Sompa. All rights reserved.</span></span>
+      <span data-i18n="pv.disclaimer">Stories are shared anonymously with consent; this page does not replace a consultation.</span>
+    </div>
+  </div>
+</footer>
+<script>
+/* ---------- UI dictionary (EN / বাংলা) ---------- */
+var TRANSLATIONS = { en: {}, bn: {} };
+Object.assign(TRANSLATIONS.en, {
+  'brand.name': 'Dr. Arefin Zannat Sompa',
+  'cta.book': 'Book appointment',
+  'nav.home': 'Home', 'nav.about': 'About', 'nav.services': 'Services', 'nav.chamber': 'Chamber', 'nav.faq': 'FAQ', 'nav.contact': 'Contact',
+  'pv.title': 'Patient voices',
+  'pv.sub': 'Real stories from people who found their way back to calm, sleep, and hope — shared with permission, kept anonymous and confidential.',
+  'pv.statYears': 'Years of practice',
+  'pv.statPatients': 'Patient consultations',
+  'pv.statTrust': 'Satisfaction & trust',
+  'pv.empty': 'Patient stories are being collected. Please check back soon.',
+  'pv.stars': '5 out of 5 stars'
+});
+Object.assign(TRANSLATIONS.bn, {
+  'brand.name': 'ডা. আরেফিন জান্নাত সোম্পা',
+  'cta.book': 'অ্যাপয়েন্টমেন্ট বুক করুন',
+  'nav.home': 'হোম', 'nav.about': 'পরিচিতি', 'nav.services': 'সেবা', 'nav.chamber': 'চেম্বার', 'nav.faq': 'সাধারণ প্রশ্ন', 'nav.contact': 'যোগাযোগ',
+  'pv.title': 'রোগীর অভিমত',
+  'pv.sub': 'শান্তি, ঘুম ও আশায় ফিরে আসা মানুষদের সত্যিকারের গল্প — তাঁদের অনুমতিতে, নাম গোপন রেখে।',
+  'pv.statYears': 'বছরের অভিজ্ঞতা',
+  'pv.statPatients': 'রোগীর পরামর্শ',
+  'pv.statTrust': 'সন্তুষ্টি ও আস্থা',
+  'pv.empty': 'রোগীদের গল্প সংগ্রহ করা হচ্ছে। শীঘ্রই আবার দেখুন।',
+  'pv.stars': '৫টির মধ্যে ৫ তারা'
+});
+Object.assign(TRANSLATIONS.en, {
+  'pv.ctaTitle': 'Ready to talk about it?',
+  'pv.ctaText': 'Book a chamber consultation — 30 to 40 minutes of dedicated time, fully confidential.',
+  'pv.ctaBook': 'Book appointment',
+  'pv.ctaHome': 'Back to home',
+  'pv.footerAbout': 'Consultant Psychiatrist — Sylhet MAG Osmani Medical College. Compassionate, evidence-based mental health care.',
+  'pv.phoneLabel': 'PHONE',
+  'pv.emailLabel': 'EMAIL',
+  'pv.chamberLabel': 'CHAMBER',
+  'pv.copyTail': 'Dr. Arefin Zannat Sompa. All rights reserved.',
+  'pv.disclaimer': 'Stories are shared anonymously with consent; this page does not replace a consultation.'
+});
+Object.assign(TRANSLATIONS.bn, {
+  'pv.ctaTitle': 'কথা বলতে প্রস্তুত?',
+  'pv.ctaText': 'চেম্বারের পরামর্শ নিন — ৩০ থেকে ৪০ মিনিট নিবেদিত সময়, সম্পূর্ণ গোপনীয়।',
+  'pv.ctaBook': 'অ্যাপয়েন্টমেন্ট বুক করুন',
+  'pv.ctaHome': 'হোমে ফিরুন',
+  'pv.footerAbout': 'কনসালট্যান্ট সাইকিয়াট্রিস্ট — সিলেট এমএজি ওসমানী মেডিকেল কলেজ। সহানুভূতিপূর্ণ, প্রমাণভিত্তিক মানসিক স্বাস্থ্যসেবা।',
+  'pv.phoneLabel': 'ফোন',
+  'pv.emailLabel': 'ইমেইল',
+  'pv.chamberLabel': 'চেম্বার',
+  'pv.copyTail': 'ডা. আরেফিন জান্নাত সোম্পা। সর্বস্বত্ব সংরক্ষিত।',
+  'pv.disclaimer': 'গল্পগুলো অনুমতি নিয়ে নাম গোপন রেখে শেয়ার করা; এই পেজ পরামর্শের বিকল্প নয়।'
+});
+
+/* Bangla testimonials (keyed by the English quote) — used until the CMS has *_bn fields */
+var BN_QUOTES = {
+  'She explained my diagnosis in words my family could follow. For the first time we understood what was happening.': ['আমার রোগের ব্যাখ্যা এমনভাবে বুঝিয়েছেন, যা আমার পরিবার বুঝতে পেরেছে। প্রথমবার আমরা বুঝলাম কী হচ্ছে।', 'রোগীর মেয়ে, সিলেট'],
+  'No rush, no judgement. She asked questions nobody had asked me before, and the treatment plan actually made sense.': ['কোনো তাড়াহুড়া নেই, কোনো বিচার নেই। আমাকে এমন প্রশ্ন করেছেন, যা আগে কেউ করেনি; চিকিৎসা পরিকল্পনাটা আসলেই যুক্তিসম্মত মনে হয়েছে।', 'রোগী, ৩৪'],
+  'My son refused to see a doctor for months. After one session with her, he agreed to continue treatment.': ['আমার ছেলে মাসের পর মাস ডাক্তার দেখাতে রাজি ছিল না। তাঁর কাছে একটা সেশনের পর সে চিকিৎসা চালিয়ে যেতে রাজি হয়েছে।', 'অভিভাবক, মৌলভীবাজার']
+};
+/* ---------- language state + engine ---------- */
+var LANG_KEY = 'sompaLang';
+var currentLang = 'en';
+var i18nItems = [];
+var cmsData = null;
+try { var savedLang = window.localStorage ? localStorage.getItem(LANG_KEY) : null; if (savedLang === 'bn' || savedLang === 'en') currentLang = savedLang; } catch (e) {}
+
+function captureI18n(){
+  i18nItems = [];
+  [['data-i18n', 'textContent'], ['data-i18n-html', 'innerHTML'], ['data-i18n-ph', 'placeholder'], ['data-i18n-aria', 'aria-label']].forEach(function(pair){
+    Array.prototype.forEach.call(document.querySelectorAll('[' + pair[0] + ']'), function(el){
+      var key = el.getAttribute(pair[0]);
+      if (!key) return;
+      var orig = pair[1] === 'aria-label' ? el.getAttribute('aria-label') : el[pair[1]];
+      i18nItems.push({ el: el, key: key, prop: pair[1], orig: (orig === null ? '' : orig) });
+    });
+  });
+}
+function tr(key){
+  var dict = TRANSLATIONS[currentLang] || {};
+  return dict[key] !== undefined ? dict[key] : (TRANSLATIONS[currentLang === 'en' ? 'bn' : 'en'][key] || '');
+}
+function applyTranslations(lang){
+  var dict = TRANSLATIONS[lang] || {}, other = TRANSLATIONS[lang === 'en' ? 'bn' : 'en'] || {};
+  i18nItems.forEach(function(item){
+    var val = dict[item.key] !== undefined ? dict[item.key] : (item.orig !== '' ? item.orig : other[item.key]);
+    if (val === undefined) return;
+    if (item.prop === 'innerHTML') item.el.innerHTML = val;
+    else if (item.prop === 'aria-label') item.el.setAttribute('aria-label', val);
+    else item.el[item.prop] = val;
+  });
+}
+function updateLangButtons(lang){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-lang-toggle]'), function(btn){
+    var opts = btn.querySelectorAll('.lang-opt');
+    if (opts.length >= 2) { opts[0].classList.toggle('on', lang === 'en'); opts[1].classList.toggle('on', lang === 'bn'); }
+    btn.setAttribute('aria-label', lang === 'en' ? 'Switch to Bangla' : 'Switch to English');
+    btn.setAttribute('aria-pressed', lang === 'bn' ? 'true' : 'false');
+  });
+}
+function applyLang(lang){
+  currentLang = (lang === 'bn') ? 'bn' : 'en';
+  document.documentElement.setAttribute('data-lang', currentLang);
+  document.documentElement.setAttribute('lang', currentLang === 'bn' ? 'bn' : 'en');
+  applyTranslations(currentLang);
+  updateLangButtons(currentLang);
+  if (cmsData) { renderStories(); renderCmsSettings(); }
+  try { if (window.localStorage) localStorage.setItem(LANG_KEY, currentLang); } catch (e) {}
+  var main = document.querySelector('main');
+  if (main) { main.classList.remove('i18n-fade'); void main.offsetWidth; main.classList.add('i18n-fade'); }
+}
+function wireLangToggles(){
+  document.querySelectorAll('[data-lang-toggle]').forEach(function(b){
+    b.addEventListener('click', function(){ applyLang(currentLang === 'en' ? 'bn' : 'en'); });
+  });
+}
+/* ---------- CMS (same API as the home page) ---------- */
+function colBn(row, base){
+  var lower = base.charAt(0).toLowerCase() + base.slice(1);
+  var en = row[base] !== undefined ? row[base] : (row[lower] !== undefined ? row[lower] : '');
+  if (currentLang !== 'bn') return en;
+  var dbBn = row[base + '_bn'] || row[lower + '_bn'];
+  if (dbBn) return dbBn;
+  var bn = BN_QUOTES[en];
+  return bn ? bn[0] : en;
+}
+function authorBn(row){
+  var en = row.Author !== undefined ? row.Author : (row.author !== undefined ? row.author : '');
+  if (currentLang !== 'bn') return en;
+  var dbBn = row.Author_bn || row.author_bn;
+  if (dbBn) return dbBn;
+  var quoteEn = row.Quote !== undefined ? row.Quote : row.quote;
+  var bn = BN_QUOTES[quoteEn];
+  return bn ? bn[1] : en;
+}
+function renderStories(){
+  var list = cmsData && cmsData.data && cmsData.data.testimonials ? cmsData.data.testimonials : [];
+  var grid = document.getElementById('tGrid'), empty = document.getElementById('pvEmpty');
+  if (!grid || !empty) return;
+  if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  var html = '';
+  list.forEach(function(item){
+    html += '<article class="t-card rv">' +
+      '<div class="stars" role="img" aria-label="' + tr('pv.stars') + '">★★★★★</div>' +
+      '<blockquote>' + colBn(item, 'Quote') + '</blockquote>' +
+      '<div class="who">' + authorBn(item) + '</div>' +
+      '</article>';
+  });
+  grid.innerHTML = html;
+  revealInit();
+}
+function renderCmsSettings(){
+  if (!cmsData || !cmsData.data || !cmsData.data.settings) return;
+  var s = cmsData.data.settings;
+  if (s.site_logo && document.getElementById('pvLogo')) document.getElementById('pvLogo').src = s.site_logo;
+  if (s.phone && document.getElementById('pvPhone')) { document.getElementById('pvPhone').href = 'tel:' + s.phone; document.getElementById('pvPhone').textContent = s.phone; }
+  if (s.email && document.getElementById('pvEmail')) { document.getElementById('pvEmail').href = 'mailto:' + s.email; document.getElementById('pvEmail').textContent = s.email; }
+  if (s.chamber_address && document.getElementById('pvAddress')) document.getElementById('pvAddress').textContent = s.chamber_address;
+}
+async function loadCms(){
+  try {
+    var res = await fetch('/api/cms/content');
+    var json = await res.json();
+    if (!json.success || !json.data) return;
+    cmsData = json;
+    renderStories();
+    renderCmsSettings();
+  } catch (err) { console.error('CMS load failed, using static content:', err); }
+}
+
+/* reveal */
+var io = null;
+if ('IntersectionObserver' in window) {
+  io = new IntersectionObserver(function(entries){
+    entries.forEach(function(x, i){ if (x.isIntersecting) { setTimeout(function(){ x.target.classList.add('in'); }, i * 90); io.unobserve(x.target); } });
+  }, { threshold: .15 });
+}
+function revealInit(){
+  var els = document.querySelectorAll('.rv:not(.in)');
+  if (io) els.forEach(function(el){ io.observe(el); });
+  else els.forEach(function(el){ el.classList.add('in'); });
+}
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+captureI18n();
+wireLangToggles();
+applyLang(currentLang);
+loadCms();
+</script>
+</body>
+</html>

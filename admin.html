@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chamber & Content Admin — Dr. Arefin Zannat Sompa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #FBFAF6;
+  --paper-2: #F1ECE1;
+  --navy: #0E2452;
+  --navy-deep: #071730;
+  --gold: #B0832F;
+  --gold-soft: #E2C68A;
+  --ink: #18202E;
+  --muted: #5B6678;
+  --line: rgba(14,36,82,.14);
+  --shadow: 0 12px 36px -16px rgba(7,23,48,.35);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Karla", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-bottom: 4rem;
+}
+header {
+  background: var(--navy);
+  color: #fff;
+  padding: 1.1rem 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+.brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: #fff; }
+.brand h1 { font-family: var(--serif); font-size: 1.45rem; font-weight: 700; color: #fff; }
+.brand span { font-size: .75rem; color: var(--gold-soft); letter-spacing: .15em; text-transform: uppercase; display: block; }
+.head-actions { display: flex; gap: 1rem; align-items: center; }
+.btn-site {
+  color: var(--gold-soft);
+  text-decoration: none;
+  font-size: .88rem;
+  font-weight: 600;
+  border: 1px solid rgba(226,198,138,.4);
+  padding: .45rem 1rem;
+  border-radius: 999px;
+  transition: .25s;
+}
+.btn-site:hover { background: rgba(226,198,138,.15); color: #fff; }
+
+.wrap { width: min(1200px, 94vw); margin: 1.8rem auto 0; }
+
+/* Tabs Navigation */
+.nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  border-bottom: 2px solid var(--line);
+  margin-bottom: 1.8rem;
+}
+.tab-btn {
+  font-family: var(--sans);
+  font-size: .95rem;
+  font-weight: 700;
+  padding: .75rem 1.4rem;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+.tab-btn:hover { color: var(--navy); }
+.tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Stats Bar */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.kpi-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.3rem 1.4rem;
+  box-shadow: 0 6px 20px -10px rgba(0,0,0,.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kpi-title { font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.kpi-val { font-family: var(--serif); font-size: 2.2rem; font-weight: 700; color: var(--navy); margin-top: .2rem; }
+.kpi-badge { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 700; }
+.kpi-total .kpi-badge { background: rgba(14,36,82,.1); color: var(--navy); }
+.kpi-pending .kpi-badge { background: rgba(217,119,6,.12); color: #B45309; }
+.kpi-confirmed .kpi-badge { background: rgba(16,185,129,.12); color: #047857; }
+.kpi-completed .kpi-badge { background: rgba(59,130,246,.12); color: #1D4ED8; }
+
+/* Controls & Toolbar */
+.toolbar {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.filters { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; flex: 1; }
+.input-group { display: flex; flex-direction: column; gap: .25rem; }
+.input-group label { font-size: .75rem; font-weight: 700; color: var(--muted); letter-spacing: .05em; }
+.input-group input, .input-group select, .input-group textarea {
+  font-family: var(--sans);
+  font-size: .92rem;
+  padding: .55rem .8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  outline: none;
+  transition: border-color .2s;
+}
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--gold); }
+.btn-action {
+  font-family: var(--sans);
+  font-size: .88rem;
+  font-weight: 600;
+  padding: .6rem 1.2rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  transition: .2s;
+}
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover { background: var(--navy-deep); }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover { background: #966e24; }
+.btn-outline { background: transparent; border: 1px solid var(--line); color: var(--navy); }
+.btn-outline:hover { background: var(--paper-2); }
+
+/* Table Container */
+.table-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -15px rgba(0,0,0,.08);
+  margin-bottom: 2rem;
+}
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th {
+  background: var(--paper-2);
+  color: var(--navy);
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .95rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+td {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .94rem;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(251,250,246,.7); }
+
+.badge-status {
+  display: inline-block;
+  padding: .3rem .75rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+.status-Pending { background: #FEF3C7; color: #92400E; }
+.status-Confirmed { background: #D1FAE5; color: #065F46; }
+.status-Completed { background: #DBEAFE; color: #1E40AF; }
+.status-Cancelled { background: #FEE2E2; color: #991B1B; }
+
+.patient-info { display: flex; flex-direction: column; }
+.patient-name { font-weight: 700; color: var(--navy); font-size: 1.02rem; }
+.patient-meta { font-size: .84rem; color: var(--muted); }
+
+.action-btns { display: flex; gap: .4rem; }
+.act-btn {
+  padding: .35rem .65rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s;
+}
+.act-btn.confirm:hover { background: #10B981; color: #fff; border-color: #10B981; }
+.act-btn.complete:hover { background: #3B82F6; color: #fff; border-color: #3B82F6; }
+.act-btn.cancel:hover { background: #EF4444; color: #fff; border-color: #EF4444; }
+.act-btn.delete:hover { background: #6B7280; color: #fff; border-color: #6B7280; }
+
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: var(--muted);
+}
+.empty-state h3 { font-family: var(--serif); font-size: 1.5rem; color: var(--navy); margin-bottom: .4rem; }
+
+/* Forms Card */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.8rem;
+  box-shadow: 0 10px 30px -15px rgba(0,0,0,.08);
+  margin-bottom: 2rem;
+}
+.form-card h3 { font-family: var(--serif); font-size: 1.5rem; color: var(--navy); margin-bottom: 1.2rem; }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+.form-grid .full { grid-column: 1 / -1; }
+
+/* Note Modal */
+.modal-note {
+  position: fixed; inset: 0; background: rgba(7,23,48,.6); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center; z-index: 999; padding: 1rem;
+}
+.modal-note.open { display: flex; }
+.modal-note-box {
+  background: #fff; padding: 1.8rem; border-radius: 16px; width: min(500px, 90vw);
+  box-shadow: 0 20px 50px rgba(0,0,0,.2); position: relative;
+}
+.modal-note-box h3 { font-family: var(--serif); color: var(--navy); font-size: 1.4rem; margin-bottom: .8rem; }
+.modal-note-box p { font-size: .95rem; color: var(--ink); white-space: pre-wrap; line-height: 1.6; }
+.close-note { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); }
+
+.alert-msg {
+  padding: .8rem 1.2rem;
+  border-radius: 10px;
+  font-size: .9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: none;
+}
+.alert-success { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+.alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+
+@media (max-width: 768px) {
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .filters { flex-direction: column; align-items: stretch; }
+  table { display: block; overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="dr-arefin-zannat-sompa.html" class="brand">
+    <div>
+      <h1>Dr. Arefin Zannat Sompa</h1>
+      <span>Chamber & Content Management Dashboard</span>
+    </div>
+  </a>
+  <div class="head-actions">
+    <a href="dr-arefin-zannat-sompa.html" target="_blank" class="btn-site">View Website ↗</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-appointments')">📋 Appointments</button>
+    <button class="tab-btn" onclick="switchTab('tab-profile')">👤 Doctor Profile & Contact</button>
+    <button class="tab-btn" onclick="switchTab('tab-images')">📷 Image Manager</button>
+    <button class="tab-btn" onclick="switchTab('tab-services')">🩺 Services Offered</button>
+    <button class="tab-btn" onclick="switchTab('tab-reviews')">💬 Patient Reviews</button>
+    <button class="tab-btn" onclick="switchTab('tab-qualifications')">🎓 About Cards</button>
+  </div>
+
+  <!-- TAB 1: APPOINTMENTS -->
+  <div id="tab-appointments" class="tab-content active">
+    <!-- KPI Summary Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-total">
+        <div>
+          <div class="kpi-title">Total Bookings</div>
+          <div class="kpi-val" id="statTotal">0</div>
+        </div>
+        <div class="kpi-badge">📋</div>
+      </div>
+      <div class="kpi-card kpi-pending">
+        <div>
+          <div class="kpi-title">Pending Confirmation</div>
+          <div class="kpi-val" id="statPending">0</div>
+        </div>
+        <div class="kpi-badge">⏳</div>
+      </div>
+      <div class="kpi-card kpi-confirmed">
+        <div>
+          <div class="kpi-title">Confirmed</div>
+          <div class="kpi-val" id="statConfirmed">0</div>
+        </div>
+        <div class="kpi-badge">✅</div>
+      </div>
+      <div class="kpi-card kpi-completed">
+        <div>
+          <div class="kpi-title">Completed Visits</div>
+          <div class="kpi-val" id="statCompleted">0</div>
+        </div>
+        <div class="kpi-badge">🩺</div>
+      </div>
+    </div>
+
+    <!-- Toolbar & Filters -->
+    <div class="toolbar">
+      <div class="filters">
+        <div class="input-group">
+          <label for="filterSearch">Search Patient / Phone</label>
+          <input type="text" id="filterSearch" placeholder="Type name or phone number..." style="min-width: 220px;">
+        </div>
+        <div class="input-group">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus">
+            <option value="All">All Statuses</option>
+            <option value="Pending" selected>Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="filterDate">Filter Date</label>
+          <input type="date" id="filterDate">
+        </div>
+      </div>
+      <div style="display: flex; gap: .6rem;">
+        <button class="btn-action btn-outline" id="btnResetFilters">Reset</button>
+        <button class="btn-action btn-primary" id="btnRefresh">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Patient Details</th>
+            <th>Contact Number</th>
+            <th>Visit Type</th>
+            <th>Preferred Date & Slot</th>
+            <th>Status</th>
+            <th>Patient Note</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="apptTableBody">
+          <tr>
+            <td colspan="8" class="empty-state">
+              <h3>Loading appointments...</h3>
+              <p>Fetching records from SQL Server database.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 2: DOCTOR PROFILE & CONTACT -->
+  <div id="tab-profile" class="tab-content">
+    <div class="form-card">
+      <h3>Edit Doctor Profile & Contact Information</h3>
+      <div class="alert-msg alert-success" id="profileSuccessAlert">Profile updated successfully!</div>
+      <div class="alert-msg alert-error" id="profileErrorAlert">Failed to update profile.</div>
+
+      <form id="profileForm">
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="p-name">Doctor Name</label>
+            <input type="text" id="p-name" name="doctor_name" required>
+          </div>
+          <div class="input-group">
+            <label for="p-kicker">Location / Kicker</label>
+            <input type="text" id="p-kicker" name="location_kicker" required>
+          </div>
+          <div class="input-group full">
+            <label for="p-title">Doctor Designation & Title</label>
+            <input type="text" id="p-title" name="doctor_title" required>
+          </div>
+          <div class="input-group full">
+            <label for="p-lede">Bio Description / Lede Text</label>
+            <textarea id="p-lede" name="lede_text" rows="3" required></textarea>
+          </div>
+          <div class="input-group">
+            <label for="p-deg1">Degree 1 (Format: TITLE | SUBTEXT)</label>
+            <input type="text" id="p-deg1" name="degree_1">
+          </div>
+          <div class="input-group">
+            <label for="p-deg2">Degree 2 (Format: TITLE | SUBTEXT)</label>
+            <input type="text" id="p-deg2" name="degree_2">
+          </div>
+          <div class="input-group">
+            <label for="p-deg3">Degree 3 (Format: TITLE | SUBTEXT)</label>
+            <input type="text" id="p-deg3" name="degree_3">
+          </div>
+          <div class="input-group">
+            <label for="p-phone">Contact Phone Number</label>
+            <input type="text" id="p-phone" name="phone" required>
+          </div>
+          <div class="input-group">
+            <label for="p-email">Contact Email Address</label>
+            <input type="email" id="p-email" name="email" required>
+          </div>
+          <div class="input-group">
+            <label for="p-hours">Chamber Hours Note</label>
+            <input type="text" id="p-hours" name="chamber_hours">
+          </div>
+          <div class="input-group">
+            <label for="p-email-hint">Email Reply Hint</label>
+            <input type="text" id="p-email-hint" name="email_hint" placeholder="Replies within two working days">
+          </div>
+          <div class="input-group full">
+            <label for="p-address">Chamber Address</label>
+            <input type="text" id="p-address" name="chamber_address" required>
+          </div>
+          <div class="input-group full">
+            <label for="p-maps">Google Maps Link (used by "Open in Maps" button)</label>
+            <input type="url" id="p-maps" name="maps_url" placeholder="https://maps.google.com/?q=Sylhet+MAG+Osmani+Medical+College">
+          </div>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button type="submit" class="btn-action btn-gold">💾 Save Profile & Contact Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TAB: IMAGE MANAGER -->
+  <div id="tab-images" class="tab-content">
+    <div style="margin-bottom:1.5rem;">
+      <h3 style="font-family:var(--serif); font-size:1.6rem; color:var(--navy);">📷 Website Image Manager</h3>
+      <p style="color:var(--muted); font-size:.9rem;">Upload or update pictures for the Doctor Profile, Chamber Interior, Wellness Care section, and Logo directly in SQL Server database.</p>
+    </div>
+
+    <div class="alert-msg alert-success" id="imgSuccessAlert">Images updated successfully in SQL Server database!</div>
+    <div class="alert-msg alert-error" id="imgErrorAlert">Failed to update image.</div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+      
+      <!-- Doctor Portrait Card -->
+      <div class="form-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <h4 style="font-family:var(--serif); font-size:1.25rem; color:var(--navy); margin-bottom:.8rem;">Doctor Hero Portrait</h4>
+          <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; background:var(--paper-2); margin-bottom:1rem; border:1px solid var(--line); display:grid; place-items:center;">
+            <img id="prev-doctor-photo" src="dr_sompa_portrait.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Doctor Portrait Preview">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Upload New Picture</label>
+            <input type="file" id="file-doctor-photo" accept="image/*" onchange="previewImageFile(this, 'prev-doctor-photo')">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Image URL / Path</label>
+            <input type="text" id="url-doctor-photo" placeholder="dr_sompa_portrait.jpg">
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem;">
+          <button class="btn-action btn-gold" style="flex:1; justify-content:center;" onclick="saveSingleImage('doctor_photo', 'url-doctor-photo', 'file-doctor-photo')">💾 Save Image</button>
+          <button class="btn-action btn-outline" onclick="resetSingleImage('doctor_photo', 'dr_sompa_portrait.jpg', 'prev-doctor-photo', 'url-doctor-photo')">Reset</button>
+        </div>
+      </div>
+
+      <!-- Chamber Photo Card -->
+      <div class="form-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <h4 style="font-family:var(--serif); font-size:1.25rem; color:var(--navy); margin-bottom:.8rem;">Chamber & Clinic Photo</h4>
+          <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; background:var(--paper-2); margin-bottom:1rem; border:1px solid var(--line); display:grid; place-items:center;">
+            <img id="prev-chamber-photo" src="clinic_ambience.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Chamber Photo Preview">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Upload New Picture</label>
+            <input type="file" id="file-chamber-photo" accept="image/*" onchange="previewImageFile(this, 'prev-chamber-photo')">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Image URL / Path</label>
+            <input type="text" id="url-chamber-photo" placeholder="clinic_ambience.jpg">
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem;">
+          <button class="btn-action btn-gold" style="flex:1; justify-content:center;" onclick="saveSingleImage('chamber_photo', 'url-chamber-photo', 'file-chamber-photo')">💾 Save Image</button>
+          <button class="btn-action btn-outline" onclick="resetSingleImage('chamber_photo', 'clinic_ambience.jpg', 'prev-chamber-photo', 'url-chamber-photo')">Reset</button>
+        </div>
+      </div>
+
+      <!-- Mental Wellness Photo Card -->
+      <div class="form-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <h4 style="font-family:var(--serif); font-size:1.25rem; color:var(--navy); margin-bottom:.8rem;">Wellness Care Banner</h4>
+          <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; background:var(--paper-2); margin-bottom:1rem; border:1px solid var(--line); display:grid; place-items:center;">
+            <img id="prev-wellness-photo" src="mental_wellness_care.jpg" style="width:100%; height:100%; object-fit:cover;" alt="Wellness Photo Preview">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Upload New Picture</label>
+            <input type="file" id="file-wellness-photo" accept="image/*" onchange="previewImageFile(this, 'prev-wellness-photo')">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Image URL / Path</label>
+            <input type="text" id="url-wellness-photo" placeholder="mental_wellness_care.jpg">
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem;">
+          <button class="btn-action btn-gold" style="flex:1; justify-content:center;" onclick="saveSingleImage('wellness_photo', 'url-wellness-photo', 'file-wellness-photo')">💾 Save Image</button>
+          <button class="btn-action btn-outline" onclick="resetSingleImage('wellness_photo', 'mental_wellness_care.jpg', 'prev-wellness-photo', 'url-wellness-photo')">Reset</button>
+        </div>
+      </div>
+
+      <!-- Site Logo Card -->
+      <div class="form-card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <h4 style="font-family:var(--serif); font-size:1.25rem; color:var(--navy); margin-bottom:.8rem;">Header Site Logo</h4>
+          <div style="width:100%; height:220px; border-radius:12px; overflow:hidden; background:var(--paper-2); margin-bottom:1rem; border:1px solid var(--line); display:grid; place-items:center;">
+            <img id="prev-logo" alt="Site Logo Preview" style="width:100%; height:100%; object-fit:contain; padding:1rem;">
+          </div>
+          <p style="font-size:.82rem; color:var(--muted); margin-bottom:1rem;">লোগো খালি রাখলে সাইটের built-in SVG মনোগ্রাম দেখানো হবে।</p>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Upload New Logo</label>
+            <input type="file" id="file-logo" accept="image/*" onchange="previewImageFile(this, 'prev-logo')">
+          </div>
+          <div class="input-group" style="margin-bottom:1rem;">
+            <label>Logo URL / Path</label>
+            <input type="text" id="url-logo" placeholder="e.g. logo.png" data-allow-empty="true">
+          </div>
+        </div>
+        <div style="display:flex; gap:.5rem;">
+          <button class="btn-action btn-gold" style="flex:1; justify-content:center;" onclick="saveSingleImage('site_logo', 'url-logo', 'file-logo')">💾 Save Logo</button>
+          <button class="btn-action btn-outline" onclick="resetLogoImage()">Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 3: SERVICES OFFERED -->
+  <div id="tab-services" class="tab-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="font-family:var(--serif); font-size:1.6rem; color:var(--navy);">Treatments & Services Offered</h3>
+      <button class="btn-action btn-gold" onclick="openServiceModal()">➕ Add New Service</button>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Service Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="servicesTableBody">
+          <tr><td colspan="5" class="empty-state">Loading services...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: PATIENT REVIEWS -->
+  <div id="tab-reviews" class="tab-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="font-family:var(--serif); font-size:1.6rem; color:var(--navy);">Patient Voices / Reviews</h3>
+      <button class="btn-action btn-gold" onclick="openReviewModal()">➕ Add New Review</button>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Quote</th>
+            <th>Author / Citation</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reviewsTableBody">
+          <tr><td colspan="4" class="empty-state">Loading reviews...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 5: ABOUT CARDS -->
+  <div id="tab-qualifications" class="tab-content">
+    <div style="margin-bottom:1rem;">
+      <h3 style="font-family:var(--serif); font-size:1.6rem; color:var(--navy);">Qualifications & Care Philosophy Cards</h3>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Card Title</th>
+            <th>Description</th>
+            <th>Subtext</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="qualTableBody">
+          <tr><td colspan="5" class="empty-state">Loading qualifications...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Patient Note Modal -->
+<div class="modal-note" id="noteModal">
+  <div class="modal-note-box">
+    <button class="close-note" id="closeNoteBtn">&times;</button>
+    <h3 id="noteModalTitle">Patient Note</h3>
+    <p id="noteModalBody"></p>
+  </div>
+</div>
+
+<!-- Service Modal -->
+<div class="modal-note" id="serviceModal">
+  <div class="modal-note-box">
+    <button class="close-note" onclick="closeServiceModal()">&times;</button>
+    <h3 id="svcModalTitle">Service Item</h3>
+    <form id="serviceForm" style="margin-top:1rem;">
+      <input type="hidden" id="svc-id">
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Service Title</label>
+        <input type="text" id="svc-title" required>
+      </div>
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Description</label>
+        <textarea id="svc-desc" rows="3" required></textarea>
+      </div>
+      <div class="input-group" style="margin-bottom:1.2rem;">
+        <label>Sort Order</label>
+        <input type="number" id="svc-order" value="1">
+      </div>
+      <button type="submit" class="btn-action btn-gold">Save Service</button>
+    </form>
+  </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-note" id="reviewModal">
+  <div class="modal-note-box">
+    <button class="close-note" onclick="closeReviewModal()">&times;</button>
+    <h3 id="revModalTitle">Review Item</h3>
+    <form id="reviewForm" style="margin-top:1rem;">
+      <input type="hidden" id="rev-id">
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Quote</label>
+        <textarea id="rev-quote" rows="3" required></textarea>
+      </div>
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Author / Citation</label>
+        <input type="text" id="rev-author" placeholder="e.g. PATIENT, SYLHET" required>
+      </div>
+      <div class="input-group" style="margin-bottom:1.2rem;">
+        <label>Sort Order</label>
+        <input type="number" id="rev-order" value="1">
+      </div>
+      <button type="submit" class="btn-action btn-gold">Save Review</button>
+    </form>
+  </div>
+</div>
+
+<!-- Qualification Edit Modal -->
+<div class="modal-note" id="qualModal">
+  <div class="modal-note-box">
+    <button class="close-note" onclick="closeQualModal()">&times;</button>
+    <h3>Edit About Card</h3>
+    <form id="qualForm" style="margin-top:1rem;">
+      <input type="hidden" id="qual-id">
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Card Title</label>
+        <input type="text" id="qual-title" required>
+      </div>
+      <div class="input-group" style="margin-bottom:1rem;">
+        <label>Description</label>
+        <textarea id="qual-desc" rows="3" required></textarea>
+      </div>
+      <div class="input-group" style="margin-bottom:1.2rem;">
+        <label>Subtext</label>
+        <input type="text" id="qual-sub" required>
+      </div>
+      <button type="submit" class="btn-action btn-gold">Save Card</button>
+    </form>
+  </div>
+</div>
+
+<script>
+let currentAppointments = [];
+
+// Tab Switcher
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+  event.target.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+
+  if (tabId === 'tab-profile') loadProfileData();
+  if (tabId === 'tab-images') loadImagesData();
+  if (tabId === 'tab-services') loadServicesData();
+  if (tabId === 'tab-reviews') loadReviewsData();
+  if (tabId === 'tab-qualifications') loadQualificationsData();
+}
+
+// ----------------------------------------------------
+// TAB 1: APPOINTMENTS
+// ----------------------------------------------------
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats');
+    const json = await res.json();
+    if(json.success) {
+      document.getElementById('statTotal').textContent = json.data.total || 0;
+      document.getElementById('statPending').textContent = json.data.pending || 0;
+      document.getElementById('statConfirmed').textContent = json.data.confirmed || 0;
+      document.getElementById('statCompleted').textContent = json.data.completed || 0;
+    }
+  } catch(e) { console.error('Failed to load stats', e); }
+}
+
+async function fetchAppointments() {
+  const tbody = document.getElementById('apptTableBody');
+  const status = document.getElementById('filterStatus').value;
+  const date = document.getElementById('filterDate').value;
+  const search = document.getElementById('filterSearch').value.trim();
+
+  let url = `/api/appointments?status=${encodeURIComponent(status)}`;
+  if(date) url += `&date=${encodeURIComponent(date)}`;
+  if(search) url += `&search=${encodeURIComponent(search)}`;
+
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+
+    if(json.success) {
+      currentAppointments = json.data;
+      renderTable(json.data);
+    } else {
+      tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>Error loading data</h3><p>${json.message}</p></td></tr>`;
+    }
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>Connection Error</h3><p>Make sure the backend server is running.</p></td></tr>`;
+  }
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('apptTableBody');
+  if(!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>No Appointments Found</h3><p>No matching patient records found in SQL Server database.</p></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(item => {
+    const formattedDate = new Date(item.PreferredDate).toLocaleDateString('en-GB', {
+      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+    });
+
+    const hasNote = item.Notes && item.Notes.trim() !== '';
+
+    return `
+      <tr>
+        <td><b>#${item.Id}</b></td>
+        <td>
+          <div class="patient-info">
+            <span class="patient-name">${escapeHtml(item.PatientName)}</span>
+            <span class="patient-meta">Age: ${item.Age} yrs</span>
+          </div>
+        </td>
+        <td><a href="tel:${item.Phone}" style="color:var(--navy);font-weight:600;text-decoration:none">${escapeHtml(item.Phone)}</a></td>
+        <td>${escapeHtml(item.VisitType)}</td>
+        <td>
+          <div style="font-weight:600;color:var(--navy)">${formattedDate}</div>
+          <div style="font-size:.82rem;color:var(--muted)">${escapeHtml(item.PreferredSlot)}</div>
+        </td>
+        <td><span class="badge-status status-${item.Status}">${item.Status}</span></td>
+        <td>
+          ${hasNote 
+            ? `<button class="act-btn" onclick="showNote(${item.Id})">👁 View Note</button>` 
+            : `<span style="color:var(--muted);font-size:.85rem">None</span>`
+          }
+        </td>
+        <td>
+          <div class="action-btns">
+            ${item.Status !== 'Confirmed' ? `<button class="act-btn confirm" title="Confirm Appointment" onclick="updateStatus(${item.Id}, 'Confirmed')">Confirm</button>` : ''}
+            ${item.Status !== 'Completed' ? `<button class="act-btn complete" title="Mark as Completed" onclick="updateStatus(${item.Id}, 'Completed')">Complete</button>` : ''}
+            ${item.Status !== 'Cancelled' ? `<button class="act-btn cancel" title="Cancel Appointment" onclick="updateStatus(${item.Id}, 'Cancelled')">Cancel</button>` : ''}
+            <button class="act-btn delete" title="Delete record" onclick="deleteAppointment(${item.Id})">🗑</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function updateStatus(id, newStatus) {
+  if(!confirm(`Change status of Appointment #${id} to ${newStatus}?`)) return;
+
+  try {
+    const res = await fetch(`/api/appointments/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    });
+    const json = await res.json();
+    if(json.success) {
+      loadStats();
+      fetchAppointments();
+    } else {
+      alert(json.message);
+    }
+  } catch(e) { alert('Failed to update status.'); }
+}
+
+async function deleteAppointment(id) {
+  if(!confirm(`Are you sure you want to PERMANENTLY delete Appointment #${id}?`)) return;
+
+  try {
+    const res = await fetch(`/api/appointments/${id}`, { method: 'DELETE' });
+    const json = await res.json();
+    if(json.success) {
+      loadStats();
+      fetchAppointments();
+    } else { alert(json.message); }
+  } catch(e) { alert('Failed to delete appointment.'); }
+}
+
+function showNote(id) {
+  const item = currentAppointments.find(a => a.Id === id);
+  if(!item) return;
+  document.getElementById('noteModalTitle').textContent = `Note from ${item.PatientName} (#${item.Id})`;
+  document.getElementById('noteModalBody').textContent = item.Notes;
+  document.getElementById('noteModal').classList.add('open');
+}
+
+document.getElementById('closeNoteBtn').onclick = () => document.getElementById('noteModal').classList.remove('open');
+
+// ----------------------------------------------------
+// TAB 2: PROFILE & CONTACT FORM
+// ----------------------------------------------------
+async function loadProfileData() {
+  try {
+    const res = await fetch('/api/cms/content');
+    const json = await res.json();
+    if(json.success && json.data.settings) {
+      const s = json.data.settings;
+      const form = document.getElementById('profileForm');
+      for (const [key, val] of Object.entries(s)) {
+        if (form[key]) form[key].value = val;
+      }
+    }
+  } catch(e) { console.error('Failed to load profile data', e); }
+}
+
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {};
+  new FormData(form).forEach((value, key) => data[key] = value);
+
+  const succ = document.getElementById('profileSuccessAlert');
+  const err = document.getElementById('profileErrorAlert');
+  succ.style.display = 'none';
+  err.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/cms/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    if (json.success) {
+      succ.style.display = 'block';
+    } else {
+      err.style.display = 'block';
+    }
+  } catch(e) {
+    err.style.display = 'block';
+  }
+});
+
+// ----------------------------------------------------
+// TAB: IMAGE MANAGER
+// ----------------------------------------------------
+async function loadImagesData() {
+  try {
+    const res = await fetch('/api/cms/content');
+    const json = await res.json();
+    if(json.success && json.data.settings) {
+      const s = json.data.settings;
+      if (s.doctor_photo) {
+        document.getElementById('prev-doctor-photo').src = s.doctor_photo;
+        document.getElementById('url-doctor-photo').value = s.doctor_photo.length > 80 ? '(Base64 Image Data Saved)' : s.doctor_photo;
+      }
+      if (s.chamber_photo) {
+        document.getElementById('prev-chamber-photo').src = s.chamber_photo;
+        document.getElementById('url-chamber-photo').value = s.chamber_photo.length > 80 ? '(Base64 Image Data Saved)' : s.chamber_photo;
+      }
+      if (s.wellness_photo) {
+        document.getElementById('prev-wellness-photo').src = s.wellness_photo;
+        document.getElementById('url-wellness-photo').value = s.wellness_photo.length > 80 ? '(Base64 Image Data Saved)' : s.wellness_photo;
+      }
+      if (s.site_logo) {
+        document.getElementById('prev-logo').src = s.site_logo;
+        document.getElementById('url-logo').value = s.site_logo.length > 80 ? '(Base64 Image Data Saved)' : s.site_logo;
+      }
+    }
+  } catch(e) { console.error('Failed to load images data', e); }
+}
+
+function previewImageFile(input, previewId) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById(previewId).src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+async function saveSingleImage(settingKey, urlInputId, fileInputId) {
+  const fileInput = fileInputId ? document.getElementById(fileInputId) : null;
+  const urlInput = document.getElementById(urlInputId);
+  const allowEmpty = urlInput.getAttribute('data-allow-empty') === 'true';
+  let finalVal = urlInput.value.trim();
+
+  if (finalVal === '(Base64 Image Data Saved)') {
+    // If it hasn't changed, don't re-save the text label
+    const raw = urlInput.getAttribute('data-raw');
+    if (!raw) {
+      alert('This image is already stored as base64 data. Choose a new file or paste a URL to replace it.');
+      return;
+    }
+    finalVal = raw;
+  }
+
+  const succ = document.getElementById('imgSuccessAlert');
+  const err = document.getElementById('imgErrorAlert');
+  succ.style.display = 'none';
+  err.style.display = 'none';
+
+  const sendPayload = async (val) => {
+    try {
+      const res = await fetch('/api/cms/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [settingKey]: val })
+      });
+      const json = await res.json();
+      if(json.success) {
+        succ.style.display = 'block';
+        setTimeout(() => succ.style.display = 'none', 4000);
+      } else {
+        err.textContent = json.message || 'Failed to save image.';
+        err.style.display = 'block';
+      }
+    } catch(e) {
+      err.textContent = 'Server communication error.';
+      err.style.display = 'block';
+    }
+  };
+
+  if (fileInput && fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      finalVal = e.target.result;
+      urlInput.setAttribute('data-raw', finalVal);
+      urlInput.value = finalVal.length > 80 ? '(Base64 Image Data Saved)' : finalVal;
+      sendPayload(finalVal);
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  } else if (finalVal || allowEmpty) {
+    sendPayload(finalVal);
+  } else {
+    alert('Please select an image file or enter an image URL.');
+  }
+}
+
+async function resetSingleImage(settingKey, defaultVal, previewId, urlInputId) {
+  if(!confirm(`Reset this image to default standard (${defaultVal})?`)) return;
+  document.getElementById(previewId).src = defaultVal;
+  document.getElementById(urlInputId).value = defaultVal;
+  saveSingleImage(settingKey, urlInputId, '');
+}
+
+async function resetLogoImage() {
+  if(!confirm('Remove the custom logo and restore the built-in default SVG monogram?')) return;
+  const prev = document.getElementById('prev-logo');
+  prev.removeAttribute('src');
+  const urlInput = document.getElementById('url-logo');
+  urlInput.value = '';
+  urlInput.removeAttribute('data-raw');
+  await saveSingleImage('site_logo', 'url-logo', '');
+}
+
+// ----------------------------------------------------
+// TAB 3: SERVICES MANAGEMENT
+// ----------------------------------------------------
+let servicesData = [];
+async function loadServicesData() {
+  const tbody = document.getElementById('servicesTableBody');
+  try {
+    const res = await fetch('/api/cms/services/all');
+    const json = await res.json();
+    if (json.success) {
+      servicesData = json.data;
+      tbody.innerHTML = json.data.map(item => `
+        <tr>
+          <td><b>${item.SortOrder}</b></td>
+          <td><b>${escapeHtml(item.Title)}</b></td>
+          <td>${escapeHtml(item.Description)}</td>
+          <td>${item.IsActive ? '<span class="badge-status status-Confirmed">Active</span>' : '<span class="badge-status status-Cancelled">Inactive</span>'}</td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" onclick="editService(${item.Id})">✏️ Edit</button>
+              <button class="act-btn delete" onclick="deleteService(${item.Id})">🗑 Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+  } catch(e) { console.error(e); }
+}
+
+function openServiceModal(id = null) {
+  document.getElementById('serviceForm').reset();
+  document.getElementById('svc-id').value = '';
+  document.getElementById('svcModalTitle').textContent = 'Add New Service';
+  if(id) {
+    const item = servicesData.find(s => s.Id === id);
+    if(item) {
+      document.getElementById('svc-id').value = item.Id;
+      document.getElementById('svc-title').value = item.Title;
+      document.getElementById('svc-desc').value = item.Description;
+      document.getElementById('svc-order').value = item.SortOrder;
+      document.getElementById('svcModalTitle').textContent = 'Edit Service';
+    }
+  }
+  document.getElementById('serviceModal').classList.add('open');
+}
+function closeServiceModal() { document.getElementById('serviceModal').classList.remove('open'); }
+function editService(id) { openServiceModal(id); }
+
+document.getElementById('serviceForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('svc-id').value;
+  const payload = {
+    title: document.getElementById('svc-title').value,
+    description: document.getElementById('svc-desc').value,
+    sortOrder: document.getElementById('svc-order').value,
+    isActive: 1
+  };
+  const url = id ? `/api/cms/services/${id}` : '/api/cms/services';
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if(json.success) {
+      closeServiceModal();
+      loadServicesData();
+    } else { alert(json.message); }
+  } catch(e) { alert('Failed to save service.'); }
+});
+
+async function deleteService(id) {
+  if(!confirm('Delete this service permanently?')) return;
+  try {
+    const res = await fetch(`/api/cms/services/${id}`, { method: 'DELETE' });
+    const json = await res.json();
+    if(json.success) loadServicesData();
+  } catch(e) { alert('Failed to delete service.'); }
+}
+
+// ----------------------------------------------------
+// TAB 4: REVIEWS MANAGEMENT
+// ----------------------------------------------------
+let reviewsData = [];
+async function loadReviewsData() {
+  const tbody = document.getElementById('reviewsTableBody');
+  try {
+    const res = await fetch('/api/cms/testimonials/all');
+    const json = await res.json();
+    if (json.success) {
+      reviewsData = json.data;
+      tbody.innerHTML = json.data.map(item => `
+        <tr>
+          <td><b>${item.SortOrder}</b></td>
+          <td>"${escapeHtml(item.Quote)}"</td>
+          <td><b>${escapeHtml(item.Author)}</b></td>
+          <td>${item.IsActive ? '<span class="badge-status status-Confirmed">Active</span>' : '<span class="badge-status status-Cancelled">Inactive</span>'}</td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" onclick="editReview(${item.Id})">✏️ Edit</button>
+              <button class="act-btn delete" onclick="deleteReview(${item.Id})">🗑 Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+  } catch(e) { console.error(e); }
+}
+
+function openReviewModal(id = null) {
+  document.getElementById('reviewForm').reset();
+  document.getElementById('rev-id').value = '';
+  document.getElementById('revModalTitle').textContent = 'Add New Review';
+  if(id) {
+    const item = reviewsData.find(r => r.Id === id);
+    if(item) {
+      document.getElementById('rev-id').value = item.Id;
+      document.getElementById('rev-quote').value = item.Quote;
+      document.getElementById('rev-author').value = item.Author;
+      document.getElementById('rev-order').value = item.SortOrder;
+      document.getElementById('revModalTitle').textContent = 'Edit Review';
+    }
+  }
+  document.getElementById('reviewModal').classList.add('open');
+}
+function closeReviewModal() { document.getElementById('reviewModal').classList.remove('open'); }
+function editReview(id) { openReviewModal(id); }
+
+document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('rev-id').value;
+  const payload = {
+    quote: document.getElementById('rev-quote').value,
+    author: document.getElementById('rev-author').value,
+    sortOrder: document.getElementById('rev-order').value,
+    isActive: 1
+  };
+  const url = id ? `/api/cms/testimonials/${id}` : '/api/cms/testimonials';
+  const method = id ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if(json.success) {
+      closeReviewModal();
+      loadReviewsData();
+    } else { alert(json.message); }
+  } catch(e) { alert('Failed to save review.'); }
+});
+
+async function deleteReview(id) {
+  if(!confirm('Delete this review permanently?')) return;
+  try {
+    const res = await fetch(`/api/cms/testimonials/${id}`, { method: 'DELETE' });
+    const json = await res.json();
+    if(json.success) loadReviewsData();
+  } catch(e) { alert('Failed to delete review.'); }
+}
+
+// ----------------------------------------------------
+// TAB 5: QUALIFICATIONS MANAGEMENT
+// ----------------------------------------------------
+let qualData = [];
+async function loadQualificationsData() {
+  const tbody = document.getElementById('qualTableBody');
+  try {
+    const res = await fetch('/api/cms/qualifications/all');
+    const json = await res.json();
+    if (json.success) {
+      qualData = json.data;
+      tbody.innerHTML = json.data.map(item => `
+        <tr>
+          <td><b>#${item.Id}</b></td>
+          <td><b>${escapeHtml(item.Title)}</b></td>
+          <td>${escapeHtml(item.Description)}</td>
+          <td>${escapeHtml(item.Subtext)}</td>
+          <td>
+            <button class="act-btn" onclick="editQual(${item.Id})">✏️ Edit Card</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+  } catch(e) { console.error(e); }
+}
+
+function editQual(id) {
+  const item = qualData.find(q => q.Id === id);
+  if(!item) return;
+  document.getElementById('qual-id').value = item.Id;
+  document.getElementById('qual-title').value = item.Title;
+  document.getElementById('qual-desc').value = item.Description;
+  document.getElementById('qual-sub').value = item.Subtext;
+  document.getElementById('qualModal').classList.add('open');
+}
+function closeQualModal() { document.getElementById('qualModal').classList.remove('open'); }
+
+document.getElementById('qualForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('qual-id').value;
+  const payload = {
+    title: document.getElementById('qual-title').value,
+    description: document.getElementById('qual-desc').value,
+    subtext: document.getElementById('qual-sub').value
+  };
+
+  try {
+    const res = await fetch(`/api/cms/qualifications/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if(json.success) {
+      closeQualModal();
+      loadQualificationsData();
+    } else { alert(json.message); }
+  } catch(e) { alert('Failed to save card.'); }
+});
+
+function escapeHtml(str) {
+  if(!str) return '';
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// Event Listeners for Appointments
+document.getElementById('filterStatus').addEventListener('change', fetchAppointments);
+document.getElementById('filterDate').addEventListener('change', fetchAppointments);
+let searchDebounce;
+document.getElementById('filterSearch').addEventListener('input', () => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(fetchAppointments, 300);
+});
+
+document.getElementById('btnResetFilters').addEventListener('click', () => {
+  document.getElementById('filterSearch').value = '';
+  document.getElementById('filterStatus').value = 'All';
+  document.getElementById('filterDate').value = '';
+  fetchAppointments();
+});
+
+document.getElementById('btnRefresh').addEventListener('click', () => {
+  loadStats();
+  fetchAppointments();
+});
+
+// Initial Load
+loadStats();
+fetchAppointments();
+</script>
+</body>
+</html>

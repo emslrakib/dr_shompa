@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets (contains DB credentials — never commit)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Local debug / diagnostic dumps produced while troubleshooting
+_*.log
+_*.txt
+
+# OS / editor noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
