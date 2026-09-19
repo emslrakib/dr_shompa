@@ -33,7 +33,13 @@ function getPoolPromise() {
             })
             .catch(err => {
                 _dbConnected = false;
-                console.error('❌ Database Connection Failed! Server continues without DB. Bad Config:', err.message);
+                // Reset the cached promise so the NEXT request retries the connection.
+                // Without this, a single bad moment at startup would keep every API call
+                // failing (with a confusing "null pool" error) until the process restarts.
+                _poolPromise = null;
+                console.error('❌ Database connection failed — the web server keeps running and will retry on the next request.');
+                console.error(`   Target  : ${dbConfig.server}:${dbConfig.port}  database: ${dbConfig.database}  user: ${dbConfig.user || '(not set)'}`);
+                console.error('   Reason  : ' + err.message);
                 return null;
             });
     }

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -11,16 +12,73 @@ const PORT = process.env.PORT || 5000;
 const db = require('./db');
 // `sql` is mssql's data-type namespace (NVarChar, Int, Bit, ...) — importing it does NOT open a connection
 const sql = db.sql;
-// Make db available in all route handlers via express locals as well
-app.use((req, res, next) => {
-    req.db = db;
-    next();
-});
+
+// ---------------------------------------------------------------------------
+// Optional admin protection.
+// It stays OFF unless BOTH ADMIN_USER and ADMIN_PASS are set in .env, so local
+// use is unchanged while a deployed copy can be locked down.
+// ---------------------------------------------------------------------------
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
+const AUTH_ENABLED = Boolean(ADMIN_USER && ADMIN_PASS);
+
+function safeEqual(a, b) {
+    const bufA = Buffer.from(String(a), 'utf8');
+    const bufB = Buffer.from(String(b), 'utf8');
+    return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+}
+
+function requireAdmin(req, res, next) {
+    const [scheme, token] = String(req.headers.authorization || '').split(' ');
+    if (scheme === 'Basic' && token) {
+        const decoded = Buffer.from(token, 'base64').toString('utf8');
+        const sep = decoded.indexOf(':');
+        if (sep > -1) {
+            const user = decoded.slice(0, sep);
+            const pass = decoded.slice(sep + 1);
+            if (safeEqual(user, ADMIN_USER) && safeEqual(pass, ADMIN_PASS)) return next();
+        }
+    }
+    res.set('WWW-Authenticate', 'Basic realm="DrShompa Admin"');
+    res.status(401).send('Authentication required.');
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+// ---------------------------------------------------------------------------
+// Security guards — registered BEFORE the static handler and the routes
+// ---------------------------------------------------------------------------
+
+// Admin / patient-data surfaces. The public site keeps working because
+// GET /api/cms/content and POST /api/appointments (the booking form) stay open.
+if (AUTH_ENABLED) {
+    app.use([
+        '/admin',
+        '/admin.html',
+        '/api/stats',
+        '/api/cms/settings',
+        '/api/cms/services',
+        '/api/cms/testimonials',
+        '/api/cms/qualifications'
+    ], requireAdmin);
+
+    app.use('/api/appointments', (req, res, next) => {
+        if (req.method === 'POST' && (req.path === '/' || req.path === '')) return next(); // public booking form
+        return requireAdmin(req, res, next);
+    });
+}
+
+// The frontend is self-contained HTML + images, so source, config, log and
+// debug-dump files must never be downloadable from the browser.
+app.use((req, res, next) => {
+    if (req.path.includes('/.') || /\.(js|json|sql|md|log|txt|cmd|bat|ps1|yml|yaml|lock)$/i.test(req.path)) {
+        return res.status(404).type('text/plain').send('Not found');
+    }
+    next();
+});
 
 // Serve static frontend files
 app.use(express.static(__dirname));
@@ -30,6 +88,38 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dr-arefin-zannat-s
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/voices', (req, res) => res.sendFile(path.join(__dirname, 'patient-voices.html')));
 app.get('/patient-voices', (req, res) => res.sendFile(path.join(__dirname, 'patient-voices.html')));
+
+// ==========================================
+// HEALTH CHECK (public)
+// ==========================================
+app.get('/api/health', async (req, res) => {
+    const pool = await db.poolPromise;
+    const dbOk = Boolean(pool);
+
+    res.status(dbOk ? 200 : 503).json({
+        success: dbOk,
+        server: 'up',
+        database: dbOk ? 'connected' : 'unavailable',
+        databaseName: process.env.DB_NAME,
+        adminAuth: AUTH_ENABLED ? 'enabled' : 'disabled',
+        node: process.version,
+        uptimeSeconds: Math.round(process.uptime()),
+        timestamp: new Date().toISOString()
+    });
+});
+
+// If SQL Server is unreachable, answer API calls with a clear 503 instead of a
+// cryptic 500 (and instead of "Cannot read properties of null").
+app.use('/api', async (req, res, next) => {
+    const pool = await db.poolPromise;
+    if (!pool) {
+        return res.status(503).json({
+            success: false,
+            message: 'Database is unavailable right now. Please try again in a moment.'
+        });
+    }
+    next();
+});
 
 // ==========================================
 // 1. APPOINTMENT ROUTES
@@ -399,7 +489,21 @@ app.put('/api/cms/qualifications/:id', async (req, res) => {
     }
 });
 
+// Unknown API endpoint → JSON response (keeps the frontend's res.json() from throwing)
+app.use('/api', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `Unknown API endpoint: ${req.method} ${req.originalUrl}`
+    });
+});
+
 // Start Express server
 app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`   Website : http://localhost:${PORT}/`);
+    console.log(`   CMS     : http://localhost:${PORT}/admin`);
+    console.log(`   Health  : http://localhost:${PORT}/api/health`);
+    console.log(AUTH_ENABLED
+        ? '🔒 Admin authentication: ENABLED'
+        : '🔓 Admin authentication: disabled (set ADMIN_USER + ADMIN_PASS in .env to enable)');
 });
