@@ -289,7 +289,9 @@ tr:hover td { background: rgba(251,250,246,.7); }
     </div>
   </a>
   <div class="head-actions">
+    <span id="sessionInfo" style="font-size:.82rem;color:var(--gold-soft);display:none;"></span>
     <a href="dr-arefin-zannat-sompa.html" target="_blank" class="btn-site">View Website ↗</a>
+    <button type="button" id="btnLogout" class="btn-site" style="display:none;background:none;cursor:pointer;font-family:var(--sans);">Log out</button>
   </div>
 </header>
 
@@ -348,19 +350,26 @@ tr:hover td { background: rgba(251,250,246,.7); }
         <div class="input-group">
           <label for="filterStatus">Status</label>
           <select id="filterStatus">
-            <option value="All">All Statuses</option>
-            <option value="Pending" selected>Pending</option>
+            <option value="All" selected>All Statuses</option>
+            <option value="Pending">Pending</option>
             <option value="Confirmed">Confirmed</option>
             <option value="Completed">Completed</option>
             <option value="Cancelled">Cancelled</option>
           </select>
         </div>
         <div class="input-group">
-          <label for="filterDate">Filter Date</label>
-          <input type="date" id="filterDate">
+          <label for="filterFrom">From Date</label>
+          <input type="date" id="filterFrom">
+        </div>
+        <div class="input-group">
+          <label for="filterTo">To Date</label>
+          <input type="date" id="filterTo">
         </div>
       </div>
-      <div style="display: flex; gap: .6rem;">
+      <div style="display: flex; gap: .6rem; align-items: center; flex-wrap: wrap;">
+        <span id="apptSummary" style="font-size:.82rem; color:var(--muted);"></span>
+        <button type="button" class="btn-action btn-outline" id="btnToday">Today</button>
+        <button type="button" class="btn-action btn-outline" id="btnWeek">Next 7 days</button>
         <button class="btn-action btn-outline" id="btnResetFilters">Reset</button>
         <button class="btn-action btn-primary" id="btnRefresh">🔄 Refresh</button>
       </div>
@@ -722,6 +731,42 @@ tr:hover td { background: rgba(251,250,246,.7); }
 <script>
 let currentAppointments = [];
 
+// ----------------------------------------------------
+// SESSION — sign-in state, sign-out and expired sessions
+// ----------------------------------------------------
+const _fetch = window.fetch.bind(window);
+
+// If the session expires while the panel is open, send the user back to the login screen
+window.fetch = async function(...args) {
+  const res = await _fetch(...args);
+  if (res.status === 401) {
+    try {
+      const body = await res.clone().json();
+      if (body && body.mustLogin) window.location.href = '/login';
+    } catch(e) { /* not a JSON 401 — ignore */ }
+  }
+  return res;
+};
+
+function signOut() {
+  _fetch('/api/logout', { method: 'POST' }).catch(() => {}).then(() => { window.location.href = '/login'; });
+}
+
+async function initSession() {
+  try {
+    const res = await _fetch('/api/session');
+    const json = await res.json();
+    if (!json.authEnabled) return; // sign-in is switched off — keep the panel open
+    const info = document.getElementById('sessionInfo');
+    const btn = document.getElementById('btnLogout');
+    if (btn) btn.style.display = 'inline-flex';
+    if (info) { info.textContent = 'Signed in as ' + json.username; info.style.display = 'inline'; }
+  } catch(e) { console.error('Could not read the session state', e); }
+}
+
+initSession();
+document.getElementById('btnLogout').addEventListener('click', signOut);
+
 // Tab Switcher
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -755,12 +800,15 @@ async function loadStats() {
 
 async function fetchAppointments() {
   const tbody = document.getElementById('apptTableBody');
+  const summary = document.getElementById('apptSummary');
   const status = document.getElementById('filterStatus').value;
-  const date = document.getElementById('filterDate').value;
+  const from = document.getElementById('filterFrom').value;
+  const to = document.getElementById('filterTo').value;
   const search = document.getElementById('filterSearch').value.trim();
 
   let url = `/api/appointments?status=${encodeURIComponent(status)}`;
-  if(date) url += `&date=${encodeURIComponent(date)}`;
+  if(from) url += `&from=${encodeURIComponent(from)}`;
+  if(to) url += `&to=${encodeURIComponent(to)}`;
   if(search) url += `&search=${encodeURIComponent(search)}`;
 
   try {
@@ -770,25 +818,45 @@ async function fetchAppointments() {
     if(json.success) {
       currentAppointments = json.data;
       renderTable(json.data);
+
+      if(summary) {
+        const parts = [];
+        if(status && status !== 'All') parts.push(status.toLowerCase());
+        if(from) parts.push('from ' + from);
+        if(to) parts.push('to ' + to);
+        if(search) parts.push(`matching "${search}"`);
+        summary.textContent = `${json.count} appointment${json.count === 1 ? '' : 's'}`
+          + (parts.length ? ' — ' + parts.join(' ') : '');
+      }
     } else {
+      if(summary) summary.textContent = '';
       tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>Error loading data</h3><p>${json.message}</p></td></tr>`;
     }
   } catch(e) {
+    if(summary) summary.textContent = '';
     tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>Connection Error</h3><p>Make sure the backend server is running.</p></td></tr>`;
   }
+}
+
+// The API returns "YYYY-MM-DDTHH:mm:ss.sssZ". Read the date part directly so the displayed
+// weekday can never shift by one day because of a time-zone conversion.
+function formatApptDate(value) {
+  const m = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return String(value || '');
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString('en-GB', {
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+  });
 }
 
 function renderTable(data) {
   const tbody = document.getElementById('apptTableBody');
   if(!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>No Appointments Found</h3><p>No matching patient records found in SQL Server database.</p></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><h3>No Appointments Found</h3><p>No patient records match these filters. Press "Reset" or widen the date range.</p></td></tr>`;
     return;
   }
 
   tbody.innerHTML = data.map(item => {
-    const formattedDate = new Date(item.PreferredDate).toLocaleDateString('en-GB', {
-      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
-    });
+    const formattedDate = formatApptDate(item.PreferredDate);
 
     const hasNote = item.Notes && item.Notes.trim() !== '';
 
@@ -917,62 +985,101 @@ document.getElementById('profileForm').addEventListener('submit', async function
 // ----------------------------------------------------
 // TAB: IMAGE MANAGER
 // ----------------------------------------------------
+// A stored image is shown as a short label; the real value is kept in data-raw, so pressing
+// "Save" again re-saves the image itself and never the label text.
+function imageFieldLabel(value) {
+  if (!value) return '';
+  if (value.startsWith('data:')) {
+    const kind = (value.match(/^data:image\/([a-z0-9.+-]+)/i) || [null, 'image'])[1].toUpperCase();
+    return `(stored ${kind} image, ~${Math.round(value.length / 1024)} KB)`;
+  }
+  return value;
+}
+
+function setImageField(value, previewId, urlInputId) {
+  const urlInput = document.getElementById(urlInputId);
+  if (!value || !urlInput) return;
+  const preview = document.getElementById(previewId);
+  if (preview) preview.src = value;
+  urlInput.setAttribute('data-raw', value);
+  urlInput.value = imageFieldLabel(value);
+}
+
 async function loadImagesData() {
   try {
     const res = await fetch('/api/cms/content');
     const json = await res.json();
     if(json.success && json.data.settings) {
       const s = json.data.settings;
-      if (s.doctor_photo) {
-        document.getElementById('prev-doctor-photo').src = s.doctor_photo;
-        document.getElementById('url-doctor-photo').value = s.doctor_photo.length > 80 ? '(Base64 Image Data Saved)' : s.doctor_photo;
-      }
-      if (s.chamber_photo) {
-        document.getElementById('prev-chamber-photo').src = s.chamber_photo;
-        document.getElementById('url-chamber-photo').value = s.chamber_photo.length > 80 ? '(Base64 Image Data Saved)' : s.chamber_photo;
-      }
-      if (s.wellness_photo) {
-        document.getElementById('prev-wellness-photo').src = s.wellness_photo;
-        document.getElementById('url-wellness-photo').value = s.wellness_photo.length > 80 ? '(Base64 Image Data Saved)' : s.wellness_photo;
-      }
-      if (s.site_logo) {
-        document.getElementById('prev-logo').src = s.site_logo;
-        document.getElementById('url-logo').value = s.site_logo.length > 80 ? '(Base64 Image Data Saved)' : s.site_logo;
-      }
+      setImageField(s.doctor_photo, 'prev-doctor-photo', 'url-doctor-photo');
+      setImageField(s.chamber_photo, 'prev-chamber-photo', 'url-chamber-photo');
+      setImageField(s.wellness_photo, 'prev-wellness-photo', 'url-wellness-photo');
+      setImageField(s.site_logo, 'prev-logo', 'url-logo');
     }
   } catch(e) { console.error('Failed to load images data', e); }
 }
 
-function previewImageFile(input, previewId) {
-  if (input.files && input.files[0]) {
+// A phone photo is often 3–8 MB. The browser shrinks and compresses it before it is stored,
+// which keeps the database small and stays well under the server's JSON payload limit.
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+const MAX_IMAGE_EDGE = 1200;
+const IMAGE_QUALITY = 0.85;
+
+function compressImageFile(file) {
+  return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById(previewId).src = e.target.result;
+    reader.onerror = () => resolve(null);
+    reader.onload = () => {
+      const original = reader.result;
+      const img = new Image();
+      img.onerror = () => resolve(original); // not a decodable image — store it unchanged
+      img.onload = () => {
+        try {
+          const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          const isPng = /^data:image\/png/i.test(original);
+          resolve(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', IMAGE_QUALITY));
+        } catch (err) {
+          resolve(original);
+        }
+      };
+      img.src = original;
     };
-    reader.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function previewImageFile(input, previewId) {
+  if (!(input.files && input.files[0])) return;
+  const file = input.files[0];
+  if (file.size > MAX_UPLOAD_BYTES) {
+    alert(`That file is ${(file.size / 1048576).toFixed(1)} MB. Please choose an image smaller than 8 MB.`);
+    input.value = '';
+    return;
   }
+  const dataUrl = await compressImageFile(file);
+  if (dataUrl) document.getElementById(previewId).src = dataUrl;
 }
 
 async function saveSingleImage(settingKey, urlInputId, fileInputId) {
   const fileInput = fileInputId ? document.getElementById(fileInputId) : null;
   const urlInput = document.getElementById(urlInputId);
   const allowEmpty = urlInput.getAttribute('data-allow-empty') === 'true';
+  const stored = urlInput.getAttribute('data-raw') || '';
   let finalVal = urlInput.value.trim();
-
-  if (finalVal === '(Base64 Image Data Saved)') {
-    // If it hasn't changed, don't re-save the text label
-    const raw = urlInput.getAttribute('data-raw');
-    if (!raw) {
-      alert('This image is already stored as base64 data. Choose a new file or paste a URL to replace it.');
-      return;
-    }
-    finalVal = raw;
-  }
 
   const succ = document.getElementById('imgSuccessAlert');
   const err = document.getElementById('imgErrorAlert');
   succ.style.display = 'none';
   err.style.display = 'none';
+
+  const showError = (message) => {
+    err.textContent = message;
+    err.style.display = 'block';
+  };
 
   const sendPayload = async (val) => {
     try {
@@ -983,39 +1090,57 @@ async function saveSingleImage(settingKey, urlInputId, fileInputId) {
       });
       const json = await res.json();
       if(json.success) {
+        urlInput.setAttribute('data-raw', val);
+        urlInput.value = imageFieldLabel(val);
         succ.style.display = 'block';
         setTimeout(() => succ.style.display = 'none', 4000);
       } else {
-        err.textContent = json.message || 'Failed to save image.';
-        err.style.display = 'block';
+        showError(json.message || 'Failed to save image.');
       }
     } catch(e) {
-      err.textContent = 'Server communication error.';
-      err.style.display = 'block';
+      showError('Server communication error — is the server still running?');
     }
   };
 
+  // 1) A newly picked file always wins, and is compressed first
   if (fileInput && fileInput.files && fileInput.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      finalVal = e.target.result;
-      urlInput.setAttribute('data-raw', finalVal);
-      urlInput.value = finalVal.length > 80 ? '(Base64 Image Data Saved)' : finalVal;
-      sendPayload(finalVal);
-    };
-    reader.readAsDataURL(fileInput.files[0]);
-  } else if (finalVal || allowEmpty) {
-    sendPayload(finalVal);
-  } else {
-    alert('Please select an image file or enter an image URL.');
+    const file = fileInput.files[0];
+    if (file.size > MAX_UPLOAD_BYTES) {
+      showError(`That file is ${(file.size / 1048576).toFixed(1)} MB. Please choose an image smaller than 8 MB.`);
+      return;
+    }
+    finalVal = await compressImageFile(file);
+    if (!finalVal) {
+      showError('That file could not be read as an image.');
+      return;
+    }
+    if (finalVal.length > 8 * 1024 * 1024) {
+      showError('The image is still too large after compression. Please choose a smaller picture.');
+      return;
+    }
   }
+  // 2) The box is showing the label of the stored image → keep that exact image
+  else if (stored && finalVal === imageFieldLabel(stored)) {
+    finalVal = stored;
+  }
+  // 3) Otherwise the box holds a manually typed URL/path (may be empty for the logo)
+
+  if (!finalVal && !allowEmpty) {
+    alert('Please choose an image file or type an image URL.');
+    return;
+  }
+
+  await sendPayload(finalVal);
 }
 
 async function resetSingleImage(settingKey, defaultVal, previewId, urlInputId) {
   if(!confirm(`Reset this image to default standard (${defaultVal})?`)) return;
-  document.getElementById(previewId).src = defaultVal;
-  document.getElementById(urlInputId).value = defaultVal;
-  saveSingleImage(settingKey, urlInputId, '');
+  const prev = document.getElementById(previewId);
+  if (prev) prev.src = defaultVal;
+  const urlInput = document.getElementById(urlInputId);
+  urlInput.value = defaultVal;
+  urlInput.removeAttribute('data-raw'); // the typed path must win over the old stored image
+  await saveSingleImage(settingKey, urlInputId, '');
 }
 
 async function resetLogoImage() {
@@ -1261,17 +1386,40 @@ function escapeHtml(str) {
 
 // Event Listeners for Appointments
 document.getElementById('filterStatus').addEventListener('change', fetchAppointments);
-document.getElementById('filterDate').addEventListener('change', fetchAppointments);
+document.getElementById('filterFrom').addEventListener('change', fetchAppointments);
+document.getElementById('filterTo').addEventListener('change', fetchAppointments);
 let searchDebounce;
 document.getElementById('filterSearch').addEventListener('input', () => {
   clearTimeout(searchDebounce);
   searchDebounce = setTimeout(fetchAppointments, 300);
 });
 
+// Calendar dates in the browser's own time zone (a plain ISO slice could shift the day)
+function localIsoDate(date) {
+  const d = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return d.toISOString().slice(0, 10);
+}
+
+document.getElementById('btnToday').addEventListener('click', () => {
+  const today = localIsoDate(new Date());
+  document.getElementById('filterFrom').value = today;
+  document.getElementById('filterTo').value = today;
+  fetchAppointments();
+});
+
+document.getElementById('btnWeek').addEventListener('click', () => {
+  const end = new Date();
+  end.setDate(end.getDate() + 7);
+  document.getElementById('filterFrom').value = localIsoDate(new Date());
+  document.getElementById('filterTo').value = localIsoDate(end);
+  fetchAppointments();
+});
+
 document.getElementById('btnResetFilters').addEventListener('click', () => {
   document.getElementById('filterSearch').value = '';
   document.getElementById('filterStatus').value = 'All';
-  document.getElementById('filterDate').value = '';
+  document.getElementById('filterFrom').value = '';
+  document.getElementById('filterTo').value = '';
   fetchAppointments();
 });
 

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Dr. Arefin Zannat Sompa Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FBFAF6;
+    --navy: #0E2452;
+    --navy-deep: #071730;
+    --gold: #B0832F;
+    --gold-soft: #E2C68A;
+    --ink: #18202E;
+    --muted: #5B6678;
+    --line: rgba(14,36,82,.14);
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --sans: "Karla", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1.2rem;
+    font-family: var(--sans);
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 20% 20%, rgba(226,198,138,.16), transparent 45%),
+      linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+  }
+  .card {
+    width: min(420px, 100%);
+    background: var(--paper);
+    border-radius: 18px;
+    padding: 2.2rem 2rem 1.8rem;
+    box-shadow: 0 30px 60px -25px rgba(0,0,0,.55);
+    border-top: 4px solid var(--gold);
+  }
+  .brand { text-align: center; margin-bottom: 1.6rem; }
+  .brand h1 {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    color: var(--navy);
+    line-height: 1.15;
+  }
+  .brand span {
+    display: block;
+    margin-top: .35rem;
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .brand p { margin-top: .8rem; font-size: .85rem; color: var(--muted); line-height: 1.5; }
+  label { display: block; font-size: .82rem; font-weight: 600; color: var(--navy); margin-bottom: .35rem; }
+  .field { margin-bottom: 1.05rem; }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: .72rem .85rem;
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    transition: .2s;
+  }
+  input[type="text"]:focus, input[type="password"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(176,131,47,.15);
+  }
+  button {
+    width: 100%;
+    margin-top: .4rem;
+    padding: .8rem 1rem;
+    font-family: var(--sans);
+    font-size: .95rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    color: #fff;
+    background: var(--navy);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .22s;
+  }
+  button:hover { background: var(--gold); }
+  button:disabled { opacity: .6; cursor: progress; }
+  .msg {
+    display: none;
+    margin-bottom: 1rem;
+    padding: .7rem .85rem;
+    border-radius: 9px;
+    font-size: .85rem;
+    line-height: 1.4;
+  }
+  .msg.error { background: #FDECEC; color: #8E1F1F; border: 1px solid #F3C6C6; }
+  .msg.info { background: #F1ECE1; color: var(--navy); border: 1px solid var(--line); }
+  .hint {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: .78rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .back {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .back:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <h1>Dr. Arefin Zannat Sompa</h1>
+    <span>Chamber &amp; Content Admin</span>
+    <p>রোগীর তথ্য ও ওয়েবসাইট কনটেন্ট দেখতে সাইন ইন করুন।<br>Sign in to manage appointments and site content.</p>
+  </div>
+
+  <div class="msg error" id="msgError"></div>
+  <div class="msg info" id="msgInfo"></div>
+
+  <form id="loginForm" autocomplete="on">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+    </div>
+    <button type="submit" id="submitBtn">Sign in</button>
+  </form>
+
+  <div class="hint">
+    লগইন তথ্য <b>.env</b> ফাইলের <b>ADMIN_USER</b> ও <b>ADMIN_PASS</b> থেকে নেওয়া হয়।
+    ভুলে গেলে ফাইলটি এডিট করে সার্ভার রিস্টার্ট করুন।<br>
+    Credentials come from <b>.env</b> (<b>ADMIN_USER</b> / <b>ADMIN_PASS</b>).
+  </div>
+
+  <a class="back" href="dr-arefin-zannat-sompa.html">← Back to the website</a>
+</div>
+
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var next = params.get('next') || '/admin';
+  // only ever redirect inside this site
+  if (next.charAt(0) !== '/' || next.charAt(1) === '/') next = '/admin';
+
+  var form = document.getElementById('loginForm');
+  var userInput = document.getElementById('username');
+  var passInput = document.getElementById('password');
+  var button = document.getElementById('submitBtn');
+  var errorBox = document.getElementById('msgError');
+  var infoBox = document.getElementById('msgInfo');
+
+  function showError(text) {
+    errorBox.textContent = text;
+    errorBox.style.display = 'block';
+    infoBox.style.display = 'none';
+  }
+
+  function showInfo(text) {
+    infoBox.textContent = text;
+    infoBox.style.display = 'block';
+    errorBox.style.display = 'none';
+  }
+
+  // Already signed in? Go straight to the panel. Sign-in switched off? Say so clearly.
+  fetch('/api/session')
+    .then(function (res) { return res.json(); })
+    .then(function (json) {
+      if (!json.authEnabled) {
+        showInfo('Sign-in is switched off on this server (ADMIN_USER / ADMIN_PASS are not set in .env), so the admin panel is open.');
+        button.disabled = true;
+      } else if (json.authenticated) {
+        window.location.href = next;
+      }
+    })
+    .catch(function () { /* server may be down — the submit button reports it */ });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    errorBox.style.display = 'none';
+    button.disabled = true;
+    button.textContent = 'Signing in…';
+
+    try {
+      var res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: userInput.value.trim(),
+          password: passInput.value
+        })
+      });
+      var json = await res.json();
+
+      if (json.success) {
+        window.location.href = next;
+        return;
+      }
+      showError(json.message || 'Sign in failed.');
+    } catch (err) {
+      showError('Cannot reach the server. Make sure it is running, then try again.');
+    }
+
+    button.disabled = false;
+    button.textContent = 'Sign in';
+    passInput.value = '';
+    passInput.focus();
+  });
+</script>
+</body>
+</html>

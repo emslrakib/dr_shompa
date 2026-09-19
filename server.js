@@ -18,9 +18,16 @@ const sql = db.sql;
 // It stays OFF unless BOTH ADMIN_USER and ADMIN_PASS are set in .env, so local
 // use is unchanged while a deployed copy can be locked down.
 // ---------------------------------------------------------------------------
-const ADMIN_USER = process.env.ADMIN_USER;
-const ADMIN_PASS = process.env.ADMIN_PASS;
+const ADMIN_USER = (process.env.ADMIN_USER || '').trim();
+const ADMIN_PASS = (process.env.ADMIN_PASS || '').trim();
 const AUTH_ENABLED = Boolean(ADMIN_USER && ADMIN_PASS);
+
+// Session cookies are signed with this secret. SESSION_SECRET in .env keeps the same
+// secret across restarts; otherwise it is derived from the admin credentials.
+const SESSION_COOKIE = 'drshompa_session';
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // an 8 hour working session
+const SESSION_SECRET = process.env.SESSION_SECRET
+    || crypto.createHash('sha256').update(`${ADMIN_USER}:${ADMIN_PASS}:drshompa`).digest('hex');
 
 function safeEqual(a, b) {
     const bufA = Buffer.from(String(a), 'utf8');
@@ -28,19 +35,90 @@ function safeEqual(a, b) {
     return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
 }
 
+function signSession(payload) {
+    const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const sig = crypto.createHmac('sha256', SESSION_SECRET).update(body).digest('base64url');
+    return `${body}.${sig}`;
+}
+
+// Live sessions are tracked in memory, so signing out really invalidates the token
+// instead of only clearing the browser cookie. A server restart simply asks the
+// admin to sign in again, which is normal for a control panel.
+const activeSessions = new Map(); // session id -> expiry timestamp
+
+function pruneExpiredSessions() {
+    const now = Date.now();
+    for (const [sid, exp] of activeSessions) {
+        if (exp <= now) activeSessions.delete(sid);
+    }
+}
+
+function createSession(username) {
+    pruneExpiredSessions();
+    const sid = crypto.randomBytes(18).toString('base64url');
+    const exp = Date.now() + SESSION_TTL_MS;
+    activeSessions.set(sid, exp);
+    return signSession({ sid, u: username, exp });
+}
+
+function endSession(req) {
+    const payload = verifySession(parseCookies(req)[SESSION_COOKIE]);
+    if (payload && payload.sid) activeSessions.delete(payload.sid);
+}
+
+function verifySession(token) {
+    if (!token) return null;
+    const [body, sig] = String(token).split('.');
+    if (!body || !sig) return null;
+
+    const want = Buffer.from(crypto.createHmac('sha256', SESSION_SECRET).update(body).digest('base64url'), 'utf8');
+    const given = Buffer.from(sig, 'utf8');
+    if (given.length !== want.length || !crypto.timingSafeEqual(given, want)) return null;
+
+    try {
+        const payload = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
+        return payload && payload.exp > Date.now() ? payload : null;
+    } catch (err) {
+        return null;
+    }
+}
+
+function parseCookies(req) {
+    const jar = {};
+    String(req.headers.cookie || '').split(';').forEach(part => {
+        const at = part.indexOf('=');
+        if (at > -1) jar[part.slice(0, at).trim()] = decodeURIComponent(part.slice(at + 1).trim());
+    });
+    return jar;
+}
+
+function isLoggedIn(req) {
+    const payload = verifySession(parseCookies(req)[SESSION_COOKIE]);
+    if (!payload || payload.u !== ADMIN_USER) return false;
+    // must also be an active (not signed-out, not expired) server-side session
+    const expiresAt = activeSessions.get(payload.sid);
+    return typeof expiresAt === 'number' && expiresAt > Date.now();
+}
+
+// Blocks the admin panel, patient records and content editing.
+// A browser gets redirected to the login screen, API clients get JSON 401.
+// HTTP Basic is still accepted so scripts and curl keep working.
 function requireAdmin(req, res, next) {
+    if (isLoggedIn(req)) return next();
+
     const [scheme, token] = String(req.headers.authorization || '').split(' ');
     if (scheme === 'Basic' && token) {
         const decoded = Buffer.from(token, 'base64').toString('utf8');
         const sep = decoded.indexOf(':');
-        if (sep > -1) {
-            const user = decoded.slice(0, sep);
-            const pass = decoded.slice(sep + 1);
-            if (safeEqual(user, ADMIN_USER) && safeEqual(pass, ADMIN_PASS)) return next();
+        if (sep > -1 && safeEqual(decoded.slice(0, sep), ADMIN_USER) && safeEqual(decoded.slice(sep + 1), ADMIN_PASS)) {
+            return next();
         }
     }
-    res.set('WWW-Authenticate', 'Basic realm="DrShompa Admin"');
-    res.status(401).send('Authentication required.');
+
+    if (req.method === 'GET' && String(req.headers.accept || '').includes('text/html')) {
+        return res.redirect('/login?next=' + encodeURIComponent(req.originalUrl));
+    }
+    res.status(401).json({ success: false, mustLogin: true, message: 'Please sign in to continue.' });
 }
 
 // Middleware
@@ -88,6 +166,49 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dr-arefin-zannat-s
 app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 app.get('/voices', (req, res) => res.sendFile(path.join(__dirname, 'patient-voices.html')));
 app.get('/patient-voices', (req, res) => res.sendFile(path.join(__dirname, 'patient-voices.html')));
+
+// ==========================================
+// LOGIN / SESSION (public — no database needed)
+// ==========================================
+app.get('/login', (req, res) => {
+    if (!AUTH_ENABLED) return res.redirect('/admin');
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/api/session', (req, res) => {
+    const authenticated = AUTH_ENABLED ? isLoggedIn(req) : true;
+    res.json({
+        success: true,
+        authEnabled: AUTH_ENABLED,
+        authenticated,
+        username: authenticated && AUTH_ENABLED ? ADMIN_USER : null
+    });
+});
+
+app.post('/api/login', (req, res) => {
+    if (!AUTH_ENABLED) {
+        return res.status(400).json({ success: false, message: 'Admin sign-in is not configured on this server.' });
+    }
+
+    const { username, password } = req.body || {};
+    if (!safeEqual(username || '', ADMIN_USER) || !safeEqual(password || '', ADMIN_PASS)) {
+        return res.status(401).json({ success: false, message: 'Wrong username or password.' });
+    }
+
+    res.cookie(SESSION_COOKIE, createSession(ADMIN_USER), {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: SESSION_TTL_MS
+    });
+    res.json({ success: true, message: 'Signed in successfully.' });
+});
+
+app.post('/api/logout', (req, res) => {
+    endSession(req); // the token is dead on the server as well, not just removed from the browser
+    res.clearCookie(SESSION_COOKIE, { path: '/' });
+    res.json({ success: true, message: 'Signed out.' });
+});
 
 // ==========================================
 // HEALTH CHECK (public)
@@ -182,8 +303,20 @@ app.post('/api/appointments', async (req, res) => {
 // Get all appointments (with filters)
 app.get('/api/appointments', async (req, res) => {
     try {
-        const { status, date, search } = req.query;
+        const { status, date, search, from, to } = req.query;
         const pool = await db.poolPromise;
+
+        // Validate the date filters first, so bad input gives a clear 400 instead of a SQL error
+        const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+        for (const [name, value] of [['date', date], ['from', from], ['to', to]]) {
+            if (value && !isoDate.test(String(value).trim())) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Invalid ${name} filter. Please use the YYYY-MM-DD date format.`
+                });
+            }
+        }
+
         let query = 'SELECT * FROM Appointments WHERE 1=1';
 
         const request = pool.request();
@@ -193,9 +326,21 @@ app.get('/api/appointments', async (req, res) => {
             request.input('Status', sql.NVarChar(30), status);
         }
 
+        // Dates are compared as plain calendar dates, so a time-zone or format
+        // difference can never make a matching appointment disappear.
         if (date) {
-            query += ' AND PreferredDate = @PreferredDate';
-            request.input('PreferredDate', sql.Date, date);
+            query += ' AND CAST(PreferredDate AS date) = CAST(@FilterDate AS date)';
+            request.input('FilterDate', sql.NVarChar(10), String(date).trim());
+        }
+
+        if (from) {
+            query += ' AND CAST(PreferredDate AS date) >= CAST(@DateFrom AS date)';
+            request.input('DateFrom', sql.NVarChar(10), String(from).trim());
+        }
+
+        if (to) {
+            query += ' AND CAST(PreferredDate AS date) <= CAST(@DateTo AS date)';
+            request.input('DateTo', sql.NVarChar(10), String(to).trim());
         }
 
         if (search) {
@@ -330,10 +475,28 @@ app.put('/api/cms/settings', async (req, res) => {
         const settings = req.body; // Key-Value object
         const pool = await db.poolPromise;
 
-        for (const [key, value] of Object.entries(settings)) {
+        if (!settings || typeof settings !== 'object' || Array.isArray(settings)) {
+            return res.status(400).json({ success: false, message: 'Send a JSON object of settingKey → value pairs.' });
+        }
+
+        const entries = Object.entries(settings).map(([key, value]) => [
+            key,
+            value === undefined || value === null ? '' : String(value)
+        ]);
+
+        // Image uploads arrive as data URLs — make sure nothing else is smuggled in
+        const badValue = entries.find(([, value]) => value.startsWith('data:') && !/^data:image\//i.test(value));
+        if (badValue) {
+            return res.status(400).json({
+                success: false,
+                message: `"${badValue[0]}" must be an uploaded image file.`
+            });
+        }
+
+        for (const [key, value] of entries) {
             await pool.request()
                 .input('SettingKey', sql.NVarChar(100), key)
-                .input('SettingValue', sql.NVarChar(sql.MAX), String(value || ''))
+                .input('SettingValue', sql.NVarChar(sql.MAX), value)
                 .query(`
                     IF EXISTS (SELECT 1 FROM SiteSettings WHERE SettingKey = @SettingKey)
                         UPDATE SiteSettings SET SettingValue = @SettingValue, UpdatedAt = GETDATE() WHERE SettingKey = @SettingKey
@@ -504,6 +667,6 @@ app.listen(PORT, () => {
     console.log(`   CMS     : http://localhost:${PORT}/admin`);
     console.log(`   Health  : http://localhost:${PORT}/api/health`);
     console.log(AUTH_ENABLED
-        ? '🔒 Admin authentication: ENABLED'
-        : '🔓 Admin authentication: disabled (set ADMIN_USER + ADMIN_PASS in .env to enable)');
+        ? `🔒 Admin sign-in: ENABLED (user "${ADMIN_USER}") — ${AUTH_ENABLED ? 'http://localhost:' + PORT + '/login' : ''}`
+        : '🔓 Admin sign-in: disabled (set ADMIN_USER + ADMIN_PASS in .env to enable)');
 });
