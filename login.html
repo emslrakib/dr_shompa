@@ -60,6 +60,12 @@
   .brand p { margin-top: .8rem; font-size: .85rem; color: var(--muted); line-height: 1.5; }
   label { display: block; font-size: .82rem; font-weight: 600; color: var(--navy); margin-bottom: .35rem; }
   .field { margin-bottom: 1.05rem; }
+  .remember { margin: .1rem 0 1.15rem; }
+  .remember label {
+    display: flex; align-items: center; gap: .55rem;
+    margin: 0; font-weight: 500; font-size: .84rem; color: var(--muted); cursor: pointer;
+  }
+  .remember input { width: 1.05rem; height: 1.05rem; accent-color: var(--gold); cursor: pointer; flex: none; }
   input[type="text"], input[type="password"] {
     width: 100%;
     padding: .72rem .85rem;
@@ -144,6 +150,12 @@
       <label for="password">Password</label>
       <input type="password" id="password" name="password" autocomplete="current-password" required>
     </div>
+    <div class="remember">
+      <label for="remember">
+        <input type="checkbox" id="remember" name="remember">
+        <span>মনে রাখুন (৩০ দিন) · Keep me signed in for 30 days</span>
+      </label>
+    </div>
     <button type="submit" id="submitBtn">Sign in</button>
   </form>
 
@@ -206,7 +218,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: userInput.value.trim(),
-          password: passInput.value
+          password: passInput.value,
+          remember: document.getElementById('remember').checked
         })
       });
       var json = await res.json();

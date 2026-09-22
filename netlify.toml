@@ -1,0 +1,54 @@
+# Netlify hosts the STATIC FRONTEND only.
+# The Express API (server.js) runs on Render (see render.yaml) and every /api/*
+# request is proxied there, so the browser keeps talking to one origin.
+# The Express app itself is never executed on Netlify.
+
+[build]
+  # Whitelist build: only the public pages and images are published.
+  # server.js, db.js, config.js, .env, appsettings.json, package.json, logs
+  # and SQL files must never reach the CDN.
+  publish = "dist"
+  command = "rm -rf dist && mkdir -p dist && cp dr-arefin-zannat-sompa.html admin.html login.html patient-voices.html dist/ && cp *.jpg *.jpeg *.png dist/ && cp _redirects _headers dist/"
+
+# --- API proxy -> Render backend -------------------------------------------
+# Order matters: /api/* is evaluated before the friendly page routes below.
+[[redirects]]
+  from = "/api/*"
+  to = "https://dr-shompa-backend.onrender.com/api/:splat"
+  status = 200
+
+# --- Friendly entry points (same routes Express served) ---------------------
+[[redirects]]
+  from = "/"
+  to = "/dr-arefin-zannat-sompa.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/login"
+  to = "/login.html"
+  status = 200
+
+[[redirects]]
+  from = "/voices"
+  to = "/patient-voices.html"
+  status = 200
+
+[[redirects]]
+  from = "/patient-voices"
+  to = "/patient-voices.html"
+  status = 200
+
+# --- Security headers (parity with server.js) -------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:"

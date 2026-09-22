@@ -72,7 +72,7 @@ section { padding: 2.6rem 0; }
 .chip span { font-size: .85rem; color: var(--muted); }
 
 /* testimonial cards */
-.t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.4rem; }
+.t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 360px)); justify-content: center; gap: 1.4rem; }
 .t-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.9rem 1.6rem 1.5rem; position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s, border-color .3s; }
 .t-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.4); }
 .t-card::before { content: "\201C"; position: absolute; top: .2rem; right: 1.1rem; font-family: var(--serif); font-size: 3.6rem; color: rgba(176,131,47,.2); line-height: 1; }
@@ -83,6 +83,17 @@ section { padding: 2.6rem 0; }
 .t-card .who { display: flex; align-items: center; gap: .6rem; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
 .t-card .who::before { content: ""; width: 26px; height: 2px; background: var(--gold); flex: none; }
 .pv-empty { border: 1.5px dashed var(--line); border-radius: 16px; padding: 2.6rem 1.6rem; text-align: center; color: var(--muted); }
+
+/* entrance animation — a gentle rise + pop so each story glides in (also on reveal) */
+@keyframes cardIn { from { opacity: 0; transform: translateY(26px) scale(.98); } to { opacity: 1; transform: none; } }
+.t-card.show { animation: cardIn .6s cubic-bezier(.2,.7,.3,1.1) both; }
+.t-card.show:hover { animation: none; }
+/* card entrance is movement-only; the gold top bar stays the hover cue */
+.t-card::after { will-change: width; }
+/* glow ring on the active (most-liked) card */
+.t-card.love { border-color: rgba(176,131,47,.55); box-shadow: 0 0 0 1px rgba(226,198,138,.55), 0 22px 48px -18px rgba(176,131,47,.45); }
+/* deep-link target marker for patient-voices.html#stories */
+#stories { scroll-margin-top: 110px; }
 
 /* cta band */
 .pv-cta { background: linear-gradient(135deg, var(--navy), var(--navy-deep)); border-radius: 22px; padding: 2rem 2.2rem; color: #fff; display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; justify-content: space-between; border: 2px solid var(--gold); }
@@ -102,6 +113,10 @@ footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; hei
 .f-item a { color: #fff; text-decoration: none; font-weight: 600; }
 .f-item a:hover { color: var(--gold-soft); }
 .f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .8rem; padding-top: 1.3rem; font-size: .8rem; color: rgba(255,255,255,.45); }
+/* developer credit — gold link, wraps to its own corner line on mobile */
+.f-dev { color: rgba(255,255,255,.45); }
+.f-dev a { color: var(--gold-soft); text-decoration: none; font-weight: 700; white-space: nowrap; }
+.f-dev a:hover { color: #fff; text-decoration: underline; }
 
 /* reveal + i18n */
 .rv { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
@@ -167,7 +182,7 @@ html[data-lang="bn"] .chip b { font-size: 1.35rem; }
     </div>
   </section>
 
-  <section style="padding-top:.4rem">
+  <section id="stories" style="padding-top:.4rem">
     <div class="wrap">
       <div id="tGrid" class="t-grid" aria-live="polite"></div>
       <div id="pvEmpty" class="pv-empty" style="display:none" data-i18n="pv.empty">Patient stories are being collected. Please check back soon.</div>
@@ -206,6 +221,7 @@ html[data-lang="bn"] .chip b { font-size: 1.35rem; }
     <div class="f-bot">
       <span>© <span id="yr">2026</span> <span data-i18n="pv.copyTail">Dr. Arefin Zannat Sompa. All rights reserved.</span></span>
       <span data-i18n="pv.disclaimer">Stories are shared anonymously with consent; this page does not replace a consultation.</span>
+      <span class="f-dev" data-i18n-html="pv.dev">Developed by <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a></span>
     </div>
   </div>
 </footer>
@@ -242,6 +258,7 @@ Object.assign(TRANSLATIONS.en, {
   'pv.ctaBook': 'Book appointment',
   'pv.ctaHome': 'Back to home',
   'pv.footerAbout': 'Consultant Psychiatrist — Sylhet MAG Osmani Medical College. Compassionate, evidence-based mental health care.',
+  'pv.dev': 'Developed by <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a>',
   'pv.phoneLabel': 'PHONE',
   'pv.emailLabel': 'EMAIL',
   'pv.chamberLabel': 'CHAMBER',
@@ -254,6 +271,7 @@ Object.assign(TRANSLATIONS.bn, {
   'pv.ctaBook': 'অ্যাপয়েন্টমেন্ট বুক করুন',
   'pv.ctaHome': 'হোমে ফিরুন',
   'pv.footerAbout': 'কনসালট্যান্ট সাইকিয়াট্রিস্ট — সিলেট এমএজি ওসমানী মেডিকেল কলেজ। সহানুভূতিপূর্ণ, প্রমাণভিত্তিক মানসিক স্বাস্থ্যসেবা।',
+  'pv.dev': 'নির্মাণে <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a>',
   'pv.phoneLabel': 'ফোন',
   'pv.emailLabel': 'ইমেইল',
   'pv.chamberLabel': 'চেম্বার',
@@ -349,15 +367,32 @@ function renderStories(){
   if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
   var html = '';
-  list.forEach(function(item){
-    html += '<article class="t-card rv">' +
+  list.forEach(function(item, idx){
+    html += '<article class="t-card rv' + (idx === 0 ? ' love' : '') + '" style="animation-delay:' + (idx * 110) + 'ms">' +
       '<div class="stars" role="img" aria-label="' + tr('pv.stars') + '">★★★★★</div>' +
       '<blockquote>' + colBn(item, 'Quote') + '</blockquote>' +
       '<div class="who">' + authorBn(item) + '</div>' +
       '</article>';
   });
   grid.innerHTML = html;
+  // entrance pops: stagger in on first paint, then let the scroll reveal own them
+  Array.prototype.forEach.call(grid.querySelectorAll('.t-card'), function(card){
+    card.classList.add('show');
+  });
   revealInit();
+  // after the glide-in, retire the helper class so hover effects stay clean
+  setTimeout(function(){
+    Array.prototype.forEach.call(grid.querySelectorAll('.t-card.show'), function(card){
+      card.classList.remove('show');
+    });
+  }, 500 + list.length * 110);
+  // honour patient-voices.html#stories deep links (button on the home page)
+  if (window.location && window.location.hash === '#stories') {
+    var anchor = document.getElementById('stories');
+    if (anchor && anchor.scrollIntoView) {
+      setTimeout(function(){ anchor.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
+    }
+  }
 }
 function renderCmsSettings(){
   if (!cmsData || !cmsData.data || !cmsData.data.settings) return;

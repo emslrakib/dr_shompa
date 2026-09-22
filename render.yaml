@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: dr-shompa-backend
+    env: node
+    region: bangalore
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_SSL
+        value: true
+      # The API is reached through the Netlify proxy (https://<site>.netlify.app/api/*),
+      # so Express must trust X-Forwarded-* and allow the Netlify site origin.
+      - key: TRUST_PROXY
+        value: "true"
+      # NOTE: replace with the real Netlify site URL right after the site is created.
+      - key: ALLOWED_ORIGINS
+        value: "https://YOUR-SITE-NAME.netlify.app"
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASS
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+    database:
+      name: drshompa-db
+      databaseName: drshompa
+      user: drshompa-user
+      plan: free

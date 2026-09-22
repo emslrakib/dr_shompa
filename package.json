@@ -5,12 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "db:migrate": "node migrate-db.js",
+    "config:show": "node -e \"const c=require('./config');c.load();console.log(c.describe())\""
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mssql": "^10.0.2"
+    "nodemailer": "^10.0.10",
+    "pg": "^8.13.1"
   }
 }

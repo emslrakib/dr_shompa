@@ -2,16 +2,37 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
-require('dotenv').config();
+
+// Configuration: appsettings.json (+ appsettings.<NODE_ENV>.json) beats .env,
+// real environment variables beat both. See config.js and appsettings.example.json.
+const config = require('./config');
+config.load();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number.parseInt(process.env.PORT, 10) || 5000;
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const TRUST_PROXY = process.env.TRUST_PROXY === 'true';
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+    .split(',').map(value => value.trim()).filter(Boolean);
 
-// DB module is lazy-loaded — connect() only happens when a route handler calls await db.poolPromise
-// This ensures require() does NOT block server startup
+if (TRUST_PROXY) app.set('trust proxy', 1);
+
+// Is the PostgreSQL connection encrypted? True when the connection string asks
+// for it (managed databases always do: `sslmode=require`) or when DB_SSL=true
+// is set. A local database without TLS is fine for development.
+function databaseTransportIsEncrypted() {
+    const setting = String(process.env.DB_SSL || '').trim().toLowerCase();
+    if (['false', 'off', 'disable'].includes(setting)) return false;
+    if (['true', 'on', 'require', 'prefer', 'verify-ca', 'verify-full'].includes(setting)) return true;
+
+    const mode = (/(?:[?&])sslmode=([a-z-]+)/i.exec(String(process.env.DATABASE_URL || '')) || [])[1];
+    return Boolean(mode && mode.toLowerCase() !== 'disable');
+}
+
+// DB module is lazy-loaded — a connection only happens when a route handler calls
+// await db.poolPromise. Requiring it does NOT block server startup.
 const db = require('./db');
-// `sql` is mssql's data-type namespace (NVarChar, Int, Bit, ...) — importing it does NOT open a connection
-const sql = db.sql;
+
 
 // ---------------------------------------------------------------------------
 // Optional admin protection.
@@ -25,14 +46,73 @@ const AUTH_ENABLED = Boolean(ADMIN_USER && ADMIN_PASS);
 // Session cookies are signed with this secret. SESSION_SECRET in .env keeps the same
 // secret across restarts; otherwise it is derived from the admin credentials.
 const SESSION_COOKIE = 'drshompa_session';
-const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // an 8 hour working session
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000;      // normal sign-in: one working day (8 hours)
+const REMEMBER_TTL_MS = 30 * 24 * 60 * 60 * 1000; // "keep me signed in": 30 days
 const SESSION_SECRET = process.env.SESSION_SECRET
     || crypto.createHash('sha256').update(`${ADMIN_USER}:${ADMIN_PASS}:drshompa`).digest('hex');
+
+if (IS_PRODUCTION) {
+    const configurationErrors = [];
+    if (!AUTH_ENABLED) configurationErrors.push('ADMIN_USER and ADMIN_PASS must be set');
+    if (!process.env.SESSION_SECRET || String(process.env.SESSION_SECRET).trim().length < 32) {
+        configurationErrors.push('SESSION_SECRET must be set to a random value of at least 32 characters');
+    }
+    if (!databaseTransportIsEncrypted()) {
+        configurationErrors.push('the database connection must use TLS (DB_SSL=true, or sslmode=require in DATABASE_URL)');
+    }
+    if (configurationErrors.length) {
+        throw new Error(`Unsafe production configuration: ${configurationErrors.join('; ')}.`);
+    }
+}
 
 function safeEqual(a, b) {
     const bufA = Buffer.from(String(a), 'utf8');
     const bufB = Buffer.from(String(b), 'utf8');
     return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+}
+
+function clientIp(req) {
+    return String(req.ip || req.socket.remoteAddress || 'unknown');
+}
+
+// Checkboxes arrive as true, 1 or "1" depending on the caller — PostgreSQL wants
+// a real boolean for its BOOLEAN columns ("IsActive").
+function toBool(value, fallback = true) {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value === 'boolean') return value;
+    const text = String(value).trim().toLowerCase();
+    if (['0', 'false', 'no', 'off'].includes(text)) return false;
+    if (['1', 'true', 'yes', 'on'].includes(text)) return true;
+    return fallback;
+}
+
+function createRateLimiter({ windowMs, max, message }) {
+    const hits = new Map();
+    return (req, res, next) => {
+        const now = Date.now();
+        const key = clientIp(req);
+        const entry = hits.get(key);
+        const active = !entry || entry.resetAt <= now ? { count: 0, resetAt: now + windowMs } : entry;
+        active.count += 1;
+        hits.set(key, active);
+
+        res.set('RateLimit-Limit', String(max));
+        res.set('RateLimit-Remaining', String(Math.max(0, max - active.count)));
+        res.set('RateLimit-Reset', String(Math.ceil(active.resetAt / 1000)));
+        if (active.count > max) {
+            res.set('Retry-After', String(Math.ceil((active.resetAt - now) / 1000)));
+            return res.status(429).json({ success: false, message });
+        }
+        next();
+    };
+}
+
+function requireSameOrigin(req, res, next) {
+    const origin = String(req.headers.origin || '');
+    if (!origin) return next(); // curl, server-side jobs and same-site form posts without Origin
+    const expectedOrigin = `${req.protocol}://${req.get('host')}`;
+    if (origin === expectedOrigin || ALLOWED_ORIGINS.includes(origin)) return next();
+    return res.status(403).json({ success: false, message: 'This request origin is not allowed.' });
 }
 
 function signSession(payload) {
@@ -53,10 +133,10 @@ function pruneExpiredSessions() {
     }
 }
 
-function createSession(username) {
+function createSession(username, ttlMs = SESSION_TTL_MS) {
     pruneExpiredSessions();
     const sid = crypto.randomBytes(18).toString('base64url');
-    const exp = Date.now() + SESSION_TTL_MS;
+    const exp = Date.now() + ttlMs;
     activeSessions.set(sid, exp);
     return signSession({ sid, u: username, exp });
 }
@@ -121,10 +201,43 @@ function requireAdmin(req, res, next) {
     res.status(401).json({ success: false, mustLogin: true, message: 'Please sign in to continue.' });
 }
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// Middleware. The public site and API are served from the same origin; cross-origin
+// browser calls are denied unless a trusted deployment origin is explicitly configured.
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+    res.set({
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+        'Content-Security-Policy': "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self' data:"
+    });
+    if (IS_PRODUCTION) res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+});
+app.use(cors({
+    origin(origin, callback) {
+        // Same-origin requests do not need CORS headers. Only explicitly listed
+        // cross-origin browser clients receive them; all state-changing routes
+        // additionally enforce their origin with requireSameOrigin().
+        callback(null, Boolean(origin && ALLOWED_ORIGINS.includes(origin)));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+}));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ limit: '100kb', extended: false }));
+
+const loginRateLimit = createRateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: 'Too many sign-in attempts. Please wait and try again.'
+});
+const bookingRateLimit = createRateLimiter({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    message: 'Too many appointment requests from this connection. Please try again later.'
+});
 
 // ---------------------------------------------------------------------------
 // Security guards — registered BEFORE the static handler and the routes
@@ -137,6 +250,7 @@ if (AUTH_ENABLED) {
         '/admin',
         '/admin.html',
         '/api/stats',
+        '/api/reminders',
         '/api/cms/settings',
         '/api/cms/services',
         '/api/cms/testimonials',
@@ -159,7 +273,11 @@ app.use((req, res, next) => {
 });
 
 // Serve static frontend files
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, {
+    index: false,
+    maxAge: IS_PRODUCTION ? '7d' : 0,
+    etag: true
+}));
 
 // Friendly entry points: "/" opens the public site, "/admin" opens the CMS panel
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'dr-arefin-zannat-sompa.html')));
@@ -185,28 +303,34 @@ app.get('/api/session', (req, res) => {
     });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', requireSameOrigin, loginRateLimit, (req, res) => {
     if (!AUTH_ENABLED) {
         return res.status(400).json({ success: false, message: 'Admin sign-in is not configured on this server.' });
     }
 
-    const { username, password } = req.body || {};
+    const { username, password, remember } = req.body || {};
     if (!safeEqual(username || '', ADMIN_USER) || !safeEqual(password || '', ADMIN_PASS)) {
         return res.status(401).json({ success: false, message: 'Wrong username or password.' });
     }
 
-    res.cookie(SESSION_COOKIE, createSession(ADMIN_USER), {
+    const ttl = remember ? REMEMBER_TTL_MS : SESSION_TTL_MS;
+    res.cookie(SESSION_COOKIE, createSession(ADMIN_USER, ttl), {
         httpOnly: true,
         sameSite: 'lax',
+        secure: IS_PRODUCTION,
         path: '/',
-        maxAge: SESSION_TTL_MS
+        maxAge: ttl
     });
-    res.json({ success: true, message: 'Signed in successfully.' });
+    res.json({
+        success: true,
+        message: remember ? 'Signed in — this device will stay signed in for 30 days.' : 'Signed in successfully.',
+        expiresInHours: Math.round(ttl / 3600000)
+    });
 });
 
-app.post('/api/logout', (req, res) => {
+app.post('/api/logout', requireSameOrigin, (req, res) => {
     endSession(req); // the token is dead on the server as well, not just removed from the browser
-    res.clearCookie(SESSION_COOKIE, { path: '/' });
+    res.clearCookie(SESSION_COOKIE, { path: '/', sameSite: 'lax', secure: IS_PRODUCTION });
     res.json({ success: true, message: 'Signed out.' });
 });
 
@@ -221,15 +345,12 @@ app.get('/api/health', async (req, res) => {
         success: dbOk,
         server: 'up',
         database: dbOk ? 'connected' : 'unavailable',
-        databaseName: process.env.DB_NAME,
-        adminAuth: AUTH_ENABLED ? 'enabled' : 'disabled',
-        node: process.version,
         uptimeSeconds: Math.round(process.uptime()),
         timestamp: new Date().toISOString()
     });
 });
 
-// If SQL Server is unreachable, answer API calls with a clear 503 instead of a
+// If PostgreSQL is unreachable, answer API calls with a clear 503 instead of a
 // cryptic 500 (and instead of "Cannot read properties of null").
 app.use('/api', async (req, res, next) => {
     const pool = await db.poolPromise;
@@ -247,46 +368,52 @@ app.use('/api', async (req, res, next) => {
 // ==========================================
 
 // Create new appointment
-app.post('/api/appointments', async (req, res) => {
+app.post('/api/appointments', requireSameOrigin, bookingRateLimit, async (req, res) => {
     try {
         const { name, age, phone, visit, date, slot, note } = req.body;
 
-        if (!name || !age || !phone || !date || !slot) {
+        const cleanName = String(name || '').trim();
+        const cleanPhone = String(phone || '').trim();
+        const cleanVisit = String(visit || 'First consultation').trim();
+        const cleanSlot = String(slot || '').trim();
+        const cleanNote = String(note || '').trim();
+        const parsedAge = Number.parseInt(age, 10);
+        const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (!cleanName || !cleanPhone || !date || !cleanSlot || !Number.isInteger(parsedAge)) {
             return res.status(400).json({
                 success: false,
                 message: 'Please provide all required fields (name, age, phone, date, slot).'
             });
         }
+        if (cleanName.length > 150 || cleanPhone.length > 30 || cleanVisit.length > 50 || cleanSlot.length > 50 || cleanNote.length > 2000) {
+            return res.status(400).json({ success: false, message: 'One or more fields are too long.' });
+        }
+        if (parsedAge < 1 || parsedAge > 120 || !isoDate.test(String(date)) || Number.isNaN(Date.parse(`${date}T00:00:00Z`))) {
+            return res.status(400).json({ success: false, message: 'Please provide a valid age and appointment date.' });
+        }
 
         const pool = await db.poolPromise;
-        const result = await pool.request()
-            .input('PatientName', sql.NVarChar(150), name)
-            .input('Age', sql.Int, parseInt(age))
-            .input('Phone', sql.NVarChar(30), phone)
-            .input('VisitType', sql.NVarChar(50), visit || 'First consultation')
-            .input('PreferredDate', sql.Date, date)
-            .input('PreferredSlot', sql.NVarChar(50), slot)
-            .input('Notes', sql.NVarChar(sql.MAX), note || null)
-            .query(`
-                INSERT INTO Appointments (PatientName, Age, Phone, VisitType, PreferredDate, PreferredSlot, Notes)
-                OUTPUT INSERTED.Id, INSERTED.CreatedAt
-                VALUES (@PatientName, @Age, @Phone, @VisitType, @PreferredDate, @PreferredSlot, @Notes)
-            `);
+        const result = await pool.query(`
+            INSERT INTO "Appointments" ("PatientName", "Age", "Phone", "VisitType", "PreferredDate", "PreferredSlot", "Notes")
+            VALUES ($1, $2, $3, $4, $5::date, $6, $7)
+            RETURNING "Id", "CreatedAt"
+        `, [cleanName, parsedAge, cleanPhone, cleanVisit, date, cleanSlot, cleanNote || null]);
 
-        const inserted = result.recordset[0];
+        const inserted = result.rows[0];
 
         res.status(201).json({
             success: true,
             message: 'Appointment request submitted successfully!',
             data: {
                 id: inserted.Id,
-                name,
-                age,
-                phone,
-                visit,
+                name: cleanName,
+                age: parsedAge,
+                phone: cleanPhone,
+                visit: cleanVisit,
                 date,
-                slot,
-                note,
+                slot: cleanSlot,
+                note: cleanNote,
                 status: 'Pending',
                 createdAt: inserted.CreatedAt
             }
@@ -317,45 +444,45 @@ app.get('/api/appointments', async (req, res) => {
             }
         }
 
-        let query = 'SELECT * FROM Appointments WHERE 1=1';
-
-        const request = pool.request();
+        let query = 'SELECT * FROM "Appointments" WHERE 1=1';
+        const values = [];
 
         if (status && status !== 'All') {
-            query += ' AND Status = @Status';
-            request.input('Status', sql.NVarChar(30), status);
+            values.push(status);
+            query += ` AND "Status" = $${values.length}`;
         }
 
         // Dates are compared as plain calendar dates, so a time-zone or format
         // difference can never make a matching appointment disappear.
         if (date) {
-            query += ' AND CAST(PreferredDate AS date) = CAST(@FilterDate AS date)';
-            request.input('FilterDate', sql.NVarChar(10), String(date).trim());
+            values.push(String(date).trim());
+            query += ` AND "PreferredDate" = $${values.length}::date`;
         }
 
         if (from) {
-            query += ' AND CAST(PreferredDate AS date) >= CAST(@DateFrom AS date)';
-            request.input('DateFrom', sql.NVarChar(10), String(from).trim());
+            values.push(String(from).trim());
+            query += ` AND "PreferredDate" >= $${values.length}::date`;
         }
 
         if (to) {
-            query += ' AND CAST(PreferredDate AS date) <= CAST(@DateTo AS date)';
-            request.input('DateTo', sql.NVarChar(10), String(to).trim());
+            values.push(String(to).trim());
+            query += ` AND "PreferredDate" <= $${values.length}::date`;
         }
 
         if (search) {
-            query += ' AND (PatientName LIKE @Search OR Phone LIKE @Search)';
-            request.input('Search', sql.NVarChar(100), `%${search}%`);
+            values.push(`%${search}%`);
+            // ILIKE keeps the case-insensitive search behaviour SQL Server's LIKE had
+            query += ` AND ("PatientName" ILIKE $${values.length} OR "Phone" ILIKE $${values.length})`;
         }
 
-        query += ' ORDER BY PreferredDate ASC, CreatedAt DESC';
+        query += ' ORDER BY "PreferredDate" ASC, "CreatedAt" DESC';
 
-        const result = await request.query(query);
+        const result = await pool.query(query, values);
 
         res.json({
             success: true,
-            count: result.recordset.length,
-            data: result.recordset
+            count: result.rows.length,
+            data: result.rows
         });
     } catch (err) {
         console.error('Error fetching appointments:', err);
@@ -375,12 +502,12 @@ app.patch('/api/appointments/:id', async (req, res) => {
         }
 
         const pool = await db.poolPromise;
-        const result = await pool.request()
-            .input('Id', sql.Int, parseInt(id))
-            .input('Status', sql.NVarChar(30), status)
-            .query('UPDATE Appointments SET Status = @Status WHERE Id = @Id');
+        const result = await pool.query(
+            'UPDATE "Appointments" SET "Status" = $1 WHERE "Id" = $2',
+            [status, Number.parseInt(id, 10)]
+        );
 
-        if (result.rowsAffected[0] === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ success: false, message: 'Appointment not found.' });
         }
 
@@ -396,11 +523,12 @@ app.delete('/api/appointments/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await db.poolPromise;
-        const result = await pool.request()
-            .input('Id', sql.Int, parseInt(id))
-            .query('DELETE FROM Appointments WHERE Id = @Id');
+        const result = await pool.query(
+            'DELETE FROM "Appointments" WHERE "Id" = $1',
+            [Number.parseInt(id, 10)]
+        );
 
-        if (result.rowsAffected[0] === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ success: false, message: 'Appointment not found.' });
         }
 
@@ -415,19 +543,19 @@ app.delete('/api/appointments/:id', async (req, res) => {
 app.get('/api/stats', async (req, res) => {
     try {
         const pool = await db.poolPromise;
-        const result = await pool.request().query(`
-            SELECT 
-                COUNT(*) as total,
-                SUM(CASE WHEN Status = 'Pending' THEN 1 ELSE 0 END) as pending,
-                SUM(CASE WHEN Status = 'Confirmed' THEN 1 ELSE 0 END) as confirmed,
-                SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) as completed,
-                SUM(CASE WHEN Status = 'Cancelled' THEN 1 ELSE 0 END) as cancelled
-            FROM Appointments
+        const result = await pool.query(`
+            SELECT
+                COUNT(*)::int AS total,
+                SUM(CASE WHEN "Status" = 'Pending' THEN 1 ELSE 0 END)::int AS pending,
+                SUM(CASE WHEN "Status" = 'Confirmed' THEN 1 ELSE 0 END)::int AS confirmed,
+                SUM(CASE WHEN "Status" = 'Completed' THEN 1 ELSE 0 END)::int AS completed,
+                SUM(CASE WHEN "Status" = 'Cancelled' THEN 1 ELSE 0 END)::int AS cancelled
+            FROM "Appointments"
         `);
 
         res.json({
             success: true,
-            data: result.recordset[0]
+            data: result.rows[0]
         });
     } catch (err) {
         console.error('Error fetching stats:', err);
@@ -444,13 +572,13 @@ app.get('/api/cms/content', async (req, res) => {
     try {
         const pool = await db.poolPromise;
 
-        const settingsRes = await pool.request().query('SELECT SettingKey, SettingValue FROM SiteSettings');
-        const servicesRes = await pool.request().query('SELECT * FROM Services WHERE IsActive = 1 ORDER BY SortOrder ASC');
-        const testimonialsRes = await pool.request().query('SELECT * FROM Testimonials WHERE IsActive = 1 ORDER BY SortOrder ASC');
-        const qualificationsRes = await pool.request().query('SELECT * FROM Qualifications ORDER BY SortOrder ASC');
+        const settingsRes = await pool.query('SELECT "SettingKey", "SettingValue" FROM "SiteSettings"');
+        const servicesRes = await pool.query('SELECT * FROM "Services" WHERE "IsActive" = TRUE ORDER BY "SortOrder" ASC');
+        const testimonialsRes = await pool.query('SELECT * FROM "Testimonials" WHERE "IsActive" = TRUE ORDER BY "SortOrder" ASC');
+        const qualificationsRes = await pool.query('SELECT * FROM "Qualifications" ORDER BY "SortOrder" ASC');
 
         const settingsMap = {};
-        settingsRes.recordset.forEach(item => {
+        settingsRes.rows.forEach(item => {
             settingsMap[item.SettingKey] = item.SettingValue;
         });
 
@@ -458,9 +586,9 @@ app.get('/api/cms/content', async (req, res) => {
             success: true,
             data: {
                 settings: settingsMap,
-                services: servicesRes.recordset,
-                testimonials: testimonialsRes.recordset,
-                qualifications: qualificationsRes.recordset
+                services: servicesRes.rows,
+                testimonials: testimonialsRes.rows,
+                qualifications: qualificationsRes.rows
             }
         });
     } catch (err) {
@@ -494,15 +622,13 @@ app.put('/api/cms/settings', async (req, res) => {
         }
 
         for (const [key, value] of entries) {
-            await pool.request()
-                .input('SettingKey', sql.NVarChar(100), key)
-                .input('SettingValue', sql.NVarChar(sql.MAX), value)
-                .query(`
-                    IF EXISTS (SELECT 1 FROM SiteSettings WHERE SettingKey = @SettingKey)
-                        UPDATE SiteSettings SET SettingValue = @SettingValue, UpdatedAt = GETDATE() WHERE SettingKey = @SettingKey
-                    ELSE
-                        INSERT INTO SiteSettings (SettingKey, SettingValue) VALUES (@SettingKey, @SettingValue)
-                `);
+            // PostgreSQL's own upsert replaces the old IF EXISTS / ELSE pair
+            await pool.query(`
+                INSERT INTO "SiteSettings" ("SettingKey", "SettingValue")
+                VALUES ($1, $2)
+                ON CONFLICT ("SettingKey") DO UPDATE
+                    SET "SettingValue" = EXCLUDED."SettingValue", "UpdatedAt" = NOW()
+            `, [key, value]);
         }
 
         res.json({ success: true, message: 'Site settings updated successfully!' });
@@ -516,8 +642,8 @@ app.put('/api/cms/settings', async (req, res) => {
 app.get('/api/cms/services/all', async (req, res) => {
     try {
         const pool = await db.poolPromise;
-        const result = await pool.request().query('SELECT * FROM Services ORDER BY SortOrder ASC');
-        res.json({ success: true, data: result.recordset });
+        const result = await pool.query('SELECT * FROM "Services" ORDER BY "SortOrder" ASC');
+        res.json({ success: true, data: result.rows });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to fetch services.' });
     }
@@ -527,12 +653,10 @@ app.post('/api/cms/services', async (req, res) => {
     try {
         const { title, description, sortOrder, isActive } = req.body;
         const pool = await db.poolPromise;
-        await pool.request()
-            .input('Title', sql.NVarChar(150), title)
-            .input('Description', sql.NVarChar(sql.MAX), description)
-            .input('SortOrder', sql.Int, parseInt(sortOrder) || 0)
-            .input('IsActive', sql.Bit, isActive !== undefined ? isActive : 1)
-            .query('INSERT INTO Services (Title, Description, SortOrder, IsActive) VALUES (@Title, @Description, @SortOrder, @IsActive)');
+        await pool.query(
+            'INSERT INTO "Services" ("Title", "Description", "SortOrder", "IsActive") VALUES ($1, $2, $3, $4)',
+            [title, description, Number.parseInt(sortOrder, 10) || 0, toBool(isActive)]
+        );
         res.status(201).json({ success: true, message: 'Service added successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to add service.' });
@@ -544,13 +668,10 @@ app.put('/api/cms/services/:id', async (req, res) => {
         const { id } = req.params;
         const { title, description, sortOrder, isActive } = req.body;
         const pool = await db.poolPromise;
-        await pool.request()
-            .input('Id', sql.Int, parseInt(id))
-            .input('Title', sql.NVarChar(150), title)
-            .input('Description', sql.NVarChar(sql.MAX), description)
-            .input('SortOrder', sql.Int, parseInt(sortOrder) || 0)
-            .input('IsActive', sql.Bit, isActive !== undefined ? isActive : 1)
-            .query('UPDATE Services SET Title = @Title, Description = @Description, SortOrder = @SortOrder, IsActive = @IsActive WHERE Id = @Id');
+        await pool.query(
+            'UPDATE "Services" SET "Title" = $1, "Description" = $2, "SortOrder" = $3, "IsActive" = $4 WHERE "Id" = $5',
+            [title, description, Number.parseInt(sortOrder, 10) || 0, toBool(isActive), Number.parseInt(id, 10)]
+        );
         res.json({ success: true, message: 'Service updated successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to update service.' });
@@ -561,7 +682,7 @@ app.delete('/api/cms/services/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await db.poolPromise;
-        await pool.request().input('Id', sql.Int, parseInt(id)).query('DELETE FROM Services WHERE Id = @Id');
+        await pool.query('DELETE FROM "Services" WHERE "Id" = $1', [Number.parseInt(id, 10)]);
         res.json({ success: true, message: 'Service deleted successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to delete service.' });
@@ -572,8 +693,8 @@ app.delete('/api/cms/services/:id', async (req, res) => {
 app.get('/api/cms/testimonials/all', async (req, res) => {
     try {
         const pool = await db.poolPromise;
-        const result = await pool.request().query('SELECT * FROM Testimonials ORDER BY SortOrder ASC');
-        res.json({ success: true, data: result.recordset });
+        const result = await pool.query('SELECT * FROM "Testimonials" ORDER BY "SortOrder" ASC');
+        res.json({ success: true, data: result.rows });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to fetch testimonials.' });
     }
@@ -583,12 +704,10 @@ app.post('/api/cms/testimonials', async (req, res) => {
     try {
         const { quote, author, sortOrder, isActive } = req.body;
         const pool = await db.poolPromise;
-        await pool.request()
-            .input('Quote', sql.NVarChar(sql.MAX), quote)
-            .input('Author', sql.NVarChar(150), author)
-            .input('SortOrder', sql.Int, parseInt(sortOrder) || 0)
-            .input('IsActive', sql.Bit, isActive !== undefined ? isActive : 1)
-            .query('INSERT INTO Testimonials (Quote, Author, SortOrder, IsActive) VALUES (@Quote, @Author, @SortOrder, @IsActive)');
+        await pool.query(
+            'INSERT INTO "Testimonials" ("Quote", "Author", "SortOrder", "IsActive") VALUES ($1, $2, $3, $4)',
+            [quote, author, Number.parseInt(sortOrder, 10) || 0, toBool(isActive)]
+        );
         res.status(201).json({ success: true, message: 'Testimonial added successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to add testimonial.' });
@@ -600,13 +719,10 @@ app.put('/api/cms/testimonials/:id', async (req, res) => {
         const { id } = req.params;
         const { quote, author, sortOrder, isActive } = req.body;
         const pool = await db.poolPromise;
-        await pool.request()
-            .input('Id', sql.Int, parseInt(id))
-            .input('Quote', sql.NVarChar(sql.MAX), quote)
-            .input('Author', sql.NVarChar(150), author)
-            .input('SortOrder', sql.Int, parseInt(sortOrder) || 0)
-            .input('IsActive', sql.Bit, isActive !== undefined ? isActive : 1)
-            .query('UPDATE Testimonials SET Quote = @Quote, Author = @Author, SortOrder = @SortOrder, IsActive = @IsActive WHERE Id = @Id');
+        await pool.query(
+            'UPDATE "Testimonials" SET "Quote" = $1, "Author" = $2, "SortOrder" = $3, "IsActive" = $4 WHERE "Id" = $5',
+            [quote, author, Number.parseInt(sortOrder, 10) || 0, toBool(isActive), Number.parseInt(id, 10)]
+        );
         res.json({ success: true, message: 'Testimonial updated successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to update testimonial.' });
@@ -617,7 +733,7 @@ app.delete('/api/cms/testimonials/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await db.poolPromise;
-        await pool.request().input('Id', sql.Int, parseInt(id)).query('DELETE FROM Testimonials WHERE Id = @Id');
+        await pool.query('DELETE FROM "Testimonials" WHERE "Id" = $1', [Number.parseInt(id, 10)]);
         res.json({ success: true, message: 'Testimonial deleted successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to delete testimonial.' });
@@ -628,8 +744,8 @@ app.delete('/api/cms/testimonials/:id', async (req, res) => {
 app.get('/api/cms/qualifications/all', async (req, res) => {
     try {
         const pool = await db.poolPromise;
-        const result = await pool.request().query('SELECT * FROM Qualifications ORDER BY SortOrder ASC');
-        res.json({ success: true, data: result.recordset });
+        const result = await pool.query('SELECT * FROM "Qualifications" ORDER BY "SortOrder" ASC');
+        res.json({ success: true, data: result.rows });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to fetch qualifications.' });
     }
@@ -640,15 +756,476 @@ app.put('/api/cms/qualifications/:id', async (req, res) => {
         const { id } = req.params;
         const { title, description, subtext } = req.body;
         const pool = await db.poolPromise;
-        await pool.request()
-            .input('Id', sql.Int, parseInt(id))
-            .input('Title', sql.NVarChar(150), title)
-            .input('Description', sql.NVarChar(sql.MAX), description)
-            .input('Subtext', sql.NVarChar(150), subtext)
-            .query('UPDATE Qualifications SET Title = @Title, Description = @Description, Subtext = @Subtext WHERE Id = @Id');
+        await pool.query(
+            'UPDATE "Qualifications" SET "Title" = $1, "Description" = $2, "Subtext" = $3 WHERE "Id" = $4',
+            [title, description, subtext, Number.parseInt(id, 10)]
+        );
         res.json({ success: true, message: 'Qualification card updated successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Failed to update qualification card.' });
+    }
+});
+
+// ==========================================
+// 3. PATIENT REMINDERS (SMS + e-mail digest)
+// ==========================================
+
+// Every channel stays switched off until it is configured in .env, so the feature is
+// safe by default: the panel still shows the ready-to-send messages (copy / call / mark
+// as reminded) and only sends for real once a gateway or SMTP server is provided.
+const SMS_API_URL = (process.env.SMS_API_URL || '').trim();
+const SMS_API_KEY = (process.env.SMS_API_KEY || '').trim();
+const SMS_AUTH_HEADER = (process.env.SMS_AUTH_HEADER || 'Authorization').trim();
+const SMS_AUTH_SCHEME = (process.env.SMS_AUTH_SCHEME || 'Bearer').trim();
+const SMS_METHOD = (process.env.SMS_METHOD || 'GET').trim().toUpperCase();
+const SMTP_HOST = (process.env.SMTP_HOST || '').trim();
+const SMTP_PORT = parseInt(process.env.SMTP_PORT, 10) || 587;
+const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
+const SMTP_USER = (process.env.SMTP_USER || '').trim();
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const SMTP_FROM = (process.env.SMTP_FROM || '').trim();
+const CLINIC_EMAIL = (process.env.CLINIC_EMAIL || SMTP_USER).trim();
+const REMINDER_DRY_RUN = process.env.REMINDER_DRY_RUN === 'true';
+
+const SMS_ENABLED = Boolean(SMS_API_URL);
+const EMAIL_ENABLED = Boolean(SMTP_HOST && SMTP_FROM);
+
+const DEFAULT_REMINDER_TEMPLATE =
+    'প্রিয় {name}, আপনার অ্যাপয়েন্টমেন্ট {relative} ({date}, {slot}) — {doctor}। সময় বদলাতে হলে {phone} নম্বরে জানান।';
+
+const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+                   'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+
+function toBanglaDigits(value) {
+    return String(value).replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[Number(d)]);
+}
+
+function banglaDate(isoDate) {
+    const m = String(isoDate || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return String(isoDate || '');
+    return `${toBanglaDigits(Number(m[3]))} ${BN_MONTHS[Number(m[2]) - 1]} ${toBanglaDigits(m[1])}`;
+}
+
+// Calendar date in the server's own time zone (never an ISO slice, which can shift a day)
+function localIsoDate(offsetDays = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + (offsetDays || 0));
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function composeReminder(appointment, settings, isoDate) {
+    const template = (process.env.REMINDER_TEMPLATE || DEFAULT_REMINDER_TEMPLATE).replace(/\\n/g, '\n');
+    const relative = isoDate === localIsoDate(0) ? 'আজ' : (isoDate === localIsoDate(1) ? 'আগামীকাল' : '');
+    return template
+        .replace(/\{name\}/g, appointment.PatientName || '')
+        .replace(/\{age\}/g, appointment.Age || '')
+        .replace(/\{relative\}/g, relative)
+        .replace(/\{date\}/g, banglaDate(isoDate))
+        .replace(/\{date_en\}/g, isoDate)
+        .replace(/\{slot\}/g, appointment.PreferredSlot || '')
+        .replace(/\{doctor\}/g, (settings && settings.doctor_name) || 'Dr. Arefin Zannat Sompa')
+        .replace(/\{chamber\}/g, (settings && settings.chamber_address) || 'সিলেট')
+        .replace(/\{phone\}/g, (settings && settings.phone) || '')
+        .replace(/\{email\}/g, (settings && settings.email) || '')
+        .replace(/[ \t]{2,}/g, ' ')   // collapse the gap left by an empty {relative}
+        .trim();
+}
+
+// The reminder history table is created on first use, so an existing database
+// does not need a manual SQL step.
+let reminderTableReady = false;
+async function ensureReminderTable(pool) {
+    if (reminderTableReady) return;
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS "ReminderLog" (
+            "Id"            INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+            "AppointmentId" INTEGER NOT NULL,
+            "Channel"       VARCHAR(20) NOT NULL,
+            "Destination"   VARCHAR(200) NOT NULL,
+            "Message"       TEXT NOT NULL,
+            "Status"        VARCHAR(20) NOT NULL,
+            "Error"         TEXT NULL,
+            "SentAt"        TIMESTAMP NOT NULL DEFAULT NOW()
+        )
+    `);
+    reminderTableReady = true;
+}
+
+async function readSettings(pool) {
+    const result = await pool.query('SELECT "SettingKey", "SettingValue" FROM "SiteSettings"');
+    const settings = {};
+    result.rows.forEach(row => { settings[row.SettingKey] = row.SettingValue; });
+    return settings;
+}
+
+async function logReminder(pool, { appointmentId, channel, destination, message, status, error }) {
+    await pool.query(`
+        INSERT INTO "ReminderLog" ("AppointmentId", "Channel", "Destination", "Message", "Status", "Error")
+        VALUES ($1, $2, $3, $4, $5, $6)
+    `, [appointmentId, channel, destination || '', message || '', status, error || null]);
+}
+
+// ---------------------------------------------------------------------------
+// Delivery: SMS through a generic HTTP gateway, e-mail through SMTP
+// ---------------------------------------------------------------------------
+
+// GET  → {phone} / {message} inside SMS_API_URL are replaced (message URL-encoded);
+//        if the URL has no placeholder, ?to=...&message=... is appended.
+// POST → JSON body { to, message } is posted to SMS_API_URL.
+async function sendSms(phone, message) {
+    if (!SMS_ENABLED) {
+        throw new Error('SMS is not configured on this server — set SMS_API_URL in .env.');
+    }
+    if (REMINDER_DRY_RUN) {
+        return { response: 'dry run — no SMS was sent' };
+    }
+
+    const headers = { Accept: 'application/json' };
+    if (SMS_API_KEY) {
+        headers[SMS_AUTH_HEADER] = `${SMS_AUTH_SCHEME} ${SMS_API_KEY}`.trim();
+    }
+
+    let url = SMS_API_URL;
+    const options = { method: SMS_METHOD, headers, signal: AbortSignal.timeout(20000) };
+
+    if (SMS_METHOD === 'POST') {
+        headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify({ to: phone, message });
+    } else {
+        const hasPlaceholder = /\{phone\}/.test(SMS_API_URL) || /\{message\}/.test(SMS_API_URL);
+        url = SMS_API_URL
+            .replace(/\{phone\}/g, encodeURIComponent(phone))
+            .replace(/\{message\}/g, encodeURIComponent(message));
+        if (!hasPlaceholder) {
+            const sep = url.includes('?') ? '&' : '?';
+            url += `${sep}to=${encodeURIComponent(phone)}&message=${encodeURIComponent(message)}`;
+        }
+    }
+
+    const res = await fetch(url, options);
+    const text = (await res.text()).replace(/\s+/g, ' ').trim().slice(0, 300);
+
+    if (!res.ok) {
+        throw new Error(`SMS gateway replied HTTP ${res.status}${text ? ' — ' + text : ''}`);
+    }
+    return { response: text || `HTTP ${res.status}` };
+}
+
+let _mailer = null;
+function getMailer() {
+    if (!EMAIL_ENABLED) {
+        throw new Error('E-mail is not configured on this server — set SMTP_HOST and SMTP_FROM in .env.');
+    }
+    if (!_mailer) {
+        let nodemailer;
+        try {
+            nodemailer = require('nodemailer');
+        } catch (err) {
+            throw new Error('The "nodemailer" package is missing. Install it with: npm.cmd install nodemailer');
+        }
+        _mailer = nodemailer.createTransport({
+            host: SMTP_HOST,
+            port: SMTP_PORT,
+            secure: SMTP_SECURE,
+            auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASS } : undefined
+        });
+    }
+    return _mailer;
+}
+
+function escapeHtml(value) {
+    return String(value === null || value === undefined ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function buildDigestEmail(isoDate, appointments) {
+    const rows = appointments.map(a => `
+        <tr>
+            <td>${escapeHtml(a.PreferredSlot)}</td>
+            <td><b>${escapeHtml(a.PatientName)}</b></td>
+            <td>${escapeHtml(a.Age)}</td>
+            <td>${escapeHtml(a.Phone)}</td>
+            <td>${escapeHtml(a.VisitType)}</td>
+            <td>${escapeHtml(a.Status)}</td>
+        </tr>`).join('');
+
+    const subject = `Chamber list — ${isoDate} (${appointments.length} appointment${appointments.length === 1 ? '' : 's'})`;
+    const html = `
+        <div style="font-family:Karla,Arial,sans-serif;color:#18202E">
+            <h2 style="color:#0E2452;margin:0 0 .2rem">Chamber list — ${escapeHtml(isoDate)}</h2>
+            <p style="color:#5B6678;margin:.2rem 0 1rem">${appointments.length} appointment${appointments.length === 1 ? '' : 's'} scheduled.</p>
+            <table cellspacing="0" cellpadding="8" style="border-collapse:collapse;width:100%;font-size:14px">
+                <thead>
+                    <tr style="background:#0E2452;color:#fff;text-align:left">
+                        <th>Slot</th><th>Patient</th><th>Age</th><th>Phone</th><th>Visit</th><th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>${rows || '<tr><td colspan="6">No appointments.</td></tr>'}</tbody>
+            </table>
+        </div>`;
+
+    const text = [`Chamber list — ${isoDate}`, '', ...appointments.map(a =>
+        `${a.PreferredSlot} | ${a.PatientName} (${a.Age}) | ${a.Phone} | ${a.VisitType} | ${a.Status}`)].join('\n');
+
+    return { subject, html, text };
+}
+
+function resolveReminderDate(when) {
+    const value = String(when === undefined || when === null || when === '' ? 'tomorrow' : when).trim();
+    if (value === 'today') return localIsoDate(0);
+    if (value === 'tomorrow') return localIsoDate(1);
+    return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+}
+
+// Who needs a reminder for a given day, with the ready-to-send message
+app.get('/api/reminders/due', async (req, res) => {
+    try {
+        const pool = await db.poolPromise;
+        await ensureReminderTable(pool);
+
+        const isoDate = resolveReminderDate(req.query.when);
+        if (!isoDate) {
+            return res.status(400).json({ success: false, message: 'Use when=today, when=tomorrow or a YYYY-MM-DD date.' });
+        }
+
+        const result = await pool.query(`
+            SELECT a."Id", a."PatientName", a."Age", a."Phone", a."VisitType", a."PreferredDate",
+                   a."PreferredSlot", a."Status", a."Notes",
+                   last."Channel" AS "LastChannel", last."Status" AS "LastStatus", last."SentAt" AS "LastSentAt"
+            FROM "Appointments" a
+            LEFT JOIN LATERAL (
+                SELECT "Channel", "Status", "SentAt"
+                FROM "ReminderLog"
+                WHERE "AppointmentId" = a."Id" AND "Status" IN ('sent', 'manual', 'dry-run')
+                ORDER BY "SentAt" DESC
+                LIMIT 1
+            ) AS last ON TRUE
+            WHERE a."PreferredDate" = $1::date
+              AND a."Status" <> 'Cancelled'
+            ORDER BY a."PreferredSlot" ASC, a."Id" ASC
+        `, [isoDate]);
+
+        const settings = await readSettings(pool);
+        const data = result.rows.map(row => ({
+            id: row.Id,
+            name: row.PatientName,
+            age: row.Age,
+            phone: row.Phone,
+            visit: row.VisitType,
+            date: String(row.PreferredDate).slice(0, 10),
+            slot: row.PreferredSlot,
+            status: row.Status,
+            notes: row.Notes || '',
+            message: composeReminder(row, settings, isoDate),
+            lastReminder: row.LastSentAt
+                ? { channel: row.LastChannel, status: row.LastStatus, sentAt: row.LastSentAt }
+                : null
+        }));
+
+        res.json({
+            success: true,
+            when: isoDate,
+            count: data.length,
+            pending: data.filter(item => !item.lastReminder).length,
+            channels: { sms: SMS_ENABLED, email: EMAIL_ENABLED, dryRun: REMINDER_DRY_RUN },
+            clinicEmail: CLINIC_EMAIL || null,
+            data
+        });
+    } catch (err) {
+        console.error('Error loading reminders:', err);
+        res.status(500).json({ success: false, message: 'Failed to load reminders.' });
+    }
+});
+
+// Send (or preview, when REMINDER_DRY_RUN=true) one SMS reminder
+app.post('/api/reminders/send', async (req, res) => {
+    try {
+        const pool = await db.poolPromise;
+        await ensureReminderTable(pool);
+
+        const id = parseInt((req.body || {}).appointmentId, 10);
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'appointmentId is required.' });
+        }
+
+        const found = await pool.query('SELECT * FROM "Appointments" WHERE "Id" = $1', [id]);
+        if (!found.rows.length) {
+            return res.status(404).json({ success: false, message: 'Appointment not found.' });
+        }
+
+        const appointment = found.rows[0];
+        const isoDate = String(appointment.PreferredDate).slice(0, 10);
+        const settings = await readSettings(pool);
+        const reminderText = composeReminder(appointment, settings, isoDate);
+        const phone = String(appointment.Phone || '').trim();
+
+        let status = 'sent';
+        let detail = '';
+
+        if (!phone) {
+            status = 'failed';
+            detail = 'This appointment has no phone number.';
+        } else {
+            try {
+                const result = await sendSms(phone, reminderText);
+                if (REMINDER_DRY_RUN) status = 'dry-run';
+                detail = result.response;
+            } catch (err) {
+                status = 'failed';
+                detail = err.message;
+            }
+        }
+
+        await logReminder(pool, {
+            appointmentId: id,
+            channel: 'sms',
+            destination: phone,
+            message: reminderText,
+            status,
+            error: status === 'failed' ? detail : null
+        });
+
+        if (status === 'failed') {
+            return res.status(502).json({ success: false, status, message: `SMS not sent: ${detail}`, reminder: reminderText });
+        }
+
+        res.json({
+            success: true,
+            status,
+            message: status === 'dry-run'
+                ? `Dry run — the reminder for ${appointment.PatientName} was prepared but not sent.`
+                : `Reminder sent to ${phone}.`,
+            reminder: reminderText
+        });
+    } catch (err) {
+        console.error('Error sending reminder:', err);
+        res.status(500).json({ success: false, message: 'Failed to send the reminder.' });
+    }
+});
+
+// Record a reminder that was given by phone / in person, so it is not repeated
+app.post('/api/reminders/mark', async (req, res) => {
+    try {
+        const pool = await db.poolPromise;
+        await ensureReminderTable(pool);
+
+        const id = parseInt((req.body || {}).appointmentId, 10);
+        if (!id) {
+            return res.status(400).json({ success: false, message: 'appointmentId is required.' });
+        }
+
+        const found = await pool.query('SELECT * FROM "Appointments" WHERE "Id" = $1', [id]);
+        if (!found.rows.length) {
+            return res.status(404).json({ success: false, message: 'Appointment not found.' });
+        }
+
+        const appointment = found.rows[0];
+        const settings = await readSettings(pool);
+        const reminderText = composeReminder(appointment, settings, String(appointment.PreferredDate).slice(0, 10));
+
+        await logReminder(pool, {
+            appointmentId: id,
+            channel: String((req.body || {}).channel || 'manual').slice(0, 20),
+            destination: appointment.Phone,
+            message: reminderText,
+            status: 'manual',
+            error: null
+        });
+
+        res.json({ success: true, message: `Marked as reminded (${appointment.PatientName}).` });
+    } catch (err) {
+        console.error('Error marking reminder:', err);
+        res.status(500).json({ success: false, message: 'Failed to record the reminder.' });
+    }
+});
+
+// E-mail the day's chamber list to the clinic address
+app.post('/api/reminders/email-digest', async (req, res) => {
+    try {
+        const pool = await db.poolPromise;
+        await ensureReminderTable(pool);
+
+        const isoDate = resolveReminderDate((req.body || {}).when);
+        if (!isoDate) {
+            return res.status(400).json({ success: false, message: 'Use when=today, when=tomorrow or a YYYY-MM-DD date.' });
+        }
+
+        const result = await pool.query(`
+            SELECT "PatientName", "Age", "Phone", "VisitType", "PreferredSlot", "Status"
+            FROM "Appointments"
+            WHERE "PreferredDate" = $1::date AND "Status" <> 'Cancelled'
+            ORDER BY "PreferredSlot" ASC, "Id" ASC
+        `, [isoDate]);
+
+        const appointments = result.rows;
+        const { subject, html, text } = buildDigestEmail(isoDate, appointments);
+        const to = String((req.body || {}).to || CLINIC_EMAIL || '').trim();
+
+        if (!to) {
+            return res.status(400).json({
+                success: false,
+                message: 'No destination address. Set CLINIC_EMAIL (or SMTP_USER) in .env, or pass "to" in the request.'
+            });
+        }
+
+        if (REMINDER_DRY_RUN) {
+            await logReminder(pool, {
+                appointmentId: 0, channel: 'email', destination: to,
+                message: `${subject}\n\n${text}`, status: 'dry-run', error: null
+            });
+            return res.json({
+                success: true,
+                status: 'dry-run',
+                message: `Dry run — the list for ${isoDate} (${appointments.length} appointments) was prepared for ${to} but not sent.`
+            });
+        }
+
+        try {
+            const info = await getMailer().sendMail({ from: SMTP_FROM, to, subject, text, html });
+            await logReminder(pool, {
+                appointmentId: 0, channel: 'email', destination: to,
+                message: `${subject}\n\n${text}`, status: 'sent', error: null
+            });
+            res.json({
+                success: true,
+                status: 'sent',
+                message: `List for ${isoDate} e-mailed to ${to} (${appointments.length} appointments).`,
+                messageId: info && info.messageId
+            });
+        } catch (mailErr) {
+            await logReminder(pool, {
+                appointmentId: 0, channel: 'email', destination: to,
+                message: subject, status: 'failed', error: mailErr.message
+            });
+            res.status(502).json({ success: false, message: `E-mail not sent: ${mailErr.message}` });
+        }
+    } catch (err) {
+        console.error('Error e-mailing the digest:', err);
+        res.status(500).json({ success: false, message: 'Failed to e-mail the chamber list.' });
+    }
+});
+
+// Reminder history
+app.get('/api/reminders/log', async (req, res) => {
+    try {
+        const pool = await db.poolPromise;
+        await ensureReminderTable(pool);
+
+        const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 25, 1), 200);
+        const result = await pool.query(`
+            SELECT r."Id", r."AppointmentId", r."Channel", r."Destination", r."Message",
+                   r."Status", r."Error", r."SentAt", a."PatientName", a."PreferredDate"
+            FROM "ReminderLog" r
+            LEFT JOIN "Appointments" a ON a."Id" = r."AppointmentId"
+            ORDER BY r."SentAt" DESC, r."Id" DESC
+            LIMIT $1
+        `, [limit]);
+
+        res.json({ success: true, data: result.rows });
+    } catch (err) {
+        console.error('Error loading reminder log:', err);
+        res.status(500).json({ success: false, message: 'Failed to load the reminder history.' });
     }
 });
 
@@ -660,13 +1237,48 @@ app.use('/api', (req, res) => {
     });
 });
 
+app.use((err, req, res, next) => {
+    if (err && err.type === 'entity.too.large') {
+        return res.status(413).json({ success: false, message: 'Request is too large.' });
+    }
+    if (err && err.type === 'entity.parse.failed') {
+        return res.status(400).json({ success: false, message: 'Invalid JSON request body.' });
+    }
+    if (err && err.message === 'Origin is not allowed by CORS.') {
+        return res.status(403).json({ success: false, message: 'This request origin is not allowed.' });
+    }
+    console.error('Unhandled request error:', err);
+    res.status(500).json({ success: false, message: 'An unexpected server error occurred.' });
+});
+
 // Start Express server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
+    config.logSummary();
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`   Website : http://localhost:${PORT}/`);
     console.log(`   CMS     : http://localhost:${PORT}/admin`);
     console.log(`   Health  : http://localhost:${PORT}/api/health`);
     console.log(AUTH_ENABLED
         ? `🔒 Admin sign-in: ENABLED (user "${ADMIN_USER}") — ${AUTH_ENABLED ? 'http://localhost:' + PORT + '/login' : ''}`
-        : '🔓 Admin sign-in: disabled (set ADMIN_USER + ADMIN_PASS in .env to enable)');
+        : '🔓 Admin sign-in: disabled (set Admin:User + Admin:Password in appsettings.json to enable)');
+
+    // A brand-new database (fresh hosting account, new laptop) gets its tables and
+    // sample content straight away. setup_db.sql is idempotent, so an existing
+    // database is never changed — switch this off with DB_AUTO_MIGRATE=false.
+    if (process.env.DB_AUTO_MIGRATE !== 'false') db.ensureSchema();
 });
+
+let shuttingDown = false;
+async function shutdown(signal) {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`${signal} received — shutting down gracefully.`);
+    server.close(async () => {
+        await db.close();
+        process.exit(0);
+    });
+    setTimeout(() => process.exit(1), 10000).unref();
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));

@@ -26,7 +26,7 @@ node server.js
 | **Admin / CMS** | http://localhost:5000/admin (লগইন ছাড়া ঢুকলে `/login`-এ পাঠাবে) |
 | Health check | http://localhost:5000/api/health |
 
-**ডিফল্ট লগইন:** ইউজার `admin` · পাসওয়ার্ড `Sompa@Chamber2026` (`.env` ফাইলে বদলে নিন)
+**Admin credentials:** `.env`-এ থাকা `ADMIN_USER` ও `ADMIN_PASS` ব্যবহার করুন। কোনো default password production-এ ব্যবহার করবেন না; deploy করার আগে long, unique password এবং `SESSION_SECRET` সেট করুন। বিস্তারিত: `PRODUCTION_DEPLOYMENT.md`।
 
 > ⚠️ এই PC-তে PowerShell Execution Policy `npm.ps1` ব্লক করে, তাই `npm start` কাজ করবে না।
 > `node server.js` বা `npm.cmd start` ব্যবহার করুন, অথবা একবার চালান:
@@ -36,7 +36,80 @@ node server.js
 
 ---
 
-## ⚙️ কনফিগারেশন (`\.env`)
+## 🧭 Visual Studio থেকে রান ও পাবলিশ
+
+প্রজেক্টে VS solution যোগ করা আছে — **`DrShompa.slnx`**।
+Visual Studio-তে folder-view নয়, এই solution-টাই খুলুন (`File > Open > Project/Solution` → `DrShompa.slnx`),
+কেননা folder-view-তে F5 রান বা Publish মেনু থাকে না।
+
+| কাজ | কীভাবে |
+|---|---|
+| রান (ডিবাগার সহ) | `F5` — `server.js` চালু হয় (পোর্ট 5000), ব্রাউজার নিজে থেকেই খোলে |
+| শুধু রান | Node.js debugger-এ সমস্যা হলে `Ctrl+F5` (Start Without Debugging) |
+| Publish | Solution Explorer-এ প্রজেক্ট নামে ডান-ক্লিক → **Publish** |
+
+`Properties\PublishProfiles`-এ দুটি profile দেওয়া আছে:
+
+| Profile | কী তৈরি করে |
+|---|---|
+| `DrShompa-Folder` | `publish\` ফোল্ডারে সোর্স কপি (node_modules ছাড়া) — সার্ভারে কপি করে `npm.cmd ci` চালান |
+| `DrShompa-IIS-Package` | `publish\DrShompa.zip` + `DrShompa.deploy.cmd` + `SetParameters.xml` (IIS Manager → Deploy → Import Application) |
+
+> `node_modules` ও `.env` কখনো publish হয় না (`.env`-এ পাসওয়ার্ড থাকে, তাই ইচ্ছাকৃতভাবে বাদ)।
+> সার্ভারে প্রথমে `npm.cmd ci`, তারপর `.env`, `npm.cmd run db:migrate` — বিস্তারিত `IIS_DEPLOYMENT.md`-এ।
+
+কমান্ড-লাইন থেকেও একই পাবলিশ করা যায়:
+
+```powershell
+$msb = "C:\Program Files\Microsoft Visual Studio\18\Professional\MSBuild\Current\Bin\MSBuild.exe"
+& $msb DrShompa.njsproj -t:Build -p:DeployOnBuild=true -p:PublishProfile=DrShompa-IIS-Package -p:Configuration=Release
+```
+
+> VS খোলার সময় "migrate to the new JavaScript project system" জিজ্ঞেস করলে **Not now** দিন —
+> migrate করলে `DrShompa.njsproj` বদলে যাবে এবং এই রান/পাবলিশ সেটআপ আর কাজ করবে না।
+
+---
+
+## 🗄️ appsettings.json — যেকোনো মেশিনের সেটিং
+
+প্রতিটি মেশিনে শুধু **`appsettings.json`** (server.js-এর পাশে) বদলালেই DB + web connect হয় —
+`appsettings.example.json` কপি করে `appsettings.json` বানান (এটি git-ignored, তাই পাসওয়ার্ড কখনো কমিট হয় না)।
+
+| JSON সেকশন | কাজ |
+|---|---|
+| `Web` | পোর্ট, environment (`Port`, `TrustProxy`, `AllowedOrigins`) |
+| `Database` | SQL Server হোস্ট, ডাটাবেস, লগইন (`Server`, `Name`, `User`, `Password`, …) |
+| `Admin` | লগইন ইউজার/পাসওয়ার্ড (`User`, `Password`) |
+| `Session` | সেশন cookie সাইন করার চাবি (`Secret`) |
+| `Reminders` | SMS/SMTP রিমাইন্ডার (`DryRun`, `Sms`, `Smtp`) |
+
+নিয়ম — উপরেরটা জেতে:
+
+1. OS environment variable (IIS service settings, `setx`, docker)
+2. `appsettings.json` + `appsettings.<NODE_ENV>.json`
+3. `.env` (পুরনো পদ্ধতি — দুটোই থাকলে appsettings.json এটাকে হারায়)
+
+কোন সেটিং দিয়ে চলছে, পাসওয়ার্ড ছাড়াই যেকোনো সময় দেখুন:
+
+```powershell
+npm.cmd run config:show
+```
+
+সার্ভার চালুর সময়ও console-এ লেখা থাকে, যেমন
+`⚙️ Config: appsettings.json | db localhost:1433/DrShompaDB | web http://localhost:5000` —
+ভুল মেশিন/DB-তে গেলে এটাই প্রথমে দেখুন।
+
+> 💡 JSON-এ খালি (`""`) রাখা মান = "সেটিং দেওয়া হয়নি" — খালি ফিল্ড কখনো অন্য ফাইলের
+> পাসওয়ার্ড মুছে দেয় না। দুই ফাইলে একই সেটিং ভিন্ন থাকলে চালুর সময় লগে লেখা থাকে
+> (`appsettings.json overrides .env for: PORT, DB_NAME`) — সুবিধার জন্য এক মেশিনে একটাই ফাইল রাখুন।
+
+---
+
+## ⚙️ কনফিগারেশন (`appsettings.json` / `.env`)
+
+উপরে বর্ণিত appsettings.json-ই নতুন মেশিনে ব্যবহার করুন; নিচের `.env` টেবিলটা পুরনো পদ্ধতির
+রেফারেন্স হিসেবে রাখা হলো (`.env` git-ignored)। প্রতিটি JSON সেকশনের পাশে সমতুল্য
+`.env` নামটাও মিলিয়ে নিতে পারবেন।
 
 `.env.example` কপি করে `.env` বানান (`.env` git-ignored):
 
@@ -87,8 +160,9 @@ node server.js
 (`from` শুধু দিলে >=, `to` শুধু দিলে <=)।
 
 ```powershell
-# উদাহরণ: ২০ সেপ্টেম্বর ২০২৬-এর সব অ্যাপয়েন্টমেন্ট (লগইন করা অবস্থায় ব্রাউজার থেকে হলেও চলে)
-curl -u admin:Sompa@Chamber2026 "http://localhost:5000/api/appointments?from=2026-09-20&to=2026-09-20"
+# উদাহরণ: ২০ সেপ্টেম্বর ২০২৬-এর সব অ্যাপয়েন্টমেন্ট
+# নিজের .env-এর ADMIN_USER এবং ADMIN_PASS বসান
+curl -u YOUR_ADMIN_USER:YOUR_ADMIN_PASSWORD "http://localhost:5000/api/appointments?from=2026-09-20&to=2026-09-20"
 ```
 
 ---
@@ -113,9 +187,9 @@ curl -u admin:Sompa@Chamber2026 "http://localhost:5000/api/appointments?from=202
 | সমস্যা | কারণ / সমাধান |
 |---|---|
 | `npm.ps1 cannot be loaded` | PowerShell policy — `node server.js` ব্যবহার করুন |
-| `EADDRINUSE :5000` | আগের সার্ভার চালু আছে — `stop.cmd` চালান বা `.env`-এ `PORT` বদলান |
-| সাইট খোলে কিন্তু ডেটা আসে না | API test করুন: http://localhost:5000/api/health — `database: unavailable` এলে SQL Server/`.env` চেক করুন |
-| `Database is unavailable` (503) | SQL Server সার্ভিস চালু আছে কিনা (`Get-Service MSSQLSERVER`) ও `.env` credentials দেখুন |
+| `EADDRINUSE :5000` | আগের সার্ভার চালু আছে — `stop.cmd` চালান বা `appsettings.json`-এর `Web:Port` বদলান |
+| সাইট খোলে কিন্তু ডেটা আসে না | API test করুন: http://localhost:5000/api/health — `database: unavailable` এলে `appsettings.json`-এর `Database` সেকশন চেক করুন |
+| `Database is unavailable` (503) | SQL Server সার্ভিস চালু আছে কিনা (`Get-Service MSSQLSERVER`) ও `appsettings.json`-এর `Database` সার্ভার/নাম/লগইন দেখুন |
 | `Failed to fetch` admin প্যানেলে | সার্ভার চালু নেই, অথবা অন্য পোর্টে চালু আছে |
 | লগইনে `Wrong username or password` | ⚠️ `.env`-এ পাসওয়ার্ডে `#` থাকলে dotenv বাকি অংশ comment ভেবে কেটে ফেলে — কোট ব্যবহার করুন বা `#` বাদ দিন |
 | লগইনে ঢুকতে পারছেন না | `.env` ফাইলে `ADMIN_USER`/`ADMIN_PASS` দেখুন, বদলালে সার্ভার রিস্টার্ট দিন |
@@ -135,12 +209,18 @@ server.js                  Express API + static hosting + security guards + logi
 db.js                      mssql connection pool (lazy, auto-retry)
 setup_db.sql               ডাটাবেস + টেবিল + sample data
 dr-arefin-zannat-sompa.html  পাবলিক ওয়েবসাইট
+config.js                  appsettings.json-ভিত্তিক কনফিগারেশন লোডার
 patient-voices.html        রোগীর মতামত পেজ
 admin.html                 CMS অ্যাডমিন প্যানেল (তারিখ-রেঞ্জ ফিল্টার, ছবি আপলোড, লগআউট বাটন)
 login.html                 অ্যাডমিন লগইন স্ক্রিন
 *.jpg / *.png              ছবি
-.env / .env.example        কনফিগারেশন (`.env` গোপন)
+appsettings.json           মেশিনের সেটিং (DB + web, গোপন — git-ignored)
+appsettings.example.json   সেটিং টেমপ্লেট (কমেন্টসহ)
+.env / .env.example        পুরনো পদ্ধতির কনফিগারেশন (`.env` গোপন — optional)
 start.cmd / stop.cmd       সার্ভার চালু / বন্ধ (এক ক্লিকে)
+DrShompa.slnx              VS solution — এটিই খুলে F5 / Publish করুন
+DrShompa.njsproj           VS Node.js প্রজেক্ট (startup file = server.js)
+Properties\PublishProfiles  VS publish profile (Folder / IIS package)
 ```
 
 ## 🧰 Tech stack

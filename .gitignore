@@ -6,15 +6,35 @@ node_modules/
 .env.local
 .env.*.local
 
+# Per-machine settings file (contains DB + admin credentials — never commit)
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+
 # Logs
 *.log
+
+# Local database inspection exports
+schema_check.json
 
 # Local debug / diagnostic dumps produced while troubleshooting
 _*.log
 _*.txt
+
+# Visual Studio build / publish output
+publish/
+obj/
+bin/
+*.njsproj.user
 
 # OS / editor noise
 Thumbs.db
 Desktop.ini
 .DS_Store
 .vscode/
+.vs/
+
+# Netlify: local build output + CLI state
+dist/
+.netlify/
+*.log

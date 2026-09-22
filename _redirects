@@ -1,0 +1,6 @@
+/api/* https://dr-shompa-backend.onrender.com/api/:splat 200
+/ /dr-arefin-zannat-sompa.html 200
+/admin /admin.html 200
+/login /login.html 200
+/voices /patient-voices.html 200
+/patient-voices /patient-voices.html 200

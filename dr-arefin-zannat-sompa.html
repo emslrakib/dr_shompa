@@ -182,18 +182,29 @@ section { padding: 2.3rem 0; }
 .card .tick-row { display: flex; gap: .6rem; align-items: flex-start; }
 .card .tick-ico { width: 16px; height: 16px; flex: none; color: var(--gold); margin-top: .3rem; }
 
-/* Services Grid */
-.svc { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.1rem; }
+/* Services Grid — centered rows; new CMS cards auto-balance into the grid */
+.svc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 330px)); justify-content: center; gap: 1.25rem; counter-reset: svcnum; }
 .svc article {
   background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 1.6rem 1.4rem;
   transition: transform .3s, box-shadow .3s, border-color .3s;
   position: relative; overflow: hidden;
+  counter-increment: svcnum;
 }
 .svc article::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold-soft); opacity: 0; transition: opacity .3s;
 }
 .svc article:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.3); }
 .svc article:hover::before { opacity: 1; }
+/* soft number watermark — pure CSS, so it also appears on CMS-added cards */
+.svc article::after {
+  content: counter(svcnum, decimal-leading-zero);
+  position: absolute; top: .5rem; right: 1rem;
+  font-family: var(--serif); font-size: 2.1rem; font-weight: 700; line-height: 1;
+  color: rgba(176,131,47,.16); pointer-events: none;
+}
+/* centered section headers */
+.sec-head.center { text-align: center; margin-inline: auto; }
+.sec-head.center .rule { margin-inline: auto; }
 .svc h3 { font-size: 1.18rem; color: var(--navy); margin-bottom: .45rem; }
 .svc p { font-size: .93rem; color: var(--muted); margin: 0; }
 
@@ -216,9 +227,39 @@ section { padding: 2.3rem 0; }
 }
 .quote-box { max-width: 46rem; margin-inline: auto; text-align: center; position: relative; z-index: 2; }
 .qmark { font-family: var(--serif); font-size: 4.5rem; color: var(--gold); line-height: .4; display: block; margin-bottom: 1rem; }
-.slide { display: none; }
-.slide.on { display: block; animation: soft .5s ease; }
+#slides { position: relative; min-height: 12rem; }
+/* gallery-style show: the incoming quote slides in from the right while fading */
+.slide { visibility: hidden; opacity: 0; transform: translateX(56px) scale(.985); position: absolute; inset: 0; margin: 0; transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.3,1), visibility 0s .55s; }
+.slide.on { visibility: visible; opacity: 1; transform: none; position: relative; transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.3,1); }
 @keyframes soft { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* "Read all patient stories" pill over the dark quotes background */
+.voices-all { display: inline-flex; margin-top: 1.8rem; background: rgba(226,198,138,.14); border: 1.5px solid rgba(226,198,138,.65); color: #fff; box-shadow: 0 10px 26px -14px rgba(226,198,138,.55); transition: background .25s, transform .25s, box-shadow .25s, border-color .25s; }
+.voices-all:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 16px 32px -12px rgba(226,198,138,.7); }
+.voices-all .arr { display: inline-block; transition: transform .25s; }
+.voices-all:hover .arr { transform: translateX(4px); }
+
+/* ---------- patient stories grid (single-page: no separate voices page) ---------- */
+#stories { scroll-margin-top: 90px; }
+.t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 360px)); justify-content: center; gap: 1.3rem; }
+.t-card {
+  background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 1.9rem 1.6rem 1.5rem;
+  position: relative; overflow: hidden;
+  transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+.t-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); border-color: rgba(176,131,47,.4); }
+.t-card::before { content: "\201C"; position: absolute; top: .2rem; right: 1.1rem; font-family: var(--serif); font-size: 3.6rem; color: rgba(176,131,47,.2); line-height: 1; }
+.t-card::after { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--gold), var(--gold-soft)); transition: width .45s ease; }
+.t-card:hover::after { width: 100%; }
+.stars { color: var(--gold); letter-spacing: .18em; font-size: .9rem; }
+.t-card blockquote { margin: .7rem 0 1.1rem; font-family: var(--serif); font-size: 1.14rem; line-height: 1.5; color: var(--ink); }
+.t-card .who { display: flex; align-items: center; gap: .6rem; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+.t-card .who::before { content: ""; width: 26px; height: 2px; background: var(--gold); flex: none; }
+.t-card.love { border-color: rgba(176,131,47,.55); box-shadow: 0 0 0 1px rgba(226,198,138,.55), 0 22px 48px -18px rgba(176,131,47,.45); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(26px) scale(.98); } to { opacity: 1; transform: none; } }
+.t-card.show { animation: cardIn .6s cubic-bezier(.2,.7,.3,1.1) both; }
+.t-card.show:hover { animation: none; }
+.pv-empty { border: 1.5px dashed var(--line); border-radius: 16px; padding: 2.6rem 1.6rem; text-align: center; color: var(--muted); }
+html[data-lang="bn"] .t-card blockquote { font-family: "Noto Serif Bengali", var(--serif); }
 .slide p { font-family: var(--serif); font-size: clamp(1.3rem, 2.5vw, 1.85rem); line-height: 1.45; color: #fff; }
 .slide cite { font-style: normal; font-size: .84rem; letter-spacing: .15em; color: var(--gold-soft); font-weight: 600; text-transform: uppercase; margin-top: .8rem; display: block; }
 .q-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.8rem; }
@@ -278,6 +319,10 @@ footer::before { content: ""; position: absolute; top: 0; left: 0; right: 0; hei
 .f-item a:hover { color: var(--gold-soft); }
 
 .f-bot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding-top: 1.4rem; font-size: .82rem; color: rgba(255,255,255,.45); }
+/* developer credit — gold link, wraps to its own corner line on mobile */
+.f-dev { color: rgba(255,255,255,.45); }
+.f-dev a { color: var(--gold-soft); text-decoration: none; font-weight: 700; white-space: nowrap; }
+.f-dev a:hover { color: #fff; text-decoration: underline; }
 
 /* ---------- booking modal ---------- */
 .overlay {
@@ -636,7 +681,7 @@ html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
         <li><a href="#services" data-i18n="nav.services">Services</a></li>
         <li><a href="#chamber" data-i18n="nav.chamber">Chamber</a></li>
         <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
-        <li><a href="patient-voices.html" data-i18n="nav.voices">Patient voices</a></li>
+        <li><a href="#stories" data-i18n="nav.voices">Patient voices</a></li>
         <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
         <li class="mobile-cta"><button class="btn gold" data-book data-i18n="cta.book">Book appointment</button></li>
       </ul>
@@ -792,7 +837,7 @@ html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
   <!-- SERVICES -->
   <section id="services" style="background:var(--paper-2)">
     <div class="wrap">
-      <div class="sec-head rv">
+      <div class="sec-head rv center">
         <div class="rule"></div>
         <h2 data-i18n="services.h2">What she treats</h2>
         <p data-i18n="services.p">Consultations cover diagnosis, medication management, and referral for talk therapy where it helps.</p>
@@ -848,7 +893,23 @@ html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
         <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
         <button id="next" aria-label="Next quote"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
-      <a class="btn ghost voices-all" href="patient-voices.html" data-i18n="voices.all" style="margin-top:1.6rem;color:#fff;border-color:rgba(255,255,255,.5)">Read all patient stories</a>
+      <a class="btn ghost voices-all" href="#stories" data-i18n="voices.allPlain">Read all patient stories <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- PATIENT STORIES (single-page: full voices grid, no separate page) -->
+  <section id="stories" style="background:var(--paper)">
+    <div class="wrap">
+      <div class="sec-head rv center">
+        <div class="rule"></div>
+        <h2 data-i18n="stories.h2">Patient voices</h2>
+        <p data-i18n="stories.p">Real stories from people who found their way back to calm, sleep, and hope — shared with permission, kept anonymous and confidential.</p>
+      </div>
+      <div id="storiesGrid" class="t-grid rv" aria-live="polite"></div>
+      <div id="storiesEmpty" class="pv-empty" style="display:none" data-i18n="stories.empty">Patient stories are being collected. Please check back soon.</div>
+      <div style="text-align:center;margin-top:1.8rem">
+        <button class="btn gold" data-book data-i18n="cta.book">Book appointment</button>
+      </div>
     </div>
   </section>
 
@@ -1081,7 +1142,7 @@ html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
           <li><a href="#about" data-i18n="footer.f2">About & Qualifications</a></li>
           <li><a href="#services" data-i18n="footer.f3">Services Offered</a></li>
           <li><a href="#chamber" data-i18n="footer.f4">Chamber Environment</a></li>
-          <li><a href="patient-voices.html" data-i18n="footer.f5">Patient Voices</a></li>
+          <li><a href="#stories" data-i18n="footer.f5">Patient Voices</a></li>
           <li><a href="#contact" data-i18n="footer.f6">Contact & Map</a></li>
         </ul>
       </div>
@@ -1106,6 +1167,7 @@ html[data-lang] .i18n-fade { animation: i18nIn .45s ease both; }
     <div class="f-bot">
       <span class="f-copy"><span id="yr">2026</span> <span data-i18n="footer.copyTail">Dr. Arefin Zannat Sompa. All rights reserved.</span></span>
       <span data-i18n="footer.disclaimer">This medical site is for information only and does not replace an in-person diagnostic consultation.</span>
+      <span class="f-dev" data-i18n-html="footer.dev">Developed by <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a></span>
     </div>
   </div>
 </footer>
@@ -1250,7 +1312,11 @@ Object.assign(TRANSLATIONS.en, {
   'footer.chamberLabel': 'Chamber',
   'footer.copyTail': 'Dr. Arefin Zannat Sompa. All rights reserved.',
   'footer.disclaimer': 'This medical site is for information only and does not replace an in-person diagnostic consultation.',
-  'voices.all': 'Read all patient stories'
+  'footer.dev': 'Developed by <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a>',
+  'voices.allPlain': 'Read all patient stories',
+  'stories.h2': 'Patient voices',
+  'stories.p': 'Real stories from people who found their way back to calm, sleep, and hope — shared with permission, kept anonymous and confidential.',
+  'stories.empty': 'Patient stories are being collected. Please check back soon.'
 });
 /* -------- Bangla strings for every data-i18n value -------- */
 Object.assign(TRANSLATIONS.bn, {
@@ -1378,7 +1444,12 @@ Object.assign(TRANSLATIONS.bn, {
   'footer.chamberLabel': 'চেম্বার',
   'footer.copyTail': 'ডা. আরেফিন জান্নাত সোম্পা। সর্বস্বত্ব সংরক্ষিত।',
   'footer.disclaimer': 'এই ওয়েবসাইটটি শুধু তথ্যের জন্য; সরাসরি ডাক্তারের পরামর্শের বিকল্প নয়।',
-  'voices.all': 'সব রোগীর অভিমত পড়ুন'
+  'footer.dev': 'নির্মাণে <a href="https://www.byteflowtechnologies.com/" target="_blank" rel="noopener">Byteflow Technologies</a>',
+  'voices.all': 'সব রোগীর অভিমত পড়ুন',
+  'voices.allPlain': 'সব রোগীর অভিমত পড়ুন',
+  'stories.h2': 'রোগীর অভিমত',
+  'stories.p': 'শান্তি, ঘুম ও আশায় ফিরে আসা মানুষদের সত্যিকারের গল্প — তাঁদের অনুমতিতে, নাম গোপন রেখে।',
+  'stories.empty': 'রোগীদের গল্প সংগ্রহ করা হচ্ছে। শীঘ্রই আবার দেখুন।'
 });
 
 /* ---- built-in Bangla copy for CMS-driven text (keyed by the English text,
@@ -1495,6 +1566,45 @@ function bnSetting(settings, key){
   return BN_SETTINGS[en] !== undefined ? BN_SETTINGS[en] : en;
 }
 
+/* single-page patient stories: same data, rendered as cards below the slider.
+   CMS list first; with no CMS data it falls back to the built-in quotes that
+   already live in the #slides carousel, so the section is never empty. */
+function renderStoriesGrid(list){
+  var grid = document.getElementById('storiesGrid');
+  if (!grid) return;
+  var items = [];
+  if (list && list.length) {
+    list.forEach(function(item){
+      items.push({ q: colBn(item, 'Quote', null), a: colBn(item, 'Author', null) });
+    });
+  } else {
+    var box = document.getElementById('slides');
+    if (box) {
+      Array.prototype.forEach.call(box.querySelectorAll('blockquote'), function(bq){
+        var p = bq.querySelector('p'), c = bq.querySelector('cite');
+        if (p && c) items.push({ q: p.textContent, a: c.textContent });
+      });
+    }
+  }
+  var emptyEl = document.getElementById('storiesEmpty');
+  if (!items.length) { grid.innerHTML = ''; if (emptyEl) emptyEl.style.display = 'block'; return; }
+  if (emptyEl) emptyEl.style.display = 'none';
+  var html = '';
+  items.forEach(function(it, idx){
+    html += '<article class="t-card rv' + (idx === 0 ? ' love' : '') + '" style="animation-delay:' + (idx * 110) + 'ms">' +
+      '<div class="stars" aria-hidden="true">★★★★★</div>' +
+      '<blockquote>' + it.q + '</blockquote>' +
+      '<div class="who">' + it.a + '</div>' +
+      '</article>';
+  });
+  grid.innerHTML = html;
+  Array.prototype.forEach.call(grid.querySelectorAll('.t-card'), function(card){ card.classList.add('show'); });
+  revealInit();
+  setTimeout(function(){
+    Array.prototype.forEach.call(grid.querySelectorAll('.t-card.show'), function(card){ card.classList.remove('show'); });
+  }, 600 + items.length * 110);
+}
+
 /* static grids (shown before the CMS fetch resolves, or if it fails) */
 function applyStaticContent(lang){
   var services = document.getElementById('servicesGrid');
@@ -1524,6 +1634,7 @@ function applyStaticContent(lang){
       if (bn) { p.textContent = bn[0]; c.textContent = bn[1]; }
     });
   }
+  renderStoriesGrid(cmsData && cmsData.data && cmsData.data.testimonials ? cmsData.data.testimonials : null);
 }
 
 function updateLangButtons(lang){
@@ -1582,7 +1693,8 @@ function revealInit(root){
 }
 revealInit();
 
-// quote slider
+// quote slider (gallery-style: no autoplay until the CMS fetch resolves — go(0)
+// would run against stale slides/dots; hydrateCmsInner re-runs go(0))
 var slides = document.querySelectorAll('#slides .slide'),
     dots = document.querySelectorAll('#dots i'), idx = 0, timer;
 function go(n){
@@ -1590,9 +1702,15 @@ function go(n){
   slides.forEach(function(s,i){ s.classList.toggle('on', i===idx); });
   dots.forEach(function(d,i){ d.classList.toggle('on', i===idx); });
 }
-function auto(){ clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 7000); }
+function auto(){ if (slides.length > 1) { clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 7000); } }
 document.getElementById('next').addEventListener('click', function(){ go(idx+1); auto(); });
 document.getElementById('prev').addEventListener('click', function(){ go(idx-1); auto(); });
+// the quotes carousel rests while the reader hovers the words — no mid-read flips
+var slidesBox = document.getElementById('slides');
+if (slidesBox) {
+  slidesBox.addEventListener('mouseenter', function(){ clearInterval(timer); });
+  slidesBox.addEventListener('mouseleave', function(){ auto(); });
+}
 function toggleFaq(headerEl) {
   var item = headerEl.parentElement;
   var wasActive = item.classList.contains('active');
@@ -1718,7 +1836,8 @@ function hydrateCmsInner(json){
       document.getElementById('dots').innerHTML = dHtml;
       slides = document.querySelectorAll('#slides .slide');
       dots = document.querySelectorAll('#dots i');
-      go(0);
+      go(0); auto();
+      renderStoriesGrid(json.data.testimonials || []);
     }
 
     // Render Qualifications
