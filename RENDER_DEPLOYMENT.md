@@ -31,6 +31,8 @@ Browser (one origin)
 
 * Config: `netlify.toml`, `_redirects`, `_headers`
 * Local publish dir: `dist/`
+* One-shot API deploy (no CLI needed — survives flaky networks):
+  `.\deploy-netlify.ps1 -Token <NETLIFY_PAT>`
 * Build command (also run by Netlify on Git push):
 
 ```bash
