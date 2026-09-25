@@ -11,13 +11,8 @@ services:
         value: production
       - key: DB_SSL
         value: true
-      # The API is reached through the Netlify proxy (https://<site>.netlify.app/api/*),
-      # so Express must trust X-Forwarded-* and allow the Netlify site origin.
-      - key: TRUST_PROXY
-        value: "true"
-      # NOTE: replace with the real Netlify site URL right after the site is created.
-      - key: ALLOWED_ORIGINS
-        value: "https://YOUR-SITE-NAME.netlify.app"
+      # Browser requests are same-origin because Express serves the frontend too.
+      # No cross-origin Netlify allowlist is required for this deployment.
       - key: ADMIN_USER
         value: admin
       - key: ADMIN_PASS
