@@ -11,6 +11,9 @@ services:
         value: production
       - key: DB_SSL
         value: true
+      # Express runs behind Render's reverse proxy; trust forwarded protocol/host.
+      - key: TRUST_PROXY
+        value: "true"
       # Browser requests are same-origin because Express serves the frontend too.
       # No cross-origin Netlify allowlist is required for this deployment.
       - key: ADMIN_USER
