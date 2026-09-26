@@ -1,4 +1,4 @@
-# DrShompa — Netlify + Render Deployment Guide
+# DrShompa — Free Hosting Guide (Render, plus an optional Netlify mirror)
 
 > Referenced by `config.js` (the old SQL Server block was removed when the project
 > moved to free hosting). This is the current architecture.
@@ -114,10 +114,13 @@ on the desktop instead of in Render.
 
 ## Operational notes
 
-* Render deletes a **free Postgres instance 30 days after creation** (free-tier
-  limit). For a permanent clinic site keep the Render web service but move the
-  database to a free provider without expiry (Neon / Supabase) and set
-  `DATABASE_URL` on the service instead of `fromDatabase:`.
+* **Render free Postgres expires 30 days after creation** — "newly created Free
+  Render PostgreSQL databases expire after 30 days" (Render changelog,
+  2024-05-20); there are 14 more days to upgrade before the data is deleted, and an
+  account may hold only one free database at a time. For a permanent clinic site
+  keep the Render web service but move the database to a provider without expiry
+  (Neon / Supabase) and set `DATABASE_URL` on the service instead of
+  `fromDatabase:`.
 * The free web service **spins down** after inactivity: the first request after
   idle takes ~30–50 s. Render's health check and Netlify's 100 s proxy timeout are
   both comfortable with that.
