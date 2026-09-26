@@ -1,29 +1,58 @@
+# Render Blueprint — the whole product in ONE free web service.
+#
+# Why a single service is enough: server.js serves the static pages through
+# express.static plus the friendly routes ("/", "/admin", "/login", "/voices")
+# AND the /api/* endpoints, while the frontend always calls relative paths
+# (fetch('/api/...')). Same origin for the browser ⇒ no CORS, no second host and
+# one public URL: https://dr-shompa-backend.onrender.com
+#
+# Deploy: Render Dashboard → New + → Blueprint → pick this repository → Apply.
+# Render creates the datastore and the service below, then asks for ADMIN_PASS
+# (the only value that must never live in Git).
+#
+# Postgres sits at the TOP LEVEL on purpose: Render requires datastores outside
+# the `services` list, and the service pulls its DATABASE_URL from `fromDatabase`
+# — a service-level `database:` key is not part of the Blueprint schema and
+# leaves the app without a database.
+
+databases:
+  - name: drshompa-db
+    databaseName: drshompa
+    user: drshompa_user
+    region: singapore            # nearest supported region to Bangladesh
+    plan: free
+
 services:
   - type: web
     name: dr-shompa-backend
-    env: node
-    region: bangalore
+    runtime: node
+    region: singapore            # must match the database for private networking
     plan: free
+    branch: main
+    autoDeployTrigger: commit    # every push to main redeploys
     buildCommand: npm ci --omit=dev
     startCommand: node server.js
+    healthCheckPath: /api/health
     envVars:
+      # server.js refuses to boot in production without the safe-mode settings
+      # below — see the IS_PRODUCTION guard at the top of server.js.
       - key: NODE_ENV
         value: production
       - key: DB_SSL
-        value: true
-      # Express runs behind Render's reverse proxy; trust forwarded protocol/host.
+        value: "true"            # Render Postgres only accepts TLS connections
+      - key: DB_AUTO_MIGRATE
+        value: "true"            # setup_db.sql creates the tables on first boot
       - key: TRUST_PROXY
-        value: "true"
-      # Browser requests are same-origin because Express serves the frontend too.
-      # No cross-origin Netlify allowlist is required for this deployment.
+        value: "true"            # Render terminates TLS; trust X-Forwarded-Proto/Host
+      # The connection string handed over by the database above.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: drshompa-db
+          property: connectionString
+      # Admin sign-in for /admin — the public website stays open to everyone.
       - key: ADMIN_USER
         value: admin
       - key: ADMIN_PASS
-        sync: false
+        sync: false              # Render prompts for it; never commit a password
       - key: SESSION_SECRET
-        generateValue: true
-    database:
-      name: drshompa-db
-      databaseName: drshompa
-      user: drshompa-user
-      plan: free
+        generateValue: true      # production needs 32+ random characters
